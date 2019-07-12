@@ -8,8 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="/res/css/bootstrap.min.css">
 
 		<script src="/res/js/jquery-3.4.1.min.js"></script>
-		<script src="/res/js/popper.min.js"></script>
-		<script src="/res/js/bootstrap.min.js"></script>
+		<script src="/res/js/bootstrap.bundle.min.js"></script>
 
 		<script src="/res/js/head/main.js"></script>
 		<link rel="stylesheet" type="text/css" href="/res/css/head/main.css">
@@ -25,38 +24,38 @@
 			<ul class="navbar-nav">
 				<li class="nav-item">
 					<div class="dropdown">
-						<a class="nav-link foreground dropdown-toggle no-outline  highlight-hover highlight-focus"
+						<a class="nav-link foreground dropdown-toggle no-outline highlight-hover"
 						   href="#"
 						   role="button"
-						   id="dropdown-menu"
+						   id="menu-button"
 						   data-toggle="dropdown"
 						   aria-haspopup="true"
 						   aria-expanded="false">
 							<span class="oi oi-menu"></span> Menu
 						</a>
 
-						<div class="dropdown-menu" aria-labelledby="dropdown-menu">
-							<a class="dropdown-item" href="/">Home</a>
+						<div id="menu" class="dropdown-menu" aria-labelledby="dropdown-menu">
+							<a class="dropdown-item menu-item" href="/">Home</a>
 
 							<div class="dropdown-divider"></div>
 
-							<a class="dropdown-item" href="/intro">Introductie</a>
+							<a class="dropdown-item menu-item" href="/intro">Introductie</a>
 
 							<div class="dropdown-divider"></div>
 
 							<h6 class="dropdown-header">Beelden</h6>
-							<a class="dropdown-item" href="/beelden/steen">Steen</a>
-							<a class="dropdown-item" href="/beelden/hout">Hout</a>
-							<a class="dropdown-item" href="/beelden/metaal">Metaal</a>
+							<a class="dropdown-item menu-item" href="/beelden/steen">Steen</a>
+							<a class="dropdown-item menu-item" href="/beelden/hout">Hout</a>
+							<a class="dropdown-item menu-item" href="/beelden/metaal">Metaal</a>
 
 							<div class="dropdown-divider"></div>
 
 							<h6 class="dropdown-header">Contact</h6>
-							<a class="dropdown-item" href="mailto:willemvanbeek@kpnmail.nl">
+							<a class="dropdown-item menu-item" href="mailto:willemvanbeek@kpnmail.nl">
 								willemvanbeek@kpnmain.nl
 							</a>
-							<span class="dropdown-item-text">0315-345232</span>
-							<span class="dropdown-item-text">06-55784025</span>
+							<span class="dropdown-item-text foreground">0315-345232</span>
+							<span class="dropdown-item-text foreground">06-55784025</span>
 					</div>
 				</li>
 			</ul>

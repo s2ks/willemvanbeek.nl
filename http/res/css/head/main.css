@@ -1,11 +1,13 @@
 :root {
 	--dark: #000;
+	--white: #fff;
+	--background-color: #1f5407;
+	/*--background-color: #404040;*/
 }
 
 .background {
 	/*background-color: #1f5407;*/
-	background-color: #404040;
-
+	background-color: var(--background-color);
 }
 
 .foreground {
@@ -17,7 +19,7 @@
 }
 
 svg {
-	fill: #ffffff;
+	fill: #fff;
 }
 
 .position-fixed {
@@ -29,11 +31,26 @@ svg {
 	background-color: var(--dark);
 }
 
-.highlight-focus:focus {
-	background-color: var(--dark);
-}
-
-
 .no-outline {
 	outline: none;
+}
+
+#menu-button {
+	padding: 5px;
+	border: 1px solid;
+	border-color: var(--white);
+}
+
+#menu {
+	background-color: var(--background-color);
+	color: var(--white);
+}
+
+.menu-item {
+	color: var(--white);
+}
+
+.menu-item:hover {
+	background-color: var(--dark);
+	color: var(--white);
 }

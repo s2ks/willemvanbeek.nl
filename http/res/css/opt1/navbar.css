@@ -1,0 +1,18 @@
+#wvb-navbar {
+	width: 100%;
+	height: auto;
+	border-bottom: 0.3em solid #1f5407;
+
+	padding: 0.5em 1em;
+}
+
+.wvb-navbar-item {
+	text-decoration: none;
+	color: var(--gray);
+	padding: 0.5em 0.5em;
+}
+
+.wvb-navbar-item:hover {
+	text-decoration: none;
+	color: #fff;
+}
