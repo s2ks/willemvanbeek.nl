@@ -22,8 +22,8 @@ func root_handler(w http.ResponseWriter, r *http.Request) {
 
 	//TODO load html file path from a config file
 	t, err := template.ParseFiles(
-		prefix + "header.html",
 		prefix + "index.html",
+		prefix + "header.html",
 		prefix + "footer.html",
 	)
 

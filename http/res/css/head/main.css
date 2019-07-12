@@ -1,0 +1,39 @@
+:root {
+	--dark: #000;
+}
+
+.background {
+	/*background-color: #1f5407;*/
+	background-color: #404040;
+
+}
+
+.foreground {
+	fill: var(--white);
+	color: var(--white);
+}
+.foreground:hover {
+	color: var(--white);
+}
+
+svg {
+	fill: #ffffff;
+}
+
+.position-fixed {
+	position: fixed;
+	/*width: 100%;*/
+}
+
+.highlight-hover:hover {
+	background-color: var(--dark);
+}
+
+.highlight-focus:focus {
+	background-color: var(--dark);
+}
+
+
+.no-outline {
+	outline: none;
+}
