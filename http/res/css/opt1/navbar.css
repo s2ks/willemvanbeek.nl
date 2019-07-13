@@ -1,7 +1,7 @@
 #wvb-navbar {
 	width: 100%;
 	height: auto;
-	border-bottom: 0.3em solid #1f5407;
+	border-bottom: 0.3em solid var(--primary);
 
 	padding: 0.5em 1em;
 }

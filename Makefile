@@ -8,6 +8,10 @@ OBJS=$(SRC:.go=.o)
 HTTP=http/*
 HTTP_DEST=/srv/http/
 
+DIST=webpack-wvb/dist/js \
+     webpack-wvb/dist/css
+DIST_DEST=http/res/
+
 EXEC=wvb.backend
 
 all: $(OBJS)
@@ -16,11 +20,15 @@ all: $(OBJS)
 %.o: %.go
 	$(GC) -c $<
 
-.PHONY: clean
+.PHONY: clean dist install
+
+dist:
+	-cd webpack-wvb && yarn run build
 
 clean:
 	-rm $(OBJS)
 
 install:
+	-cp -r $(DIST) $(DIST_DEST)
 	-cp -r $(HTTP) $(HTTP_DEST)
 

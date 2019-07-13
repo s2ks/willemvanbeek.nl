@@ -1,0 +1,25 @@
+.wvb-container {
+	margin-top: 4rem;
+}
+
+.wvb-background {
+	position: absolute;
+	background-image: url("/static/img/20161223_150024_background.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	/*filter: blur(4px);*/
+	/*filter: grayscale(100%) brightness(35%);*/
+}
+
+.wvb-jumbotron {
+	opacity: .85;
+	/*filter: drop-shadow(8px 8px 10px black);*/
+}

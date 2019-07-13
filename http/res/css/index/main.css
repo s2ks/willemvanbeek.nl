@@ -17,3 +17,11 @@ body {
 #title {
 	padding-bottom: 2em;
 }
+
+.wvb-background {
+	background-image: url("/static/img/20161223_150024.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+}
