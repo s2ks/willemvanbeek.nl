@@ -32,8 +32,26 @@ func intro_handler(w http.ResponseWriter, r *http.Request) {
 
 	data := struct {
 		Title string
+		Images []string
+		ImgLabel []string
+		ImgDesc []string
 	} {
-		Title: "Carousel",
+		Title: "Willem van Beek",
+		Images: []string {
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20161223_150024.jpg",
+			"/static/img/20170427_143305.jpg",
+		},
+		ImgLabel: []string {
+			"Foto 1",
+			"Foto 2",
+			"Foto 3",
+		},
+		ImgDesc: []string {
+			"Beschrijving Foto 1",
+			"Beschrijving Foto 2",
+			"Beschrijving Foto 3",
+		},
 	}
 
 	err = t.Execute(w, data)
