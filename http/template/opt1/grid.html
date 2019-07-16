@@ -1,0 +1,27 @@
+{{template "header" .}}
+
+<div style="height: 3.5rem;"></div>
+<div class="container">
+	<div class="row">
+		{{range $index, $data := index $.Content 0}}
+		<div class="card col-sm-12 col-md-3 m-2 bg-secondary p-0">
+			<a href="{{$data}}" class="">
+				<img src="{{$data}}" class="card-img-top w-100" alt="Thumbnail">
+			</a>
+			<div class="card-body w-100">
+				<h5 class="card-title">{{index $.Content 1 $index}}</h5>
+				<p class="card-text">{{index $.Content 2 $index}}</p>
+			</div>
+		</div>
+		{{end}}
+	</div>
+</div>
+
+{{template "footer" .}}
+
+		<!--<div style="background-image: url('');
+			background-size: contain;
+			background-position: center center;
+			background-repeat: no-repeat;
+			height: 10rem;"></div>
+		</div>-->

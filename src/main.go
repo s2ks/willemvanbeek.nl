@@ -12,6 +12,138 @@ import (
 
 const prefix string = "/srv/http/template/"
 
+func img_grid_handler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/beelden/steen" {
+		log.Print("404 " + r.URL.Path)
+		http.NotFound(w, r)
+		return
+	}
+
+	t, err := template.ParseFiles(
+		prefix + "opt1/grid.html",
+		prefix + "opt1/header.html",
+		prefix + "opt1/navbar.html",
+		prefix + "opt1/footer.html",
+	)
+
+	if err != nil {
+		log.Print(err)
+		http.NotFound(w, r)
+		return
+	}
+
+	data := struct {
+		Title string
+		Content [][]string
+	} {
+		Title: "Willem van Beek",
+		Content: [][]string {
+			{
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			"/static/img/20160909_125120.jpg",
+			},
+			{
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			"Foto",
+			},
+			{
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			"text",
+			},
+		},
+	}
+
+	err = t.Execute(w, data)
+
+	if err != nil {
+		log.Print(err)
+		http.NotFound(w, r)
+		return
+	}
+}
+
 func intro_handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/introductie" {
 		log.Print("404 " + r.URL.Path)
@@ -144,6 +276,7 @@ func main() {
 	http.HandleFunc("/", root_handler)
 	http.HandleFunc("/opt1", opt1_handler)
 	http.HandleFunc("/introductie", intro_handler)
+	http.HandleFunc("/beelden/steen", img_grid_handler)
 
 	fcgi.Serve(listener, nil)
 }

@@ -15,7 +15,7 @@ DIST_DEST=http/res/
 EXEC=wvb.backend
 
 all: $(OBJS)
-	$(GC) -o $(EXEC) $(OBJS)
+	$(GC) -lconfig -o $(EXEC) $(OBJS)
 
 %.o: %.go
 	$(GC) -c $<
