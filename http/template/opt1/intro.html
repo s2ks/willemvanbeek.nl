@@ -14,7 +14,7 @@
 		<div class="carousel-inner mh-100 h-100">
 			{{range $index, $data := .Images}}
 			<div class="carousel-item h-100 mh-100{{if eq $index 0}} active{{end}}">
-				<div class="container my-auto mh-100 h-100"
+				<div class="container-fluid my-auto mh-100 h-100"
 				     style="background-image: url('{{$data}}');
 				     background-size: contain;
 				     background-repeat: no-repeat;
