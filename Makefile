@@ -1,9 +1,14 @@
 GC=gccgo
+CC=gcc
 
 VPATH += src
+VPATH += src/config
 
-SRC=main.go
-OBJS=$(SRC:.go=.o)
+GOSRC=src/main.go \
+      src/config.go
+GOOBJS=wvb.backend.o
+CSRC=config.c
+COBJS=$(CSRC:.c=.o)
 
 HTTP=http/*
 HTTP_DEST=/srv/http/
@@ -14,11 +19,12 @@ DIST_DEST=http/res/
 
 EXEC=wvb.backend
 
-all: $(OBJS)
-	$(GC) -lconfig -o $(EXEC) $(OBJS)
+all:$(GOSRC) $()
+	$(GC) -o $(EXEC) $(GOSRC)
+	$(CC) -lconfig -ljson-c -o test
 
-%.o: %.go
-	$(GC) -c $<
+%.o: %.c
+	$(CC) -I/usr/include/json-c -c $<
 
 .PHONY: clean dist install
 
