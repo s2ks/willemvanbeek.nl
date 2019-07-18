@@ -13,9 +13,9 @@ typedef struct {
 		struct {
 			config_setting_t *setting;
 			const char *name;
-			const char *file_name;
+			const char *file;
 			const char *content_query;
-		} *template
+		} *template;
 
 		int template_count;
 		int display;
@@ -24,4 +24,4 @@ typedef struct {
 	int page_count;
 } WVB_CONFIG;
 
-void wvb_parse_config(const char *file);
+int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config);

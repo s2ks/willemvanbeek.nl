@@ -1,9 +1,122 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <fnmatch.h>
+#include <limits.h>
+#include <dirent.h>
 
 #include <libconfig.h>
 
 #include "config.h"
+
+static char *config_path = NULL;
+
+char *wvb_get_dir(const char *path)
+{
+	static char *dir = NULL;
+	char *c;
+
+	free(dir);
+
+	if(path == NULL)
+		return NULL;
+
+	c = strtok(path, "/");
+
+	if(c == NULL)
+		return NULL;
+
+	dir = malloc(PATH_MAX + sizeof(char));
+
+	while(c) {
+		strcat(dir, c);
+		strcat(dir, "/");
+		c = strtok(NULL, "/");
+	}
+
+	*(strrchr(dir, '/')) = '\0';
+
+	if(*dir == '\0')
+		*dir = '/';
+
+	return dir;
+}
+
+const char **wvb_include(config_t *cfg, const char *include_dir, const char *path, const char **error)
+{
+	struct dirent *entry;
+
+	char *open_path = NULL, *full_path = NULL, **path_array = NULL;
+	char *file_name;
+	int path_len = 0;
+	int path_array_count = 0;
+
+	DIR *dir;
+
+	open_path = malloc(PATH_MAX + sizeof(char));
+	full_path = malloc(PATH_MAX + sizeof(char));
+
+	file_name = strrchr(path, '/');
+
+	if(file_name == NULL)
+		file_name = path;
+	else
+		file_name += sizeof(char); //skip '/' character
+
+	if(*path == '/') {
+		//absolute path
+		path_len = strrchr(path, '/') - file_name;
+
+		if(path_len > PATH_MAX)
+			goto err;
+
+		strncpy(open_path, path, path_len);
+	} else if(include_dir) {
+		//relative to include dir
+
+		path_len = strlen(include_dir);
+
+		if(path_len > PATH_MAX)
+			goto err;
+
+		strcpy(open_path, include_dir);
+	} else {
+		//relative to current dir
+
+		strcpy(open_path, "./");
+		path_len = 2 * sizeof(char);
+	}
+
+	if(open_path[path_len - 1] == '/')
+		open_path[path_len - 1] = '\0';
+
+	open_path[path_len] = '\0';
+
+	dir = opendir(open_path);
+	if(dir == NULL)
+		goto err;
+
+	while((entry = readdir(dir)) != NULL) {
+		snprintf(full_path, PATH_MAX, "%s/%s", open_path, entry->d_name);
+
+		printf("comparing %s and %s\n", full_path, path);
+
+		if(fnmatch(path, full_path, FNM_PATHNAME) != 0)
+			continue;
+
+		if(++path_array_count % 32 == 0)
+			path_array = realloc(path_array, path_array_count * sizeof(*path_array));
+
+		path_array[path_array_count - 1] = strdup(full_path);
+	}
+
+	closedir(dir);
+	path_array[path_array_count] = NULL;
+
+	return (const char **) path_array;
+err:
+	return NULL;
+}
 
 #define TEMPLATE wvb_config->page[i].template[x]
 #define PAGE wvb_config->page[i]
@@ -11,7 +124,14 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 {
 	int count;
 
+	if(config_path != NULL)
+		free(config_path);
+
+	config_path = wvb_get_dir(file);
+
 	config_init(&wvb_config->conf);
+
+	config_set_include_func(&wvb_config->conf, wvb_include);
 
 	if(config_read_file(&wvb_config->conf, file) == CONFIG_FALSE)
 		goto err;
@@ -66,7 +186,7 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 			PAGE.display = 1;
 
 		//fill template struct
-		for(int x = 0; i < PAGE.template_count; x++) {
+		for(int x = 0; x < PAGE.template_count; x++) {
 			TEMPLATE.setting = config_setting_get_elem(setting, x);
 
 			if(config_setting_lookup_string(TEMPLATE.setting, "name", &val))
