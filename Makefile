@@ -19,7 +19,7 @@ BIN=wvb.backend\
 all:$(BIN)
 
 wvb.backend: $(GOSRC)
-	$(GC) -o $(EXEC) $(GOSRC)
+	$(GC) -o $@ $(GOSRC)
 
 include src/config/config.mk
 

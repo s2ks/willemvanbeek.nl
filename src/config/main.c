@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "config.h"
+#include "config-util.h"
 
-int main(void) {
+int main(int argc, char **argv) {
 	WVB_CONFIG wvb_config;
 
 	if(wvb_parse_config("../../wvb.backend.conf", &wvb_config) == 0) {
@@ -26,5 +27,10 @@ int main(void) {
 		printf("\tdisplay? %s\n", wvb_config.page[i].display ? "yes" : "no");
 	}
 
+	print_wvb_config_to_json(&wvb_config);
+
 	return 0;
+
+err:
+	return -1;
 }

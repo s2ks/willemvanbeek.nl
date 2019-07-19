@@ -18,7 +18,7 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 	int path_len = 0;
 	int path_array_count = 0;
 
-	DIR *dir;
+	DIR *dir = NULL;
 
 	open_path = calloc(1, PATH_MAX + sizeof(char));
 	full_path = malloc(PATH_MAX + sizeof(char));
@@ -53,18 +53,22 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 	if(dir == NULL)
 		goto err;
 
+	path_array = malloc(32 * sizeof(*path_array));
+
+	if(path_array == NULL)
+		goto err;
+
 	while((entry = readdir(dir)) != NULL) {
 		snprintf(full_path, PATH_MAX, "%s/%s", open_path, entry->d_name);
-
-		printf("comparing %s and %s\n", full_path, path);
 
 		if(fnmatch(path, full_path, FNM_PATHNAME) != 0)
 			continue;
 
-		printf("match\n");
-
-		if(path_array_count++ % 32 == 0)
+		if(++path_array_count % 32 == 0)
 			path_array = realloc(path_array, path_array_count * sizeof(*path_array));
+
+		if(path_array == NULL)
+			goto err;
 
 		path_array[path_array_count - 1] = strdup(full_path);
 	}
@@ -72,12 +76,16 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 	if(path_array == NULL)
 		goto err;
 
-	closedir(dir);
 	path_array[path_array_count] = NULL;
 
-	return (const char **) path_array;
 err:
-	return NULL;
+	if(dir)
+		closedir(dir);
+
+	free(open_path);
+	free(full_path);
+
+	return (const char **) path_array;
 }
 
 #define TEMPLATE wvb_config->page[i].template[x]
@@ -118,8 +126,8 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 
 		if(PAGE.setting == NULL)
 			goto err;
-		else
-			setting = PAGE.setting;
+
+		setting = PAGE.setting;
 
 		setting = config_setting_lookup(PAGE.setting, "template");
 

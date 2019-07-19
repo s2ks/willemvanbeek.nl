@@ -5,7 +5,7 @@ VPATH += src/config
 SRC=main.c\
     config.c
 
-OBJS=$(SRC:.o:.c)
+OBJS=$(SRC:.c=.o)
 
 LDFLAGS += -lconfig
 CFLAGS =
