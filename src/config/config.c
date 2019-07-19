@@ -9,39 +9,6 @@
 
 #include "config.h"
 
-static char *config_path = NULL;
-
-char *wvb_get_dir(const char *path)
-{
-	static char *dir = NULL;
-	char *c;
-
-	free(dir);
-
-	if(path == NULL)
-		return NULL;
-
-	c = strtok(path, "/");
-
-	if(c == NULL)
-		return NULL;
-
-	dir = malloc(PATH_MAX + sizeof(char));
-
-	while(c) {
-		strcat(dir, c);
-		strcat(dir, "/");
-		c = strtok(NULL, "/");
-	}
-
-	*(strrchr(dir, '/')) = '\0';
-
-	if(*dir == '\0')
-		*dir = '/';
-
-	return dir;
-}
-
 const char **wvb_include(config_t *cfg, const char *include_dir, const char *path, const char **error)
 {
 	struct dirent *entry;
@@ -53,7 +20,7 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 
 	DIR *dir;
 
-	open_path = malloc(PATH_MAX + sizeof(char));
+	open_path = calloc(1, PATH_MAX + sizeof(char));
 	full_path = malloc(PATH_MAX + sizeof(char));
 
 	file_name = strrchr(path, '/');
@@ -63,34 +30,24 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 	else
 		file_name += sizeof(char); //skip '/' character
 
-	if(*path == '/') {
-		//absolute path
-		path_len = strrchr(path, '/') - file_name;
+	if(*path != '/') {
+		if(include_dir) {
+			path_len = strlen(include_dir);
 
-		if(path_len > PATH_MAX)
-			goto err;
+			if(path_len > PATH_MAX)
+				goto err;
 
-		strncpy(open_path, path, path_len);
-	} else if(include_dir) {
-		//relative to include dir
-
-		path_len = strlen(include_dir);
-
-		if(path_len > PATH_MAX)
-			goto err;
-
-		strcpy(open_path, include_dir);
-	} else {
-		//relative to current dir
-
-		strcpy(open_path, "./");
-		path_len = 2 * sizeof(char);
+			strcpy(open_path, include_dir);
+		}
 	}
 
-	if(open_path[path_len - 1] == '/')
-		open_path[path_len - 1] = '\0';
+	path_len = strrchr(path, '/') - path;
 
-	open_path[path_len] = '\0';
+	if(path_len > PATH_MAX)
+		goto err;
+
+	if(path_len > 0)
+		strncat(open_path, path, path_len);
 
 	dir = opendir(open_path);
 	if(dir == NULL)
@@ -104,11 +61,16 @@ const char **wvb_include(config_t *cfg, const char *include_dir, const char *pat
 		if(fnmatch(path, full_path, FNM_PATHNAME) != 0)
 			continue;
 
-		if(++path_array_count % 32 == 0)
+		printf("match\n");
+
+		if(path_array_count++ % 32 == 0)
 			path_array = realloc(path_array, path_array_count * sizeof(*path_array));
 
 		path_array[path_array_count - 1] = strdup(full_path);
 	}
+
+	if(path_array == NULL)
+		goto err;
 
 	closedir(dir);
 	path_array[path_array_count] = NULL;
@@ -123,11 +85,6 @@ err:
 int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 {
 	int count;
-
-	if(config_path != NULL)
-		free(config_path);
-
-	config_path = wvb_get_dir(file);
 
 	config_init(&wvb_config->conf);
 

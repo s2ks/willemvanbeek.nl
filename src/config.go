@@ -26,6 +26,3 @@ type WvbConfig struct {
 	*/
 	Content [][][]string
 }
-
-//extern wvb_test_config
-func WvbTestConfig(file *byte)

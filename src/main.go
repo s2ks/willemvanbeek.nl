@@ -18,7 +18,4 @@ func main() {
 	//wvb_handler_init()
 
 	//fcgi.Serve(listener, nil)
-
-	file := []byte("wvb.backend.conf\000")
-	WvbTestConfig(&file[0]);
 }
