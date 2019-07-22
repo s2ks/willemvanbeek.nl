@@ -1,0 +1,46 @@
+{{define "navbar"}}
+
+<script src="/res/js/opt1/navbar.js"></script>
+<link rel="stylesheet" type="text/css" href="/res/css/opt1/navbar.css">
+
+<header>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="wvb-navbar">
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+							     data-target="#wvb-navbar-collapse"
+							     aria-controls="wvb-navbar-collapse"
+							     aria-expanded="false"
+							     aria-label="Menu">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="wvb-navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/introductie">Introductie</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="wvb-item-dropdown"
+									    role="button"
+									    data-toggle="dropdown"
+									    aria-haspopup="true"
+									    aria-expanded="false" href="#">
+						Beelden
+					</a>
+					<div class="dropdown-menu" aria-labelledby="wvb-item-dropdown">
+						<a class="dropdown-item" href="/beelden/steen">Steen</a>
+						<a class="dropdown-item" href="/beelden/hout">Hout</a>
+						<a class="dropdown-item" href="/beelden/metaal">Metaal</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/Contact">Contact</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</header>
+
+{{end}}
