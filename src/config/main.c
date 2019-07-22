@@ -5,7 +5,8 @@
 int main(int argc, char **argv) {
 	WVB_CONFIG wvb_config;
 
-	if(wvb_parse_config("../../wvb.backend.conf", &wvb_config) == 0) {
+
+	if(wvb_parse_config("./wvb.backend.conf", &wvb_config) == 0) {
 		printf("error in file %s on line %d: %s\n",
 				config_error_file(&wvb_config.conf),
 				config_error_line(&wvb_config.conf),
@@ -13,7 +14,9 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	printf("prefix: %s\n", wvb_config.prefix);
+	print_wvb_config_to_json(&wvb_config);
+
+	return 0;
 
 	for(int i = 0; i < wvb_config.page_count; i++) {
 		printf("page %d path: %s\n", i, wvb_config.page[i].path);

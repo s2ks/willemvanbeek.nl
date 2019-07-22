@@ -3,25 +3,33 @@
 #include <libconfig.h>
 
 typedef struct {
-	config_t conf;
+	const char *name;
+	const char *file;
+	const char *content_query;
+
 	config_setting_t *setting;
+} WVB_TEMPLATE;
+
+typedef struct {
+	const char *path;
+	const char *title;
+	const char *name;
+
+	WVB_TEMPLATE *template;
+
+	int template_count;
+	int display;
+	config_setting_t *setting;
+} WVB_PAGE;
+
+typedef struct {
 	const char *prefix;
 
-	struct {
-		config_setting_t *setting;
-		const char *path;
-		struct {
-			config_setting_t *setting;
-			const char *name;
-			const char *file;
-			const char *content_query;
-		} *template;
-
-		int template_count;
-		int display;
-	} *page;
+	WVB_PAGE *page;
 
 	int page_count;
+	config_t conf;
+	config_setting_t *setting;
 } WVB_CONFIG;
 
 int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config);
