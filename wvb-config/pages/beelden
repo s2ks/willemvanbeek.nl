@@ -1,0 +1,100 @@
+{
+	path = "/beelden";
+	title = "Beelden | Willem van Beek";
+	name = "Beelden";
+	display = false;
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/beelden.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
+{
+	path = "/beelden/steen";
+	title = "Beelden | Willem van Beek";
+	name = "Beelden steen";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/beelden.html";
+			content_query = "";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
+{
+	path = "/beelden";
+	title = "Beelden | Willem van Beek";
+	name = "Beelden hout";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/beelden.html";
+			content_query = "";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
+{
+	path = "/beelden";
+	title = "Beelden | Willem van Beek";
+	name = "Beelden metaal";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/beelden.html";
+			content_query = "";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},

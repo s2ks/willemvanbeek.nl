@@ -13,11 +13,15 @@ LDFLAGS += -lsqlite3
 LDFLAGS += `pkg-config --libs json-c`
 CFLAGS +=`pkg-config --cflags json-c`
 CFLAGS += -Wall -Wextra -Wpedantic
+CFLAGS += -g
+CFLAGS += -DDEBUG
 
 EXE = wvb.config
 
 wvb.config: $(OBJS)
 	$(CC) $(LDFLAGS) -o $(EXE) $(OBJS)
 
-%.o : %.c
-	$(CC) $(CFLAGS) -g -c $<
+include $(OBJS:.o=.d)
+
+%.d : %.c
+	$(CC) $(CFLAGS) -M $< > $@

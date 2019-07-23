@@ -30,7 +30,7 @@ dist:
 	-cd webpack-wvb && yarn run build
 
 clean:
-	-rm $(OBJS) $(GOOBJS)
+	-rm $(OBJS) $(GOOBJS) $(OBJS:.o=.d)
 
 install:
 	-cp -r $(DIST) $(DIST_DEST)

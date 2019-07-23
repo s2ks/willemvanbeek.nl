@@ -1,0 +1,25 @@
+{
+	path = "/";
+	title = "Willem van Beek";
+	name = "Home";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/index.html";
+			content_query = "";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
