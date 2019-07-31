@@ -27,7 +27,7 @@ include src/config/config.mk
 .PHONY: clean dist install
 
 dist:
-	-cd webpack-wvb && yarn run build
+	-cd webpack && yarn run build
 
 clean:
 	-rm $(OBJS) $(GOOBJS) $(OBJS:.o=.d)

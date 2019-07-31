@@ -1,1 +1,21 @@
 query content sqlite db
+
+wvb.config: take path as a command line parameter
+
+Database layout:
+	table: image(ID, PATH, TITLE, DESCRIPTION, MATERIAL)
+	SELECT * FROM image WHERE MATERIAL = "steen"
+
+	of
+	foreign key
+		beelden()
+			steen()
+			hout()
+			metaal()
+
+		SELECT steen FROM beelden
+
+
+	beelden() (master db)
+
+	create table steen/hout/metaal as select * from beelden where category & CATEGORY_X = 1

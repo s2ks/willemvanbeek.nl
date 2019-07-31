@@ -1,0 +1,163 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <sqlite3.h>
+
+#include "config-util.h"
+#include "config.h"
+#include "database.h"
+
+int wvb_result(void *arg, int argc, char **argv, char **col_name)
+{
+	for(int i = 0; i < argc; i++) {
+		printf("%s = %s\n", col_name[i], argv[i] == NULL ? "NULL" : argv[i]);
+	}
+	return 0;
+}
+
+void wvb_create_tables(sqlite3 *db)
+{
+	char *query = NULL, *err = NULL;
+	int status;
+
+	query = malloc(MAX_SQL_LEN + sizeof(char));
+	if(query == NULL) {
+		PRINTERR("wvb_create_tables failed to allocate %ld bytes\n", MAX_SQL_LEN + sizeof(char));
+		return;
+	}
+
+	//Create table "steen"
+	status = snprintf(query, MAX_SQL_LEN, CREATE_TABLE_FROM_BEELDEN_FMT, "steen", WVB_CATEGORY_STEEN);
+	LOG_UNWRITTEN(status);
+
+	status = sqlite3_exec(db, query, NULL, NULL, &err);
+	LOG_EXEC_ERROR(status, query, err);
+
+	//Create table "hout"
+	status = snprintf(query, MAX_SQL_LEN, CREATE_TABLE_FROM_BEELDEN_FMT, "hout", WVB_CATEGORY_HOUT);
+	LOG_UNWRITTEN(status);
+
+	status = sqlite3_exec(db, query, NULL, NULL, &err);
+	LOG_EXEC_ERROR(status, query, err);
+
+	//Create table "metaal"
+	status = snprintf(query, MAX_SQL_LEN, CREATE_TABLE_FROM_BEELDEN_FMT, "metaal", WVB_CATEGORY_METAAL);
+	LOG_UNWRITTEN(status);
+
+	status = sqlite3_exec(db, query, NULL, NULL, &err);
+	LOG_EXEC_ERROR(status, query, err);
+
+	free(query);
+}
+
+void wvb_create_triggers(sqlite3 *db)
+{
+	char *query = NULL;
+
+	query = malloc(MAX_SQL_LEN + sizeof(char));
+	if(query == NULL) {
+		PRINTERR("Failed to allocate %ld bytes\n", MAX_SQL_LEN + sizeof(char));
+		return;
+	}
+
+	/*
+	 * Create triggers to drop tables if the "main" table is updated
+	 * TODO find a better solution to storing beelden to be displayed on a page in a database
+	 * */
+	CREATE_UPDATE_TRIGGER(db, query, "steen_update_trigger", "steen");
+	CREATE_UPDATE_TRIGGER(db, query, "hout_update_trigger", "hout");
+	CREATE_UPDATE_TRIGGER(db, query, "metaal_update_trigger", "metaal");
+
+	CREATE_INSERT_TRIGGER(db, query, "steen_insert_trigger", "steen");
+	CREATE_INSERT_TRIGGER(db, query, "hout_insert_trigger", "hout");
+	CREATE_INSERT_TRIGGER(db, query, "metaal_insert_trigger", "metaal");
+
+	CREATE_DELETE_TRIGGER(db, query, "steen_delete_trigger", "steen");
+	CREATE_DELETE_TRIGGER(db, query, "hout_delete_trigger", "hout");
+	CREATE_DELETE_TRIGGER(db, query, "metaal_delete_trigger", "metaal");
+
+	free(query);
+}
+
+void wvb_database_manage(sqlite3 *db)
+{
+	char *err = NULL;
+	int status;
+
+	status = sqlite3_exec(db, CREATE_BEELDEN, NULL, NULL, &err);
+	if(status != SQLITE_OK) {
+		if(err != NULL)
+			PRINTWARN("CREATE_BEELDEN failed with error code %d: %s\n", status, err);
+		else
+			PRINTERR("CREATE_BEELDEN: Unknown error %d.\n", status);
+	}
+
+	sqlite3_free(err);
+
+	//tables will have been dropped if "beelden" was updated
+	wvb_create_tables(db);
+	wvb_create_triggers(db);
+}
+
+//fill wvb_tmpl->content with data from db
+void wvb_database_fill_content(WVB_TEMPLATE *wvb_tmpl, sqlite3 *db)
+{
+	int status, column, row, bytes;
+	sqlite3_stmt *stmt = NULL;
+
+	const unsigned char *text;
+	char *buf;
+
+	status = sqlite3_prepare_v2(db, wvb_tmpl->content_query, -1, &stmt, NULL);
+
+	if(stmt == NULL) {
+		PRINTERR("Failed to prepare query with error code %d: %s\n", status, wvb_tmpl->content_query);
+		return;
+	}
+
+	row = 1;
+
+	//TODO this is a possible memory leak, maybe free() if not null
+	wvb_tmpl->content = NULL;
+
+	while(sqlite3_step(stmt) != SQLITE_DONE) {
+		column = sqlite3_column_count(stmt);
+
+		if(column == 0) {
+			PRINTERR("Query \"%s\" returned no columns\n", wvb_tmpl->content_query);
+			continue;
+		}
+
+		//allocate space for rows
+		wvb_tmpl->content = realloc(wvb_tmpl->content, (row + 1) * sizeof(void *));
+		LOG_ALLOCATION_ERROR(wvb_tmpl->content, row * sizeof(void *));
+
+		//allocate space for columns
+		wvb_tmpl->content[row - 1] = malloc(sizeof(void *) * (column + 1));
+		LOG_ALLOCATION_ERROR(wvb_tmpl->content[row - 1], sizeof(void *) * column);
+
+		for(int i = 0; i < column; i++) {
+			//get the text and byte count of column i
+			text = sqlite3_column_text(stmt, i);
+			bytes = sqlite3_column_bytes(stmt, i);
+
+			//allocate space for string
+			buf = malloc(bytes + sizeof(char));
+			LOG_ALLOCATION_ERROR(buf, bytes);
+
+			wvb_tmpl->content[row - 1][i] = buf;
+
+			//text is probably not null terminated so use printf to make sure it is
+			snprintf(buf, bytes, "%s", text);
+		}
+
+		//null terminate column
+		wvb_tmpl->content[row - 1][column] = NULL;
+
+		row++;
+	}
+
+	//null terminate row
+	wvb_tmpl->content[row] = NULL;
+}

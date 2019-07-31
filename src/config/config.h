@@ -7,7 +7,7 @@ typedef struct {
 	const char *file;
 	const char *content_query;
 
-	const char **content;
+	const char ***content;
 	int content_length;
 
 	config_setting_t *setting;

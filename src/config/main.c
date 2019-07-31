@@ -8,17 +8,26 @@
 int main(int argc, char **argv) {
 	WVB_CONFIG wvb_config;
 	json_object *json;
-	const char *errstr;
 
-	if(wvb_parse_config("wvb-config/wvb.conf", &wvb_config) == 0) {
+	const char *errstr;
+	const char *config_path;
+
+	if(argc == 0) {
+		PRINTERR("Argument required for path to config file\n");
+		return -1;
+	} else if(argc > 1) {
+		PRINTWARN("Too many arguments, expected 1 but got %d\n", argc);
+	}
+
+	config_path = (const char *) argv[0];
+
+	if(wvb_parse_config(config_path, &wvb_config) == 0) {
 		errstr = config_error_text(&wvb_config.conf);
-		PRINTERR("error type %d: %s\n",
+		PRINTERR("error type %d: %s on line %d in file %s\n",
 				config_error_type(&wvb_config.conf),
-				errstr ? errstr : "Unknown error");
-		if(errstr)
-			PRINTERR("file %s line %d\n",
-					config_error_file(&wvb_config.conf),
-					config_error_line(&wvb_config.conf));
+				errstr ? errstr : "Unknown error",
+				config_error_line(&wvb_config.conf),
+				config_error_file(&wvb_config.conf));
 		return -1;
 	}
 

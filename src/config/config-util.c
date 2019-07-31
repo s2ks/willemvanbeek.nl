@@ -29,9 +29,34 @@ int wvb_indexof_path(WVB_CONFIG *wvb_config, const char *path)
 	return WVB_INDEXOF_NOTFOUND;
 }
 
+void wvb_free_content(WVB_TEMPLATE *wvb_tmpl)
+{
+	if(wvb_tmpl->content_length == 0)
+		return;
+
+	for(int i = 0; i < wvb_tmpl->content_length; i++) {
+		free(wvb_tmpl->content[i]);
+	}
+
+	free(wvb_tmpl->content);
+}
+
 int wvb_query_content(WVB_TEMPLATE *wvb_tmpl)
 {
-	
+	if(wvb_tmpl->content_query == NULL)
+		return 0;
+
+	if(wvb_tmpl->content)
+		wvb_free_content(wvb_tmpl);
+
+	//TODO get query from wvb_tmpl->content_query
+	//store as an array of an array of strings
+	/*
+	 * ["title", "description", "material", "path", NULL],
+	 * ["title", "description", "material", "path", NULL],
+	 * NULL
+	 */
+
 }
 
 json_object *wvb_template_to_json_object(WVB_TEMPLATE *wvb_tmpl)

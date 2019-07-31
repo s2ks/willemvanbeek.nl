@@ -4,7 +4,8 @@ VPATH += src/config
 
 SRC=main.c\
     config.c\
-    config-util.c
+    config-util.c\
+    database.c
 
 OBJS=$(SRC:.c=.o)
 
