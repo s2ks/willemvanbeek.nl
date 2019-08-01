@@ -16,6 +16,7 @@ CFLAGS +=`pkg-config --cflags json-c`
 CFLAGS += -Wall -Wextra -Wpedantic
 CFLAGS += -g
 CFLAGS += -DDEBUG
+#CFLAGS += -DVERBOSE
 
 EXE = wvb.config
 

@@ -2,13 +2,19 @@
 
 #include <libconfig.h>
 
+#define WVB_LOOKUP_STRING(setting, name, dest) \
+	do { \
+		if(config_setting_lookup_string(setting, name, dest) == CONFIG_FALSE) \
+			PRINTWARN("\"%s\" is NULL\n", name); \
+	} while(0)
+
 typedef struct {
 	const char *name;
 	const char *file;
 	const char *content_query;
 
-	const char ***content;
-	int content_length;
+	char ***content;
+	int content_length; //FIXME unused
 
 	config_setting_t *setting;
 } WVB_TEMPLATE;
@@ -27,6 +33,7 @@ typedef struct {
 
 typedef struct {
 	const char *prefix;
+	const char *database;
 
 	WVB_PAGE *page;
 

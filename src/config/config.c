@@ -10,13 +10,14 @@
 
 #include "config.h"
 #include "config-util.h"
+#include "database.h"
 
 static const char *wvb_include_err[] = {
 	"Error parsing include",
 };
 
 /*
- * TODO test and fix bugs, mainly directory globbing
+ * TODO directory globbing
  */
 static const char **wvb_include(config_t *cfg, const char *include_dir, const char *path, const char **error)
 {
@@ -124,6 +125,10 @@ ret:
 	return (const char **) path_array;
 }
 
+
+//FIXME defines
+//TODO database directory
+//TODO clean this up
 #define TEMPLATE wvb_config->page[i].template[x]
 #define PAGE wvb_config->page[i]
 int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
@@ -157,6 +162,11 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 
 	if(config_lookup_string(&wvb_config->conf, "serve.prefix", &wvb_config->prefix) == CONFIG_FALSE)
 		wvb_config->prefix = NULL;
+
+	if(config_lookup_string(&wvb_config->conf, "serve.database", &wvb_config->database) == CONFIG_FALSE) {
+		PRINTERR("Failed to look up \"serve.database\"\n");
+		goto err;
+	}
 
 	wvb_config->setting = config_lookup(&wvb_config->conf, "serve.urls");
 
@@ -213,6 +223,9 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 			PAGE.path = NULL;
 		}
 
+		WVB_LOOKUP_STRING(PAGE.setting, "title", &PAGE.title);
+		WVB_LOOKUP_STRING(PAGE.setting, "name", &PAGE.name);
+
 		if(config_setting_lookup_bool(PAGE.setting, "display", &PAGE.display) == CONFIG_FALSE)
 			PAGE.display = 1;
 
@@ -223,21 +236,21 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 			if(config_setting_lookup_string(TEMPLATE.setting, "name", &val)) {
 				TEMPLATE.name = val;
 			} else {
-				PRINTWARN("page %d template %d name = NULL\n", i, x);
+				PRINTINFO("page %d template %d name = NULL\n", i, x);
 				TEMPLATE.name = NULL;
 			}
 
 			if(config_setting_lookup_string(TEMPLATE.setting, "file", &val)) {
 				TEMPLATE.file = val;
 			} else {
-				PRINTWARN("page %d template %d file = NULL\n", i, x);
+				PRINTINFO("page %d template %d file = NULL\n", i, x);
 				TEMPLATE.file = NULL;
 			}
 
 			if(config_setting_lookup_string(TEMPLATE.setting, "content_query", &val)) {
 				TEMPLATE.content_query = val;
 			} else {
-				PRINTWARN("page %d template %d content_query = NULL\n", i, x);
+				PRINTINFO("page %d template %d content_query = NULL\n", i, x);
 				TEMPLATE.content_query = NULL;
 			}
 		}

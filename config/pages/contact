@@ -15,7 +15,6 @@
 		{
 			name = "content";
 			file = "/contact.html";
-			content_query = "";
 		},
 		{
 			name = "footer";

@@ -18,7 +18,6 @@
 		{
 			name = "content";
 			file = "/intro.html";
-			content_query = "";
 		},
 		{
 			name = "footer";

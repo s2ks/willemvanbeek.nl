@@ -1,21 +1,10 @@
-query content sqlite db
+- clean up wvb_parse_config in config.c
+- stderr coloured output config-util
 
-wvb.config: take path as a command line parameter
+- wvb.insert.img insert image to the database, taking name, description, material, path, and category as arguments, in
+that order.
 
-Database layout:
-	table: image(ID, PATH, TITLE, DESCRIPTION, MATERIAL)
-	SELECT * FROM image WHERE MATERIAL = "steen"
+- create web interface for adding, removing and editing items in the beelden table
 
-	of
-	foreign key
-		beelden()
-			steen()
-			hout()
-			metaal()
-
-		SELECT steen FROM beelden
-
-
-	beelden() (master db)
-
-	create table steen/hout/metaal as select * from beelden where category & CATEGORY_X = 1
+- backend for database editing: small c programs that take json formatted text as input, and perform actions on
+the database, programs should be started by a fastcgi backend

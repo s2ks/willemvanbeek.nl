@@ -40,7 +40,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "";
+			content_query = "SELECT name, description, material, img_path FROM steen;";
 		},
 		{
 			name = "footer";
@@ -65,7 +65,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "";
+			content_query = "SELECT * FROM hout;";
 		},
 		{
 			name = "footer";
@@ -90,7 +90,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "";
+			content_query = "SELECT * FROM metaal;";
 		},
 		{
 			name = "footer";
