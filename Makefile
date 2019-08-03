@@ -3,7 +3,8 @@ GC=gccgo
 VPATH += src
 
 GOSRC=src/main.go \
-      src/config.go
+      src/config.go \
+      src/logger.go
 GOOBJS=wvb.backend.o
 
 HTTP=http/*
