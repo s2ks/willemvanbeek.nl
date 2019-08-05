@@ -1,5 +1,5 @@
 {
-	path = "/beelden";
+	path = "/beelden/";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden";
 	display = false;
@@ -24,7 +24,7 @@
 	);
 },
 {
-	path = "/beelden/steen";
+	path = "/beelden/steen/";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden steen";
 
@@ -49,7 +49,7 @@
 	);
 },
 {
-	path = "/beelden/hout";
+	path = "/beelden/hout/";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden hout";
 
@@ -74,7 +74,7 @@
 	);
 },
 {
-	path = "/beelden/metaal";
+	path = "/beelden/metaal/";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden metaal";
 

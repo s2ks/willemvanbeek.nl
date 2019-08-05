@@ -1,5 +1,5 @@
 {
-	path = "/contact";
+	path = "/contact/";
 	title = "Willem van Beek";
 	name = "Contact";
 

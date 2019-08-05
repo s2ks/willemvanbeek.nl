@@ -19,7 +19,7 @@ func main() {
 
 	wvb_config = wvb_config_fetch("./wvb.config", "config/wvb.conf")
 
-	wvb_handler_init(wvb_config)
+	handler := wvb_handler_init(wvb_config)
 
-	fcgi.Serve(listener, nil)
+	fcgi.Serve(listener, handler)
 }

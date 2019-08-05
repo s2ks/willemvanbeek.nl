@@ -1,5 +1,5 @@
 {
-	path = "/intro";
+	path = "/introductie/";
 	title = "Introductie | Willem van Beek";
 	name = "Introductie";
 
@@ -11,9 +11,6 @@
 		{
 			name = "navbar";
 			file = "/navbar.html";
-		},
-		{
-			file = "/index.html"
 		},
 		{
 			name = "content";
