@@ -7,7 +7,6 @@ import(
 	"io"
 	"bytes"
 	"time"
-	"os"
 )
 
 type WvbHandler struct {
@@ -15,7 +14,7 @@ type WvbHandler struct {
 	Prefix string
 	Page WvbPage
 
-	T *template.Template
+	Tmpl *template.Template
 	Exec bytes.Buffer
 	LastExec *time.Time
 }
@@ -89,7 +88,7 @@ func (wvb *WvbHandler) wvb_template_exec(prefix string) {
 	}
 
 	for _, tmpl := range wvb.Page.Template {
-		wvb.T.ExecuteTemplate(os.Stdout, tmpl.Name, data)
+		wvb.Tmpl.ExecuteTemplate(&wvb.Exec, tmpl.Name, data)
 	}
 }
 

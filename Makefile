@@ -11,8 +11,8 @@ GOOBJS=wvb.backend.o
 HTTP=http/*
 HTTP_DEST=/srv/http/
 
-DIST=webpack-wvb/dist/js \
-     webpack-wvb/dist/css
+DIST=webpack/dist/js \
+     webpack/dist/css
 DIST_DEST=http/res/
 
 BIN=wvb.backend\
