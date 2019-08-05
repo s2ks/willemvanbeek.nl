@@ -1,0 +1,12 @@
+- clean up wvb_parse_config in config.c
+- stderr coloured output config-util
+
+- wvb.insert.img insert image to the database, taking name, description, material, path, and category as arguments, in
+that order.
+
+- create web interface for adding, removing and editing items in the beelden table
+
+- backend for database editing: small c programs that take json formatted text as input, and perform actions on
+the database, programs should be started by a fastcgi backend
+
+- logger

@@ -1,0 +1,27 @@
+{
+	path = "/intro";
+	title = "Introductie | Willem van Beek";
+	name = "Introductie";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			file = "/index.html"
+		},
+		{
+			name = "content";
+			file = "/intro.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
