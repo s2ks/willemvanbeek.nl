@@ -4,7 +4,8 @@ VPATH += src
 
 GOSRC=src/main.go \
       src/config.go \
-      src/logger.go
+      src/logger.go \
+      src/page-handler.go
 GOOBJS=wvb.backend.o
 
 HTTP=http/*

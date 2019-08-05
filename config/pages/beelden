@@ -49,7 +49,7 @@
 	);
 },
 {
-	path = "/beelden";
+	path = "/beelden/hout";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden hout";
 
@@ -74,7 +74,7 @@
 	);
 },
 {
-	path = "/beelden";
+	path = "/beelden/metaal";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden metaal";
 

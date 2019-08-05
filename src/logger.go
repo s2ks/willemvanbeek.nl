@@ -2,15 +2,11 @@ package main
 
 import "log"
 
-func wvb_log(err error) int {
+func wvb_log(err error) bool {
 	if err != nil {
 		log.Print(err)
-		return 1
+		return true
 	}
 
-	return 0
-}
-
-func printerr(bytes []byte) {
-	log.Print(string(bytes))
+	return false
 }

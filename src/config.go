@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"io/ioutil"
 	"io"
 	"os/exec"
@@ -23,7 +24,6 @@ type WvbPage struct {
 	Display bool
 
 	Template []WvbTemplate
-
 }
 
 type WvbConfig struct {
@@ -53,26 +53,32 @@ func wvb_config_fetch(config_prog string, config_path string) *WvbConfig {
 	wvb_log(err)
 
 	err = cmd.Start()
-	if wvb_log(err) == 1 {
+	if wvb_log(err) == true {
 		return nil
 	}
 
 	bytes, err = ioutil.ReadAll(stderr)
-	wvb_log(err)
+	if wvb_log(err) == true {
+		return nil
+	}
 
-	printerr(bytes)
+	log.Print(string(bytes))
 
 	bytes, err = ioutil.ReadAll(stdout)
-	wvb_log(err)
+	if wvb_log(err) == true {
+		return nil
+	}
 
 	err = json.Unmarshal(bytes, &wvb_config)
-	if wvb_log(err) == 1 {
+	if wvb_log(err) == true {
 		return nil
 	}
 
 
 	err = cmd.Wait()
-	wvb_log(err)
+	if wvb_log(err) == true {
+		return nil
+	}
 
 	return wvb_config
 }
