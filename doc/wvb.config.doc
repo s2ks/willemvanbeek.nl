@@ -1,0 +1,65 @@
+wvb.config is een helper programma voor wvb.backend, het parses een config file doorgegeven door een command
+line parameter.
+
+wvb.config verwacht een bestand met de volgende structuur:
+
+serve: {
+	prefix = "";
+	database = "";
+
+	urls = ();
+}
+
+"prefix" is de locatie waar word gezocht naar template bestanden.
+"database" is de locatie van een (sqlite) database waar SQL queries op uitgevoerd worden.
+
+"urls" is een ljist van pages de geserveerd moeten worden.
+Een "urls" entry moet de volgende structuur hebben.
+
+{
+	path = "";
+	title = "";
+	name = "";
+
+	display =;
+
+	template = ();
+}
+
+"path" is een url pad die geserveerd moet worden. "path" moet eindigen met een '/'
+"title" is de titel van de pagina.
+"name" is de naam van de pagina.
+
+"display" is en boolean die bepaalt of de pagina laten zien moet worden of niet, de default value is true. Als display
+false is, word een 404 not found error laten zien.
+
+Note: Ook al word een 404 pagina laten zien, is het nog steeds mogelijk om te zien of de pagina bestaat door te kijken
+naar de trailing "/" die aan de url word geplakt als "path" eindigt met een '/'.
+
+"template" is een lijst met html templates die moeten worden uitgevoerd. Alle templates worden uitgevoerd in de volgorde
+dat ze staan in het configuratie bestand.
+
+Een "template" entry ziet er zo uit.
+
+{
+	name = "";
+	file = "";
+	content_query = "";
+}
+
+"name" is de identificerende naam voor de template, deze naam moet het zelfde zijn als de naam die is gedefineerd in het
+template bestand.
+Als de naam niet word gevonden in het template bestand, faalt de uitvoering.
+
+"file" is het pad naar het template bestand, als prefix niet null is, is dit een pad relatief met prefix.
+
+"content_query" is een SQL query gebruikt om content te fetchen om op de pagina te laten zien.
+"content_query" vult een array of an array of strings, e.g
+
+[["string1", "string2", ...], ["string1", "string2", ...], ...]
+
+Als het configuratiebestand successvol word ge-parsed en vertaalt naar een json formaat, word het configuratiebestand in json formaat naar standard out geschreven.
+errors, warnings, en debug info word geschreven naar standard error.
+
+Wanneer wvb.backend wvb.config start, opent het een pipe naar stdout en stderr. stdout word ge-unmarshaled en stderr
+word ge-logged.
