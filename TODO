@@ -8,7 +8,3 @@ that order.
 
 - backend for database editing: small c programs that take json formatted text as input, and perform actions on
 the database, programs should be started by a fastcgi backend
-
-- logger
-
-- rename http to www

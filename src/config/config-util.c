@@ -159,7 +159,7 @@ json_object *wvb_config_to_json_object(WVB_CONFIG *wvb_config)
 		*page_array;
 	int status;
 
-	status = sqlite3_open(wvb_config->database, &db);
+	status = sqlite3_open_v2(wvb_config->database, &db, SQLITE_OPEN_READWRITE, NULL);
 	if(db == NULL) {
 		LOG_SQL_ERROR(db, status);
 		goto err;

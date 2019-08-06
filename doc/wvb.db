@@ -1,0 +1,11 @@
+wvb.db is een sqlite database dat content voor pagina's bevat.
+
+Voor de beelden pagina's zijn eer 4 tables; beelden, steen, hout, en metaal.
+
+beelden is de table waar alle foto's moeten worden toegevoegd, verwijderd en aangepast. voor de andere 3 zijn triggers
+die hun content updaten.
+
+Het idee van de steen, hout, en metaal tables is om foto's van een bepaalde materiaal te fetchen.
+Een content array word op de volgende manier ingevuld:
+
+[["naam", "materiaal", "omschrijving", "pad"], ...]
