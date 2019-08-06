@@ -1,40 +1,29 @@
-GC=gccgo
+ROOT=www
 
-VPATH += src
-
-GOSRC=src/main.go \
-      src/config.go \
-      src/logger.go \
-      src/page-handler.go
-GOOBJS=wvb.backend.o
-
-HTTP=http/*
+HTTP=$(ROOT)/*
 HTTP_DEST=/srv/http/
 
-DIST=webpack/dist/js \
-     webpack/dist/css
-DIST_DEST=http/res/
+JS=node_modules/bootstrap/dist/js/* \
+   node_modules/jquery/dist/*
 
 BIN=wvb.backend\
     wvb.config
 
 all:$(BIN)
 
-wvb.backend: $(GOSRC)
-	$(GC) -o $@ $(GOSRC)
-
 include src/config/config.mk
+include src/backend.mk
 
 
 .PHONY: clean dist install
 
 dist:
-	-cd webpack && yarn run build
+	sass --update scss/custom.scss:www/css/bootstrap.css
+	-cp -r $(JS) $(ROOT)/js/
 
 clean:
-	-rm $(OBJS) $(GOOBJS) $(OBJS:.o=.d)
+	-rm $(OBJS) $(OBJS:.o=.d)
 
 install:
-	-cp -r $(DIST) $(DIST_DEST)
 	-cp -r $(HTTP) $(HTTP_DEST)
 

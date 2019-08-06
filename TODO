@@ -10,3 +10,5 @@ that order.
 the database, programs should be started by a fastcgi backend
 
 - logger
+
+- rename http to www
