@@ -8,3 +8,7 @@ that order.
 
 - backend for database editing: small c programs that take json formatted text as input, and perform actions on
 the database, programs should be started by a fastcgi backend
+
+- wvb.backend: reload and execute pages every n minutes
+
+- beelden: carousel with scrollspy, display thumbnails on side

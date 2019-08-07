@@ -69,8 +69,6 @@ func (wvb *WvbHandler) wvb_template_exec(prefix string) {
 	wvb.Exec.Reset()
 
 	for _, tmpl := range wvb.Page.Template {
-		data.Content = tmpl.Content
-
 		_, err = wvb.Tmpl.ParseFiles(prefix + tmpl.File)
 
 		if err != nil {
@@ -80,6 +78,7 @@ func (wvb *WvbHandler) wvb_template_exec(prefix string) {
 	}
 
 	for _, tmpl := range wvb.Page.Template {
+		data.Content = tmpl.Content
 		err = wvb.Tmpl.ExecuteTemplate(&wvb.Exec, tmpl.Name, data)
 		if err != nil {
 			goto exec_err

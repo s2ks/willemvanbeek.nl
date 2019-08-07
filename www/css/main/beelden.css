@@ -1,0 +1,16 @@
+.wvb-img {
+	object-fit: cover;
+}
+
+.wvb-card {
+	bottom: 0px;
+	background-color: rgba(40, 40, 40, .75);
+}
+
+.wvb-modal-dialog {
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+}
