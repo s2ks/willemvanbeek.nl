@@ -16,6 +16,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
+			content_query = "SELECT * FROM beelden;"
 		},
 		{
 			name = "footer";
@@ -40,7 +41,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "SELECT * FROM steen;";
+			content_query = "SELECT * FROM beelden WHERE material = 'steen';";
 		},
 		{
 			name = "footer";
@@ -65,7 +66,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "SELECT * FROM hout;";
+			content_query = "SELECT * FROM beelden WHERE material = 'hout';";
 		},
 		{
 			name = "footer";
@@ -90,7 +91,7 @@
 		{
 			name = "content";
 			file = "/beelden.html";
-			content_query = "SELECT * FROM metaal;";
+			content_query = "SELECT * FROM beelden WHERE material = 'metaal';";
 		},
 		{
 			name = "footer";
