@@ -18,10 +18,8 @@ CFLAGS += -g
 CFLAGS += -DDEBUG
 #CFLAGS += -DVERBOSE
 
-EXE = wvb.config
-
 wvb.config: $(OBJS)
-	$(CC) $(LDFLAGS) -o $(EXE) $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)
 
 include $(OBJS:.o=.d)
 
