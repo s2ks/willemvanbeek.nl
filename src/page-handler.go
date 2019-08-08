@@ -32,6 +32,9 @@ type WvbData struct {
 
 var handlers []*WvbHandler
 
+/*
+	Serve h.Exec
+*/
 func (h *WvbHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if strings.ToUpper(h.Page.Path) != strings.ToUpper(r.URL.Path) {
@@ -55,9 +58,11 @@ func (h *WvbHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, h.Exec.String())
 }
 
+/*
+	Execute all templates in wvb.Tmpl and write result to wvb.Exec
+*/
 func (wvb *WvbHandler) wvb_template_exec(prefix string) {
 	var err error
-
 
 	data := WvbData {
 		wvb.Page.Path,
@@ -93,6 +98,9 @@ exec_err:
 	wvb.LastError = err
 }
 
+/*
+	Register handlers for path
+*/
 func wvb_handler_init(wvb_config *WvbConfig) *http.ServeMux {
 	var mux *http.ServeMux
 
@@ -112,9 +120,11 @@ func wvb_handler_init(wvb_config *WvbConfig) *http.ServeMux {
 
 		handlers[i] = handler
 
-		mux.HandleFunc(page.Path, handler.ServeHTTP)
+		mux.Handle(page.Path, handler)
 		log.Print("Registered handler for " + page.Path)
 	}
+
+	//TODO go routine for re-executing templates.
 
 	return mux
 }

@@ -33,6 +33,15 @@ type WvbConfig struct {
 	Page []WvbPage
 }
 
+/*
+	Start config_prog with argument config_path and
+	open a pipe to stdout and stderr.
+
+	config_prog should write data in json format to stdout and any errors, warnings,
+	or debug info to stderr.
+
+	The json data received is unmarshaled to the WvbConfig struct, and returned.
+*/
 func wvb_config_fetch(config_prog string, config_path string) *WvbConfig {
 	var stdout, stderr io.ReadCloser
 	var err error
@@ -62,14 +71,14 @@ func wvb_config_fetch(config_prog string, config_path string) *WvbConfig {
 		return nil
 	}
 
-	log.Print(string(bytes))
+	log.Print(string(bytes)) //write data received over stderr to stderr
 
 	bytes, err = ioutil.ReadAll(stdout)
 	if wvb_log(err) == true {
 		return nil
 	}
 
-	err = json.Unmarshal(bytes, &wvb_config)
+	err = json.Unmarshal(bytes, &wvb_config) //unmarshal data received over stdout
 	if wvb_log(err) == true {
 		return nil
 	}

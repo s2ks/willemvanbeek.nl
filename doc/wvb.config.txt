@@ -63,3 +63,6 @@ errors, warnings, en debug info word geschreven naar standard error.
 
 Wanneer wvb.backend wvb.config start, opent het een pipe naar stdout en stderr. stdout word ge-unmarshaled en stderr
 word ge-logged.
+
+wvb.config implementeerd zijn eigen config_include() functie (wvb_include()).
+wvb_include() ondersteunt file globbing, maar geen directory globbing.
