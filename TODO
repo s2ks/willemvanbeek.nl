@@ -12,3 +12,5 @@ the database, programs should be started by a fastcgi backend
 - wvb.backend: reload and execute pages every n minutes
 
 - beelden: carousel with scrollspy, display thumbnails on side
+
+- fix remaining memory leaks in config.c; wvb_parse_config/clean up wvb_parse_config
