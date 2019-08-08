@@ -159,7 +159,7 @@ json_object *wvb_config_to_json_object(WVB_CONFIG *wvb_config)
 		*page_array;
 	int status;
 
-	status = sqlite3_open_v2(wvb_config->database, &db, SQLITE_OPEN_READWRITE, NULL);
+	status = sqlite3_open(wvb_config->database, &db);
 	if(db == NULL) {
 		LOG_SQL_ERROR(db, status);
 		goto err;
@@ -173,7 +173,6 @@ json_object *wvb_config_to_json_object(WVB_CONFIG *wvb_config)
 
 	json_object_object_add(json, "prefix", val);
 
-	json_object_put(val);
 	page_array = json_object_new_array();
 
 	for(int i = 0; i < wvb_config->page_count; i++) {

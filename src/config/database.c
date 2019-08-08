@@ -87,6 +87,7 @@ void wvb_database_manage(sqlite3 *db)
 
 	sqlite3_free(err);
 
+	//tables will have been dropped if "beelden" was updated
 	wvb_create_tables(db);
 	wvb_create_triggers(db);
 }
@@ -94,7 +95,7 @@ void wvb_database_manage(sqlite3 *db)
 //fill wvb_tmpl->content with data from db
 void wvb_database_fill_content(WVB_TEMPLATE *wvb_tmpl, sqlite3 *db)
 {
-	int status, column_count, row_count, row, bytes;
+	int status, column_count, row_count,  row, bytes;
 	sqlite3_stmt *stmt = NULL;
 
 	const unsigned char *text;
@@ -114,7 +115,7 @@ void wvb_database_fill_content(WVB_TEMPLATE *wvb_tmpl, sqlite3 *db)
 		goto err;
 	}
 
-	//FIXME could leak memory
+	//FIXME this is a possible memory leak, maybe free() first if not null
 	wvb_tmpl->content = NULL;
 
 	row_count = row = 0;

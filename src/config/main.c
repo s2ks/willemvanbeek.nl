@@ -44,5 +44,7 @@ int main(int argc, char **argv) {
 	else
 		return -1;
 
+	while(json_object_put(json) != 1);
+
 	return 0;
 }

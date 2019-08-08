@@ -127,19 +127,19 @@ ret:
 
 
 //FIXME defines
-//TODO database directory
-//TODO clean this up
+//TODO clean up
 #define TEMPLATE wvb_config->page[i].template[x]
 #define PAGE wvb_config->page[i]
 int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 {
 	static char *include = NULL;
-	int count;
+	int count, ret = 1;
 	char *c;
 
 	c = strrchr(file, '/');
 	c += sizeof(char); //include '/' character
 
+	//FIXME destroy after use
 	config_init(&wvb_config->conf);
 
 	if(c != NULL) {
@@ -150,11 +150,14 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 
 		include = malloc(count + sizeof(char));
 		snprintf(include, count + sizeof(char), "%s", file);
+
+		//FIXME memory leak
 		config_set_include_dir(&wvb_config->conf, include);
 	}
 
 	config_set_include_func(&wvb_config->conf, wvb_include);
 
+	//FIXME memory leak
 	if(config_read_file(&wvb_config->conf, file) == CONFIG_FALSE) {
 		PRINTERR("config_read_file returned CONFIG_FALSE\n");
 		goto err;
@@ -179,6 +182,7 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 	wvb_config->page_count = count;
 
 	if(count > 0) {
+		//FIXME memory leak
 		wvb_config->page = calloc(1, count * sizeof(*wvb_config->page));
 	} else {
 		PRINTERR("page count < 1\n");
@@ -257,9 +261,14 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 
 	}
 
-	return 1;
+	goto ret;
+
 err:
-	return 0;
+	ret = 0;
+ret:
+	//TODO config should be destroyed, but uncommenting this causes problems (check valgrind)
+	//config_destroy(&wvb_config->conf);
+	return ret;
 
 }
 

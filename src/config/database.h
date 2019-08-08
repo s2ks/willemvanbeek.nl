@@ -23,6 +23,7 @@
 		PRINTWARN("Failed to execute query \"%s\" with error code %d: %s\n", \
 				_query, _status, _errmsg != NULL ? _errmsg : "UNKNOWN ERROR"); \
 	} \
+	sqlite3_free(_errmsg); \
 } while(0)
 
 #define LOG_ALLOCATION_ERROR(_dest, _bytes) do { \
@@ -90,8 +91,6 @@ static inline void CREATE_UPDATE_TRIGGER(sqlite3 *db, char *buf, const char *tri
 
 	status = sqlite3_exec(db, buf, NULL, NULL, &err);
 	LOG_EXEC_ERROR(status, buf, err);
-
-	sqlite3_free(err);
 }
 
 static inline void CREATE_INSERT_TRIGGER(sqlite3 *db, char* buf, const char *trigger_name, const char *table_name,
@@ -105,8 +104,6 @@ static inline void CREATE_INSERT_TRIGGER(sqlite3 *db, char* buf, const char *tri
 
 	status = sqlite3_exec(db, buf, NULL, NULL, &err);
 	LOG_EXEC_ERROR(status, buf, err);
-
-	sqlite3_free(err);
 }
 
 static inline void CREATE_DELETE_TRIGGER(sqlite3 *db, char* buf, const char *trigger_name, const char *table_name)
@@ -119,8 +116,6 @@ static inline void CREATE_DELETE_TRIGGER(sqlite3 *db, char* buf, const char *tri
 
 	status = sqlite3_exec(db, buf, NULL, NULL, &err);
 	LOG_EXEC_ERROR(status, buf, err);
-
-	sqlite3_free(err);
 }
 
 
