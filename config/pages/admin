@@ -1,0 +1,24 @@
+{
+	path = "/admin/";
+	title = "";
+	name = "";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/admin.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
