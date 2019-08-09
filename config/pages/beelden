@@ -2,7 +2,7 @@
 	path = "/beelden/";
 	title = "Beelden | Willem van Beek";
 	name = "Beelden";
-	display = false;
+	display = true;
 
 	template = (
 		{
