@@ -1,3 +1,5 @@
+#!/bin/python
+
 import glob
 import sqlite3
 import sys
@@ -11,10 +13,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 print(sys.argv)
 
-for filename in glob.glob(sys.argv[2] + '*'):
-    subprocess.run(["feh", filename])
+for path in glob.glob(sys.argv[2] + '*'):
+    filename = path.split('/')
+    filename = filename[len(filename) - 1]
+    subprocess.run(["feh", path])
     c.execute("INSERT INTO beelden (name, material, description, img_path) VALUES(?, ?, ?, ?);", (input("Name: "),
-        input("Material (steen, hout, metaal): "), desc, filename))
+        input("Material (steen, hout, metaal): "), desc, "/static/img/" + filename))
 
 conn.commit()
 conn.close()

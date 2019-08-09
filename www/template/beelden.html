@@ -1,75 +1,49 @@
 {{define "content"}}
 <link rel="stylesheet" type="text/css" href="/css/main/beelden.css">
-<!--<script src="/js/main/beelden.js"></script>-->
+<script src="/js/main/beelden.js"></script>
 
-<div class="wvb-spacer" style="height: 4rem;"></div>
-<div class="container-fluid bg-white">
-	<div class="row">
-	{{range $index, $data := index $.Content}}
-	<div class="card border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12 wvb-fill-remaining">
-		<a class="m-0 p-0 mh-100 mw-100 justify-content-center position-relative" data-toggle="modal"
-		data-target="#{{index $data 1}}{{index $data 0}}" href="#">
-			<div class="h-100">
-				<img class="mh-100 mw-100 h-100 w-100 wvb-img d-block mx-auto"
-				     src="{{index $data 4}}" alt="{{index $data 1}}">
-				<div class="card-body p-1 position-absolute d-none d-sm-block w-100 align-text-bottom wvb-card">
-					<h5 class="card-title m-0 p-0 text-white">{{index $data 1}}</h5>
-				</div>
+<div class="container-fluid overflow-auto position-relative p-0">
+	<div class="container-fluid bg-white">
+		<div class="row">
+			{{range $index, $data := index $.Content}}
+			<div class="card border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12 wvb-fill-remaining">
+				<a class="m-0 p-0 mh-100 mw-100 justify-content-center position-relative"
+				   data-toggle="modal"
+				   data-target="#wvb-img-modal-{{index $data 0}}"
+				   href="{{index $data 4}}">
+					<div class="h-100">
+						<img class="mh-100 mw-100 h-100 w-100 wvb-img d-block mx-auto"
+						     src="{{index $data 4}}" alt="{{index $data 1}}">
+						<div class="card-body p-1 position-absolute d-none d-sm-block w-100 align-text-bottom wvb-card">
+							<h5 class="card-title m-0 p-0 text-white">{{index $data 1}}</h5>
+						</div>
+					</div>
+				</a>
 			</div>
-		</a>
-	</div>
 
-	<div class="modal fade" id="{{index $data 1}}{{index $data 0}}" role="dialog">
-		<div class="modal-dialog wvb-modal-dialog mw-100 m-2 m-md-4 m-lg-5" role="document">
-			<div class="modal-content h-100">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
-						<span>&times;</span>
-					</button>
-				</div>
+			<div class="modal fade wvb-modal" id="wvb-img-modal-{{index $data 0}}" role="dialog">
+				<div class="modal-dialog wvb-modal-dialog mw-100 m-1 m-md-3 wvb-transparent" role="document">
+					<div class="modal-content h-100 wvb-transparent border-0">
+						<div class="modal-header border-0 p-1 mb-2 mr-2 wvb-transparent">
+							<button type="button" class="close text-white" data-dismiss="modal">
+								<span>&times;</span>
+							</button>
+						</div>
 
-				<div class="modal-body">
-					<img class="mh-100 mw-100 wvb-img mx-auto" src="{{index $data 4}}"
-										   alt="{{index $data 2}}">
-				</div>
+						<div class="modal-body h-100 mh-100 overflow-auto overflow-hidden p-0">
+							<img class="mh-100 mw-100 h-100 w-auto wvb-img mx-auto d-block"
+							     src="{{index $data 4}}" alt="{{index $data 1}}">
+						</div>
 
-				<div class="modal-footer d-block">
-					<h5>{{index $data 1}}</h5>
-					<p class="m-0">{{index $data 2}}</p>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	{{end}}
-	<!--
-	<div class="modal fade" id="wvb-beelden-modal" role="dialog">
-		<div class="modal-dialog wvb-modal-dialog mw-100 m-2 m-md-4 m-lg-5" role="document" >
-			<div class="modal-content h-100">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
-						<span>&times;</span>
-					</button>
-				</div>
-
-				<div class="modal-body">
-					<div id="wvb-carousel" class="carousel slide" data-ride="carousel">
-						<div class="carousel-inner">
-							<div class="carousel-item">
-								
-							</div>
+						<div class="modal-footer d-block text-white text-center wvb-transparent border-0">
+							<h5>{{index $data 1}}</h5>
+							<p class="m-0">{{index $data 3}}</p>
 						</div>
 					</div>
 				</div>
-
-				<div class="modal-footer d-block">
-					<h5>Water Tiet</h5>
-					<p class="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet dui accumsan sit amet nulla.</p>
-				</div>
 			</div>
+			{{end}}
 		</div>
 	</div>
-	-->
 </div>
-
 {{end}}

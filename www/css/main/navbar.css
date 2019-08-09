@@ -1,7 +1,7 @@
 #wvb-navbar {
 	width: 100%;
 	height: auto;
-	border-bottom: 0.3em solid var(--primary);
+	border-bottom: 0.3em solid;
 
 	padding: 0.5em 1em;
 }
@@ -19,4 +19,7 @@
 
 .wvb-spacer {
 	height: 4rem;
+}
+.wvb-spacer-d-none {
+	display: none;
 }

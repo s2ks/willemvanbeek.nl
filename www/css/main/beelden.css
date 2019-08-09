@@ -14,3 +14,11 @@
 	left: 0;
 	right: 0;
 }
+
+.wvb-transparent {
+	background-color: rgba(0, 0, 0, 0);
+}
+
+.wvb-modal {
+	background-color: rgba(0, 0, 0, .75);
+}
