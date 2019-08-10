@@ -22,3 +22,47 @@
 .wvb-modal {
 	background-color: rgba(0, 0, 0, .75);
 }
+
+.grid-col {
+	float: left;
+	width: 100%;
+}
+
+.grid-col--2, .grid-col--3 {
+	display: none;
+}
+
+
+.grid:after {
+	display: block;
+	content: '';
+	clear: both;
+}
+
+.grid-item {
+	width: 100%;
+	max-width: 100% !important;
+}
+
+.grid-item a div img {
+	display: block;
+	width: 100%;
+}
+
+@media ( min-width: 786px ) {
+	.grid-col {
+		width: 50%;
+	}
+	.grid-col--2 {
+		display: block;
+	}
+}
+
+@media ( min-width: 1080px ) {
+	.grid-col {
+		width: 33.333%;
+	}
+	.grid-col--3 {
+		display: block;
+	}
+}
