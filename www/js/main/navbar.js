@@ -3,6 +3,7 @@ $(document).ready(function() {
 		$(this).toggleClass("active", jQuery("a", this).attr("href") == window.location.pathname);
 	});
 
+	/*
 	var spacer = $(".wvb-spacer");
 	var navbar = $("#wvb-navbar");
 	spacer.attr("style", "display: block !important;");
@@ -11,10 +12,6 @@ $(document).ready(function() {
 		spacer.height(navbar.outerHeight(true));
 	});
 
-	$(".wvb-toggle").click(function() {
-		//$(".navbar-collapse").collapse("hide");
-
-	});
 
 	var scroll = $(".wvb-scroll");
 	var target = $(scroll.attr("href").replace('/', ''));
@@ -23,5 +20,6 @@ $(document).ready(function() {
 			scrollTop: target.position().top
 		}, 1000);
 	});
+	*/
 });
 
