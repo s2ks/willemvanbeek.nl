@@ -14,7 +14,8 @@
 		},
 		{
 			name = "content";
-			file = "/admin.html";
+			file = "/admin/index.html";
+			content_query = "SELECT * FROM beelden;";
 		},
 		{
 			name = "footer";

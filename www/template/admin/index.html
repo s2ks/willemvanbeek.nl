@@ -1,0 +1,36 @@
+{{define "content"}}
+<div class="container-fluid overflow-auto position-relative bg-white">
+	<div class="container">
+		{{/*
+			admin/edit?id=
+				submit method="get"
+				display form method="post"
+
+			admin/delete
+				submit method="get"
+			admin/add
+				display form method="post"
+		*/}}
+		<ul class="list-unstyled row">
+		{{range $index, $data := index $.Content}}
+		<li class="d-flex mb-1 mt-1">
+			<div class="media border flex-grow">
+				<img class="mr-3 ml-1 my-auto" style="object-fit: cover;" height="64" width="64" src="{{index $data 4}}"  alt="{{index $data 1}}">
+				<div class="media-body mb-1">
+					<h5 class="mt-0 mb-1">{{index $data 1}}</h5>
+					{{index $data 3}}
+				</div>
+			</div>
+			<div class="btn-group ml-2 my-auto">
+				<button type="button" class="btn btn-primary">Edit</button>
+				<button type="button" class="btn btn-primary">Delete</button>
+			</div>
+		</li>
+		{{end}}
+		<li class="d-flex w-100 mt-4">
+			<button class="mx-auto btn btn-primary" type="button">Add &plus;</button>
+		</li>
+		</ul>
+	</div>
+</div>
+{{end}}
