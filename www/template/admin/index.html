@@ -22,8 +22,31 @@
 				</div>
 			</div>
 			<div class="btn-group ml-2 my-auto">
-				<button type="button" class="btn btn-primary">Edit</button>
-				<button type="button" class="btn btn-primary">Delete</button>
+				<a type="button" class="btn btn-primary" href="/admin/edit?id={{index $data 0}}">Edit</a>
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#wvb-delete-modal-{{index $data 0}}">Delete</button>
+			</div>
+			<div class="modal fade" id="wvb-delete-modal-{{index $data 0}}" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Delete</h5>
+							<button type="button" class="close" data-dismiss="modal">
+								<span>&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>Delete &quot;{{index $data 1}}&quot;?</p>
+						</div>
+						<div class="modal-footer">
+							<form method="post" id="wvb-del-form-{{index $data 0}}">
+								<input type="hidden" name="action" value="delete">
+								<input type="hidden" name="id" value="{{index $data 0}}">
+							</form>
+							<input class="btn btn-primary" type="submit" value="Ja" form="wvb-del-form-{{index $data 0}}">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Nee</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</li>
 		{{end}}
