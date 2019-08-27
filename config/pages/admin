@@ -23,3 +23,75 @@
 		}
 	);
 },
+{
+	path = "/admin/edit";
+	title = "";
+	name = "";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/admin/edit.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
+{
+	path = "/admin/add";
+	title = "";
+	name = "";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/admin/edit.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
+{
+	path = "/admin/login";
+	title = "";
+	name = "";
+
+	template = (
+		{
+			name = "header";
+			file = "/header.html";
+		},
+		{
+			name = "navbar";
+			file = "/navbar.html";
+		},
+		{
+			name = "content";
+			file = "/admin/login.html";
+		},
+		{
+			name = "footer";
+			file = "/footer.html";
+		}
+	);
+},
