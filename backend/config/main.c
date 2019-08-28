@@ -5,7 +5,8 @@
 #include "config.h"
 #include "config-util.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	WVB_CONFIG wvb_config;
 	json_object *json;
 

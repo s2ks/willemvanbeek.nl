@@ -6,14 +6,9 @@ HTTP_DEST=/srv/http/
 JS=node_modules/bootstrap/dist/js/* \
    node_modules/jquery/dist/*
 
-BIN=wvb.backend\
-    wvb.config
 
 all:$(BIN)
-
-include src/config/config.mk
-include src/backend.mk
-
+	$(MAKE) -C backend
 
 .PHONY: clean dist install
 
@@ -22,7 +17,7 @@ dist:
 	-cp -r $(JS) $(ROOT)/js/
 
 clean:
-	-rm $(OBJS) $(OBJS:.o=.d)
+	$(MAKE) -C backend clean
 
 install:
 	-cp -r $(HTTP) $(HTTP_DEST)
