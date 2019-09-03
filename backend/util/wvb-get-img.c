@@ -8,15 +8,17 @@
 #include <json.h>
 
 #include "printerr.h"
-
-#define COMMAND 0
-#define DB_PATH 1
-#define IMG_ID 2
+#include "wvb-get-img.h"
+#include "sql-util.h"
 
 int main(int argc, char **argv)
 {
 	char *dbpath, *endptr;
-	int id;
+	int id, sqlerr;
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+
+	json_object *json;
 
 	if(argc < 3) {
 		printf("Usage: %s <path> <id>\n", argv ? argv[COMMAND] : "<command>");
@@ -40,6 +42,35 @@ int main(int argc, char **argv)
 
 	if(*endptr)
 		PRINTWARN("<id>: Characters after digits '%d': '%s'\n", id, endptr);
+
+	sqlerr = sqlite3_open_v2((const char *) dbpath, &db, SQLITE_OPEN_READONLY, NULL);
+	if(sqlerr != SQLITE_OK || db == NULL) {
+		PRINTERR("error opening %s: %s\n", dbpath, sqlite3_errstr(sqlerr));
+		exit(1);
+	}
+
+	sqlerr = sqlite3_prepare_v2(db, SELECT_QUERY, -1, &stmt, NULL);
+	if(sqlerr != SQLITE_OK) {
+		PRINTERR("error preparing statement %s: %s error code %d\n", SELECT_QUERY, sqlite3_errstr(sqlerr), sqlerr);
+		exit(1);
+	}
+
+	sqlerr = sqlite3_bind_int(stmt, 1, id);
+	sql_error();
+
+	json = sql_to_json(stmt);
+
+	if(json == NULL) {
+		PRINTERR("%s\n", sqlite3_errmsg(db));
+		exit(1);
+	}
+
+	fprintf(stdout, "%s\n", json_object_to_json_string_ext(json, JSON_C_TO_STRING_NOSLASHESCAPE
+#ifdef DEBUG
+				| JSON_C_TO_STRING_PRETTY
+				| JSON_C_TO_STRING_PRETTY_TAB
+#endif
+				));
 
 	return 0;
 }

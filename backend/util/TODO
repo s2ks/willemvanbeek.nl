@@ -1,6 +1,3 @@
-wvb-get-img - take numerical id and db path as parameter, and query sqlite db for img info, write data to stdout in json format
-and errors to stderr
-
 wvb-edit-img - take numerical id as parameter, and a json formatted string via stdin to edit img fields
 
 wvb-add-img - receives json formatted string via stdin, img is added to db

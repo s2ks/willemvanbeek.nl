@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	wvb_config = wvb_config_fetch("./wvb.config", "config/wvb.conf")
+	wvb_config = wvb_config_fetch("backend/wvb.config", "config/wvb.conf")
 
 	handler := wvb_handler_init(wvb_config)
 

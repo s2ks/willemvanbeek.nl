@@ -1,5 +1,6 @@
 
-SRC=wvb-get-img.c
+SRC=wvb-get-img.c\
+    sql-util.c
 
 OBJS=$(SRC:.c=.o)
 
