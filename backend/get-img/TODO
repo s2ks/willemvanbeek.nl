@@ -1,0 +1,5 @@
+wvb-edit-img - take numerical id as parameter, and a json formatted string via stdin to edit img fields
+
+wvb-add-img - receives json formatted string via stdin, img is added to db
+
+wvb-del-img receives numerical id as parameter, deletes img
