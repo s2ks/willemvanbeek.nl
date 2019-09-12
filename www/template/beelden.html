@@ -1,12 +1,17 @@
 {{define "content"}}
 <link rel="stylesheet" type="text/css" href="/css/main/beelden.css">
 <script src="/js/main/beelden.js"></script>
+<script src="/js/colcade.js"></script>
 
 <div class="container-fluid overflow-auto position-relative p-0">
 	<div class="container-fluid bg-white">
-		<div class="row">
+		<div class="grid" data-colcade="columns: .grid-col, items: .grid-item">
+			<div class="grid-col grid-col--1"></div>
+			<div class="grid-col grid-col--2"></div>
+			<div class="grid-col grid-col--3"></div>
+			<!-- col-md-6 col-lg-4 col-12 -->
 			{{range $index, $data := index $.Content}}
-			<div class="card border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12 wvb-fill-remaining">
+			<div class="grid-item card border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12">
 				<a class="m-0 p-0 mh-100 mw-100 justify-content-center position-relative"
 				   data-toggle="modal"
 				   data-target="#wvb-img-modal-{{index $data 0}}"
