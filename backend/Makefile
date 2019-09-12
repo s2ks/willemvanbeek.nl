@@ -1,37 +1,13 @@
-GC = gccgo
 
-BIN = wvb.backend
+.PHONY: clean all
 
-FILES=main.go \
-    config.go \
-    logger.go \
-    page-handler.go
-
-LDFLAGS += -lsqlite3 -ljson-c -lconfig
-CFLAGS += `pkg-config --cflags json-c`
-CFLAGS += -Wall -Wextra -Wpedantic
-CFLAGS += -g
-CFLAGS += -DDEBUG
-#CFLAGS += -DVERBOSE
-
-SRC=$(FILES:%=src/%)
-
-export LDFLAGS
-export CFLAGS
-export CC = gcc
-
-VPATH += src
-
-all: $(BIN)
-	$(MAKE) -C config
-	$(MAKE) -C util
-
-$(BIN): $(SRC)
-	$(GC) -o $@ $(SRC)
-
-.PHONY: clean
-
+all:
+	-$(MAKE) -C $(WVB_BACKEND)
+	-$(MAKE) -C $(WVB_CONFIG)
+	-$(MAKE) -C $(GET_IMG)
+	-$(MAKE) -C $(ADD_IMG)
 clean:
-	$(MAKE) -C config clean
-	$(MAKE) -C util clean
-	-rm $(BIN)
+	-$(MAKE) -C $(WVB_BACKEND) clean
+	-$(MAKE) -C $(WVB_CONFIG) clean
+	-$(MAKE) -C $(GET_IMG) clean
+	-$(MAKE) -C $(ADD_IMG) clean
