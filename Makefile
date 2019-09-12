@@ -6,7 +6,8 @@ HTTP=$(ROOT)/*
 HTTP_DEST=/srv/http/
 
 JS=node_modules/bootstrap/dist/js/* \
-   node_modules/jquery/dist/*
+   node_modules/jquery/dist/* \
+   node_modules/colcade/colcade.js
 
 LDFLAGS += -lsqlite3 -ljson-c -lconfig
 CFLAGS += `pkg-config --cflags json-c`
