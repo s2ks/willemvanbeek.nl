@@ -1,0 +1,9 @@
+.*
+*.o
+*.d
+!.gitignore
+
+./wvb.backend
+./wvb.config
+./get-img
+./a.out
