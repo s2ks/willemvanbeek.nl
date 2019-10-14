@@ -4,8 +4,10 @@
 
 #define WVB_LOOKUP_STRING(setting, name, dest) \
 	do { \
-		if(config_setting_lookup_string(setting, name, dest) == CONFIG_FALSE) \
+		if(config_setting_lookup_string(setting, name, dest) == CONFIG_FALSE) { \
 			PRINTWARN("\"%s\" is NULL\n", name); \
+			*dest = NULL; \
+		} \
 	} while(0)
 
 typedef struct {
@@ -20,9 +22,20 @@ typedef struct {
 } WVB_TEMPLATE;
 
 typedef struct {
+	const char *method;
+	char **action;
+	int count;
+
+	config_setting_t *setting;
+} PAGE_ACTION;
+
+typedef struct {
 	const char *path;
 	const char *title;
 	const char *name;
+	const char *type;
+
+	PAGE_ACTION page_action;
 
 	WVB_TEMPLATE *template;
 

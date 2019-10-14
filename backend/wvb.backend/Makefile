@@ -2,8 +2,9 @@ GC = gccgo
 
 SRC=main.go \
     config.go \
-    logger.go \
-    page-handler.go
+    data.go \
+    data/generic-data.go \
+    http/generic-handler.go
 
 $(WVB_BACKEND): $(SRC)
 	$(GC) -o ../../$@ $(SRC)

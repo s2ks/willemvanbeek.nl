@@ -5,6 +5,7 @@ import(
 	"html/template"
 	"log"
 	"io"
+	//"io/ioutil"
 	"bytes"
 	"time"
 	"strings"
@@ -14,6 +15,7 @@ type WvbHandler struct {
 	Index int
 	Prefix string
 	Page WvbPage
+
 
 	Tmpl *template.Template
 	Exec bytes.Buffer
@@ -26,6 +28,9 @@ type WvbData struct {
 	Path string
 	Title string
 	Name string
+
+	Action []string
+	Method string
 
 	Content [][]string
 }
@@ -68,6 +73,8 @@ func (wvb *WvbHandler) wvb_template_exec(prefix string) {
 		wvb.Page.Path,
 		wvb.Page.Title,
 		wvb.Page.Name,
+		wvb.Page.Action,
+		wvb.Page.Method,
 		nil,
 	}
 

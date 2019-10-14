@@ -1,0 +1,16 @@
+SRC=main.c
+
+OBJS=$(SRC:.c=.o)
+
+../../$(ADD_IMG): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)
+
+include $(OBJS:.o=.d)
+
+%.d: %.c
+	$(CC) $(CFLAGS) -M $< > $@
+
+.PHONY: clean
+
+clean:
+	-rm $(OBJS) $(OBJS:%.o=%.d)

@@ -76,16 +76,18 @@ json_object *wvb_template_to_json_object(WVB_TEMPLATE *wvb_tmpl)
 
 	//template identifier name
 	val = wvb_new_string_or_null(wvb_tmpl->name);
-	json_object_object_add(obj, "name", val);
+	json_object_object_add(obj, "Name", val);
 
 	//template html file
 	val = wvb_new_string_or_null(wvb_tmpl->file);
-	json_object_object_add(obj, "file", val);
+	json_object_object_add(obj, "File", val);
 
 	//SQL query used to fetch content
 	val = wvb_new_string_or_null(wvb_tmpl->content_query);
-	json_object_object_add(obj, "content_query", val);
+	json_object_object_add(obj, "ContentQuery", val);
 
+
+	//TODO remove content query code
 	wvb_query_content(wvb_tmpl);
 
 	if(wvb_tmpl->content == NULL) {
@@ -112,7 +114,7 @@ json_object *wvb_template_to_json_object(WVB_TEMPLATE *wvb_tmpl)
 
 ret:
 	//content array
-	json_object_object_add(obj, "content", array);
+	//json_object_object_add(obj, "content", array);
 
 	return obj;
 }
@@ -127,16 +129,37 @@ json_object *wvb_page_to_json_object(WVB_PAGE *wvb_page)
 	obj = json_object_new_object();
 
 	val = wvb_new_string_or_null(wvb_page->path);
-	json_object_object_add(obj, "path", val);
+	json_object_object_add(obj, "Path", val);
 
 	val = wvb_new_string_or_null(wvb_page->title);
-	json_object_object_add(obj, "title", val);
+	json_object_object_add(obj, "Title", val);
 
 	val = wvb_new_string_or_null(wvb_page->name);
-	json_object_object_add(obj, "name", val);
+	json_object_object_add(obj, "Name", val);
 
 	val = json_object_new_boolean((json_bool) wvb_page->display);
-	json_object_object_add(obj, "display", val);
+	json_object_object_add(obj, "Display", val);
+
+	val = wvb_new_string_or_null(wvb_page->type);
+	json_object_object_add(obj, "Type", val);
+
+	//TODO remove action code
+
+	val = wvb_new_string_or_null(wvb_page->page_action.method);
+	//json_object_object_add(obj, "method", val);
+
+	array = json_object_new_array();
+
+	/*
+	if(wvb_page->page_action.count == 0)
+		json_object_array_add(array, json_object_new_string(""));
+	*/
+	for(int i = 0; i < wvb_page->page_action.count; i++) {
+		val = wvb_new_string_or_null(wvb_page->page_action.action[i]);
+		json_object_array_add(array, val);
+	}
+
+	//json_object_object_add(obj, "action", array);
 
 	array = json_object_new_array();
 
@@ -145,7 +168,7 @@ json_object *wvb_page_to_json_object(WVB_PAGE *wvb_page)
 		json_object_array_add(array, val);
 	}
 
-	json_object_object_add(obj, "template", array);
+	json_object_object_add(obj, "Template", array);
 
 	return obj;
 
@@ -171,7 +194,7 @@ json_object *wvb_config_to_json_object(WVB_CONFIG *wvb_config)
 	json = json_object_new_object();
 	val = wvb_new_string_or_null(wvb_config->prefix);
 
-	json_object_object_add(json, "prefix", val);
+	json_object_object_add(json, "Prefix", val);
 
 	page_array = json_object_new_array();
 
@@ -184,7 +207,7 @@ json_object *wvb_config_to_json_object(WVB_CONFIG *wvb_config)
 		json_object_array_add(page_array, val);
 	}
 
-	json_object_object_add(json, "page", page_array);
+	json_object_object_add(json, "Page", page_array);
 
 	goto ret;
 err:

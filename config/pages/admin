@@ -3,6 +3,10 @@
 	title = "";
 	name = "";
 
+	handler = "admin_handler"
+	method = ["post"];
+	action = ["delete"];
+
 	template = (
 		{
 			name = "header";
@@ -28,6 +32,9 @@
 	title = "";
 	name = "";
 
+	method = ["post", "get"];
+	action = ["edit"];
+
 	template = (
 		{
 			name = "header";
@@ -52,6 +59,9 @@
 	title = "";
 	name = "";
 
+	method = "post";
+	action = ["add"];
+
 	template = (
 		{
 			name = "header";
@@ -75,6 +85,9 @@
 	path = "/admin/login";
 	title = "";
 	name = "";
+
+	method = "post";
+	action = ["login"];
 
 	template = (
 		{

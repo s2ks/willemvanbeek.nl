@@ -2,6 +2,8 @@
 	path = "/";
 	title = "Willem van Beek";
 	name = "Home";
+	display = true;
+	type = "generic";
 
 	template = (
 		{

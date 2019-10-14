@@ -3,7 +3,8 @@
 *.d
 !.gitignore
 
-./wvb.backend
-./wvb.config
-./get-img
-./a.out
+/wvb.backend
+/wvb.config
+/get-img
+/add-img
+a.out

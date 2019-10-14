@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use JSON;
+use DBD::SQLite;
+
+# img fields:
+# Name
+# Material
+# Img Path
+# Thumbnail Path
+# Group
+# Description
+
+my $json = "";
+
+while(eof(STDIN) == 0) {
+	$json = $json . <STDIN>;
+}
+
+my $json_scalar = decode_json($json);
+
+#print $json_scalar->{'prefix'};
+
+print $ENV{'DATABASE'};
+

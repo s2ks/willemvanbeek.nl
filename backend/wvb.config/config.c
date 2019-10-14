@@ -126,8 +126,39 @@ ret:
 }
 
 
+WVB_PAGE *get_page_actions(WVB_PAGE *page)
+{
+	config_setting_t *array, *setting;
+	int count;
+
+	array = config_setting_lookup(page->setting, "action");
+	page->page_action.setting = array;
+
+	if(array == NULL)
+		goto err;
+
+	count = config_setting_length(array);
+
+	if(count == 0)
+		goto err;
+
+	page->page_action.action = malloc(count * sizeof(*(page->page_action.action)));
+	page->page_action.count = count;
+
+	for(int i = 0; i < count; i++) {
+		setting = config_setting_get_elem(array, i);
+		page->page_action.action[i] = config_setting_get_string(setting);
+	}
+
+	return page;
+
+err:
+	return NULL;
+}
+
 //FIXME defines
 //TODO clean up
+//TODO split into helper functions
 #define TEMPLATE wvb_config->page[i].template[x]
 #define PAGE wvb_config->page[i]
 int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
@@ -137,7 +168,7 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 	char *c;
 
 	c = strrchr(file, '/');
-	c += sizeof(char); //include '/' character
+	c += 1; //include '/' character
 
 	//FIXME destroy after use
 	config_init(&wvb_config->conf);
@@ -229,6 +260,17 @@ int wvb_parse_config(const char *file, WVB_CONFIG *wvb_config)
 
 		WVB_LOOKUP_STRING(PAGE.setting, "title", &PAGE.title);
 		WVB_LOOKUP_STRING(PAGE.setting, "name", &PAGE.name);
+
+		if(config_setting_lookup_string(PAGE.setting, "type", &PAGE.type) == CONFIG_FALSE)
+			PAGE.type = "generic";
+
+		if(config_setting_lookup_string(PAGE.setting, "method", &PAGE.page_action.method) == CONFIG_FALSE)
+			PAGE.page_action.method = NULL;
+
+		if(get_page_actions(&PAGE) == NULL) {
+			PRINTINFO("page %d has no actions\n");
+			PAGE.page_action.action = NULL;
+		}
 
 		if(config_setting_lookup_bool(PAGE.setting, "display", &PAGE.display) == CONFIG_FALSE)
 			PAGE.display = 1;
