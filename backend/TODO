@@ -7,3 +7,9 @@ wvb-del-img receives numerical id as parameter, deletes img
 rename wvb.backend to fcgi.server
 
 rename wvb.config
+
+obsolete:
+	logger.go
+	test.go
+	http/page-handler.go
+	wvb.config

@@ -7,6 +7,7 @@ const (
 	PageTypeAdmin	= "ADMIN"
 )
 
+/*
 type PageData struct {
 	Path string
 	Title string
@@ -28,10 +29,28 @@ type ImageData struct {
 
 	Group string //reserved
 }
+*/
 
+type ImgData struct {
+	
+}
 
-//summary of all data that can be used in a template
-type Data struct {
-	Img []ImageData
-	Page PageData
+type TemplateData struct {
+	Name string	//template name
+	File string	//file to use
+	ContentQuery string	//query used to fetch content
+
+	Content string	//content to display
+}
+
+type PageData struct {
+	Path string	//url to handle
+	Title string	//page title
+	Name string	//page name
+
+	Display bool
+
+	Type string
+
+	Template []TemplateData
 }

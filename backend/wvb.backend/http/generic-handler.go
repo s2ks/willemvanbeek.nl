@@ -6,29 +6,30 @@ import(
 	"time"
 	"html/template"
 	"log"
-	"io"
 )
-
+//TODO inherit
 type GenericHandler struct {
-	Page *GenericPage
+	Page *PageData
 
 	Path string
 	Content string
 
 	Display bool
 
-	GT *GenericTemplate
+	T *GenericTemplate
 }
 
+//TODO inherit
 type GenericTemplate struct {
 	Prefix string
 	Template *template.Template
 
 	LastExec time.Time
-	ExecInterval *time.Duration
+	ExecInterval time.Duration
 	LastError error
 }
 
+//TODO inherit
 type GenericTemplateData struct {
 	Path string
 	Title string
@@ -36,8 +37,24 @@ type GenericTemplateData struct {
 	Content string //TODO add support for Content field
 }
 
-func (h *GenericHandler) GenericTemplateExec(filepath string) {
-	var err error
+//TODO DRY
+func NewGenericHandler(Page *PageData, Path string, Prefix string, Display bool, ExecInterval *time.Duration) (h *GenericHandler) {
+	h = new(GenericHandler)
+	h.T = new(GenericTemplate)
+
+	h.Page = Page
+	h.Path = Path
+	h.T.Prefix = Prefix
+	h.Display = Display
+	h.T.ExecInterval = *ExecInterval
+
+	h.TemplateExec(Prefix)
+
+	return
+}
+
+//TODO DRY
+func (h *GenericHandler) TemplateExec(filepath string) (err error) {
 	var buf bytes.Buffer
 
 	data := GenericTemplateData {
@@ -47,58 +64,38 @@ func (h *GenericHandler) GenericTemplateExec(filepath string) {
 		"",
 	}
 
-	h.GT.Prefix = filepath
+	err = nil
+
+	h.T.Prefix = filepath
+	h.T.LastExec = time.Now()
 
 	for _, tmpl := range h.Page.Template {
-		_, err = h.GT.Template.ParseFiles(filepath + tmpl.File)
+		_, err = h.T.Template.ParseFiles(filepath + tmpl.File)
 
 		if err != nil {
-			h.GT.LastError = err
+			h.T.LastError = err
 			log.Print(err)
 			return
 		}
 	}
 
 	for _, tmpl := range h.Page.Template {
-		err = h.GT.Template.ExecuteTemplate(&buf, tmpl.Name, data)
+		err = h.T.Template.ExecuteTemplate(&buf, tmpl.Name, data)
 
 		if err != nil {
-			h.GT.LastError = err
+			h.T.LastError = err
 			log.Print(err)
 			return
 		}
 	}
 
-	h.GT.LastExec = time.Now()
 	h.Content = buf.String()
+
+	return
 }
 
+
+//TODO DRY
 func (h *GenericHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	if time.Now().Sub(h.GT.LastExec).Seconds() > h.GT.ExecInterval.Seconds() {
-		h.GenericTemplateExec(h.GT.Prefix)
-	}
-
-	//Path should be an exact match
-	if(h.Path != r.URL.Path) {
-		log.Print(r.URL.Path + " Not found (404)")
-		http.NotFound(w, r)
-		return
-	}
-
-	//Act as if page does not exist
-	if(h.Display == false) {
-		http.NotFound(w, r)
-		return
-	}
-
-	//If content is empty something went wrong
-	if(h.Content == "") {
-		log.Print("Error displaying " + r.URL.Path)
-		log.Print(h.GT.LastError)
-		http.Error(w, "Server error", 500)
-		return
-	}
-
-	io.WriteString(w, h.Content)
+	h.HandleServeHTTP(w, r)
 }

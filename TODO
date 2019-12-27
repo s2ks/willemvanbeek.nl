@@ -14,3 +14,22 @@ the database, programs should be started by a fastcgi backend
 - beelden: carousel with scrollspy, display thumbnails on side
 
 - fix remaining memory leaks in config.c; wvb_parse_config/clean up wvb_parse_config
+
+
+- load config from json file directly from backend
+- redo colour palette
+
+- gallery:
+	[img] text
+	text [img]
+	ect.
+
+	or
+
+	[img]
+	[img]
+
+	either case
+	(constant size)
+
+less is more

@@ -1,5 +1,7 @@
 package main
 
+//TODO depricate
+
 import(
 	"net/http"
 	"html/template"
