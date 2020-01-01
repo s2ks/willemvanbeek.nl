@@ -17,7 +17,8 @@ type Handler interface {
 	TemplateExec(string) error
 }
 
-var T interface {}
+
+func 
 
 func (h T) CheckPath() (isPath bool) {
 
@@ -72,31 +73,20 @@ func NewHandler(fcgi_config *FcgiConfig) *http.ServeMux {
 	for _, page := range fcgi_config.Page {
 		page.Type = strings.ToUpper(page.Type)
 
-		if page.Type == PageTypeGeneric {
-			handler := NewGenericHandler(
-				&page,
-				page.Path,
-				fcgi_config.Prefix,
-				page.Display,
-				&Settings.ExecInterval,
-			)
-
-			mux.Handle(page.Path, handler)
-			log.Print("Registered generic handler for " + page.Path)
+		switch(page.Type) {
+			case PageTypeGeneric:
+				handler := &PageGeneric {
+					NewPage(&page)
+				}
+				break
+			case PageTypeGallery:
+				handler := &PageGallery {
+					NewPage(&page)
+				}
+				break
 		}
 
-		if page.Type == PageTypeGallery {
-			handler := NewGalleryHandler(
-				&page,
-				page.Path,
-				fcgi_config.Prefix,
-				page.Display,
-				&Settings.ExecInterval,
-			)
-
-			mux.Handle(page.Path, handler)
-			log.Print("Registered gallery handler for " + page.Path)
-		}
+		mux.Handle(page.Path, handler)
 	}
 
 	return mux

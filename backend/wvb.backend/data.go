@@ -7,6 +7,7 @@ const (
 	PageTypeAdmin	= "ADMIN"
 )
 
+
 /*
 type PageData struct {
 	Path string
@@ -31,7 +32,9 @@ type ImageData struct {
 }
 */
 
-type ImgData struct {
+
+/* UnMarshaled from json */
+type GalleryData struct {
 	
 }
 
@@ -44,7 +47,7 @@ type TemplateData struct {
 }
 
 type PageData struct {
-	Path string	//url to handle
+	Path string	//url to handle //TODO rename to Url
 	Title string	//page title
 	Name string	//page name
 

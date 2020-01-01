@@ -138,3 +138,5 @@ func (h *GalleryHandler) CheckTime() bool {
 func (h *GalleryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	HandleServeHTTP(w, r, h)
 }
+
+

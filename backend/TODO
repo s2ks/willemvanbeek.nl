@@ -13,3 +13,7 @@ obsolete:
 	test.go
 	http/page-handler.go
 	wvb.config
+
+
+wvb.backend:
+	http/*-handler.go to http/page-*.go

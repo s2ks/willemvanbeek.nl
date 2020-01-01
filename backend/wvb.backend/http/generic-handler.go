@@ -34,7 +34,7 @@ type GenericTemplateData struct {
 	Path string
 	Title string
 	Name string
-	Content string //TODO add support for Content field
+	Content string //TODO add support for Content field (EDIT: why?)
 }
 
 //TODO DRY
