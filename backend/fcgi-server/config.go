@@ -9,7 +9,7 @@ import (
 )
 
 type FcgiConfig struct {
-	Prefix string	//prepended to File in WvbTemplate
+	Prefix string	//prepended to File in FileTemplate
 	Database string //unused
 
 	Page []PageData

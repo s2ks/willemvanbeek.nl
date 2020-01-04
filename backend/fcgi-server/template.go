@@ -6,6 +6,11 @@ import(
 	"bytes"
 )
 
+type Template interface {
+	Exec(filepath string, data interface{}) (content string, err error)
+	DoExec() bool
+}
+
 type FileTemplate struct {
 	Name string	//template name
 	File string	//file to use
@@ -27,10 +32,7 @@ type PageTemplate struct {
 func NewFileTemplate(data *TemplateData) (ft *FileTemplate) {
 	ft = new(FileTemplate)
 
-	ft.Name = data.Name
-	ft.File = data.File
-	ft.ContentQuery = data.ContentQuery
-	ft.Content = data.Content
+	ft.New(data)
 
 	return
 }
@@ -38,10 +40,13 @@ func NewFileTemplate(data *TemplateData) (ft *FileTemplate) {
 func NewPageTemplate() (pt *PageTemplate) {
 	pt = new(PageTemplate)
 
+	pt.ExecInterval = Settings.ExecInterval
+
 	return
 }
 
-func (pt *PageTemplate) Exec(filepath string, data interface {}, files []FileTemplate) (err error) {
+
+func (pt *PageTemplate) Exec(filepath string, data interface {}, files []FileTemplate) (content string, err error) {
 	var buf bytes.Buffer
 
 	pt.Prefix = filepath
@@ -52,30 +57,64 @@ func (pt *PageTemplate) Exec(filepath string, data interface {}, files []FileTem
 
 		if err != nil {
 			pt.LastError = err
-			log.Print(err)
 			return
 		}
 	}
 
 	for _, file := range files {
-		err = file.Exec(&buf, data, pt.Template) //TODO data
-
+		err = file.Exec(&buf, data, pt.Template)
 		if err != nil {
 			pt.LastError = err
-			log.Print(err)
 			return
 		}
 	}
 
-	pt.Content = buf.String()
+	content = buf.String()
+
+	return
 }
 
 func (pt *PageTemplate) DoExec() bool {
-	if(time.Now().sub(*pt.LastExec).Seconds() < pt.ExecInterval.Seconds() {
+	if pt.LastExec.IsZero() {
+		return true
+	}
+
+	if time.Now().sub(*pt.LastExec).Seconds() < pt.ExecInterval.Seconds() {
 		return false
 	} else {
 		return true
 	}
+}
+
+func (pt *PageTemplate) RegisterForExec(prefix string, data interface{}, c chan string) {
+	go func() {
+		var content string
+		var err error
+
+		for {
+			if !pt.DoExec() {
+				time.Sleep(1 * time.Second)
+				continue
+			}
+
+			content, err = pt.Exec(prefix, data)
+
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+
+			c <- content
+		}
+	}()
+}
+
+func (ft *FileTemplate) New(data *TemplateData) {
+
+	ft.Name = data.Name
+	ft.File = data.File
+	ft.ContentQuery = data.ContentQuery
+	ft.Content = data.Content
 }
 
 func (ft *FileTemplate) Exec(bytes.Buffer buf, data interface {}, tmpl *template.Template) error {
