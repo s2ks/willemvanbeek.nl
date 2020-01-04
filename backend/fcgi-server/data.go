@@ -7,36 +7,11 @@ const (
 	PageTypeAdmin	= "ADMIN"
 )
 
-
-/*
-type PageData struct {
-	Path string
-	Title string
-	Name string
-
-	Action []string
-	Method string
-
-	Content [][]string
-}
-
-type ImageData struct {
-	Name string
-	Description string
-	Source string
-
-	Material []string
-	HasMaterial func(string) bool
-
-	Group string //reserved
-}
-*/
-
-
 /* UnMarshaled from json */
-type GalleryData struct {
-	
-}
+//TODO
+/*type GalleryData struct {
+
+}*/
 
 type TemplateData struct {
 	Name string	//template name

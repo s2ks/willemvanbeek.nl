@@ -3,8 +3,6 @@ package main
 import(
 	"net/http"
 	"log"
-	"time"
-	"io"
 	"strings"
 )
 
@@ -29,12 +27,14 @@ func NewHandler(fcgi_config *FcgiConfig) *http.ServeMux {
 		switch(page.Type) {
 			case PageTypeGeneric:
 				handler = &PageGeneric {
-					NewPage(page)
+					*(NewPage(&page)),
+					PageTemplate{},
 				}
 				break
 			case PageTypeGallery:
 				handler = &PageGallery {
-					NewPage(page)
+					*(NewPage(&page)),
+					PageTemplate{},
 				}
 				break
 			default:

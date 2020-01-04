@@ -41,6 +41,7 @@ func NewPageTemplate() (pt *PageTemplate) {
 	pt = new(PageTemplate)
 
 	pt.ExecInterval = Settings.ExecInterval
+	pt.Template = template.New("")
 
 	return
 }
@@ -53,7 +54,7 @@ func (pt *PageTemplate) Exec(filepath string, data interface {}, files []FileTem
 	pt.LastExec = time.Now()
 
 	for _, file := range files {
-		err = file.Parse(pt.Prefix)
+		err = file.Parse(pt.Prefix, pt.Template)
 
 		if err != nil {
 			pt.LastError = err
@@ -79,14 +80,14 @@ func (pt *PageTemplate) DoExec() bool {
 		return true
 	}
 
-	if time.Now().sub(*pt.LastExec).Seconds() < pt.ExecInterval.Seconds() {
+	if time.Now().Sub(pt.LastExec).Seconds() < pt.ExecInterval.Seconds() {
 		return false
 	} else {
 		return true
 	}
 }
 
-func (pt *PageTemplate) RegisterForExec(prefix string, data interface{}, c chan string) {
+func (pt *PageTemplate) RegisterForExec(prefix string, data interface{}, files []FileTemplate, c chan *PageContent) {
 	go func() {
 		var content string
 		var err error
@@ -97,14 +98,9 @@ func (pt *PageTemplate) RegisterForExec(prefix string, data interface{}, c chan 
 				continue
 			}
 
-			content, err = pt.Exec(prefix, data)
+			content, err = pt.Exec(prefix, data, files)
 
-			if err != nil {
-				log.Print(err)
-				continue
-			}
-
-			c <- content
+			c <- &PageContent {content, err}
 		}
 	}()
 }
@@ -117,10 +113,10 @@ func (ft *FileTemplate) New(data *TemplateData) {
 	ft.Content = data.Content
 }
 
-func (ft *FileTemplate) Exec(bytes.Buffer buf, data interface {}, tmpl *template.Template) error {
+func (ft *FileTemplate) Exec(buf *bytes.Buffer, data interface {}, tmpl *template.Template) error {
 	var err error
 
-	_, err = tmpl.ExecuteTemplate(&buf, ft.Name, data)
+	err = tmpl.ExecuteTemplate(buf, ft.Name, data)
 
 	return err
 }

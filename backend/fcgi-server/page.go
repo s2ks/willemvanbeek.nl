@@ -4,21 +4,29 @@ import (
 	"net/http"
 	"log"
 	"strings"
+	"io"
 )
 
+type PageContent struct {
+	Raw string
+	Error error
+}
+
 type Page struct {
-	Path string	//url to handle //TODO rename to Url
+	Path string	//url to handle
 	Title string	//page title
 	Name string	//page name
 
 	Display bool
 
-	Type string
+	Type string	//TODO remove
 
-	FileT []FileTemplate
+	Files []FileTemplate
 
-	Content string
-	HasContent bool
+
+	ContentChannel chan *PageContent
+
+	Content PageContent
 }
 
 func NewPage(data *PageData) (page *Page) {
@@ -37,19 +45,33 @@ func (p *Page) New(data *PageData) {
 	p.Display = data.Display
 	p.Type = strings.ToUpper(data.Type)
 
+	p.ContentChannel = make(chan *PageContent)
+
 	p.Files = make([]FileTemplate, len(data.Template))
 
 	for i, tmpl := range data.Template {
-		p.FileT[i] = NewFileTemplate(tmpl)
+		p.Files[i] = *(NewFileTemplate(&tmpl))
 	}
 }
 
-func (p *Page) SetContent(content string) bool {
+func (p *Page) SetContent(content *PageContent) bool {
 
-	p.Content = content
-	p.HasContent = content != ""
+	p.Content.Raw = content.Raw
+	p.Content.Error = content.Error
 
-	return p.HasContent
+	return content.Error == nil
+}
+
+func (p *Page) GetContent() string {
+	return p.Content.Raw
+}
+
+func (p *Page) HasContent() bool {
+	return p.Content.Error == nil
+}
+
+func (p* Page) RegisterTemplateForExec(prefix string, data interface{}, templ PageTemplate) {
+	templ.RegisterForExec(prefix, data, p.Files, p.ContentChannel)
 }
 
 func (p *Page) Serve(w http.ResponseWriter, r *http.Request) {
@@ -59,19 +81,25 @@ func (p *Page) Serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	select {
+	case c := <-p.ContentChannel:
+		p.SetContent(c)
+	default:
+	}
+
 	if p.Display == false {
 		log.Print("Access denied to " + r.URL.Path)
 		http.NotFound(w, r)
 		return
 	}
 
-	if p.HasContent == false {
+	if p.HasContent() == false {
 		log.Print("Error displaying " + r.URL.Path)
-		log.Print(p.PageT.LastError)
+		log.Print(p.Content.Error) //FIXME PageT undefined
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
 
-	io.WriteString(w, p.Content)
+	io.WriteString(w, p.GetContent())
 }
