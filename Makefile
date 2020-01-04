@@ -16,7 +16,7 @@ CFLAGS += -g
 CFLAGS += -DDEBUG
 #CFLAGS += -DVERBOSE
 
-WVB_BACKEND 	= wvb.backend
+WVB_BACKEND 	= fcgi-server
 WVB_CONFIG 	= wvb.config
 GET_IMG		= get-img
 ADD_IMG		= add-img
