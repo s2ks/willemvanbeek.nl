@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"os"
 	"log"
-	sqlite3 "github.com/mattn/go-sqlite3"
+	//sqlite3 "github.com/mattn/go-sqlite3"
 )
 
 type QueryData struct {

@@ -6,6 +6,8 @@ import (
 	"io"
 	"os/exec"
 	"encoding/json"
+	"path/filepath"
+	"os"
 )
 
 type FcgiConfig struct {
@@ -15,7 +17,7 @@ type FcgiConfig struct {
 	Page []PageData
 }
 
-func GetFcgiConfig(prog string, path string) *FcgiConfig {
+func GetFcgiConfigFromProg(prog string, path string) *FcgiConfig {
 	var stdout, stderr io.ReadCloser
 	var err error
 	var cmd *exec.Cmd
@@ -65,6 +67,47 @@ func GetFcgiConfig(prog string, path string) *FcgiConfig {
 		log.Print(err)
 		return nil
 	}
+
+	return fcgi_config
+}
+
+//TODO implement
+func GetFcgiConfig() *FcgiConfig {
+	var config_file string
+	var fcgi_config *FcgiConfig
+	//var data map[string]interface{}
+
+	var b []byte
+	var err error
+
+	fcgi_config = new(FcgiConfig)
+
+
+	config_file = Settings.ConfigPath + filepath.Base(os.Args[0]) + ".json"
+
+	f, err := os.OpenFile(config_file, os.O_RDWR | os.O_CREATE, 0666)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = f.Read(b)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Print(b)
+
+	//err = json.Unmarshal()
+
+	//fcgi_config.Prefix =
+
+	/*
+	see https://gobyexample.com/json
+
+	search file for parameters, and fill FcgiConfig struct
+	*/
 
 	return fcgi_config
 }

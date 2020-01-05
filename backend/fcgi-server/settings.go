@@ -8,4 +8,5 @@ var Settings struct {
 	ExecInterval time.Duration
 	QueryProg string
 	DbPath string
+	ConfigPath string
 }

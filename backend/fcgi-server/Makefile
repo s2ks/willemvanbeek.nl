@@ -1,4 +1,4 @@
-GC = gccgo
+GC = go build
 
 SRC=main.go \
     config.go \
@@ -8,8 +8,8 @@ SRC=main.go \
     logger.go \
     page.go \
     template.go\
-    http/page-generic.go \
-    http/page-gallery.go
+    page-generic.go \
+    page-gallery.go
 
 $(WVB_BACKEND): $(SRC)
 	$(GC) -o ../../$@ $(SRC)
