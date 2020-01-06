@@ -1,35 +1,34 @@
 package main
 
 import (
-	"net/http"
-	"log"
-	"strings"
 	"io"
+	"log"
+	"net/http"
+	"strings"
 )
 
 type PageContent struct {
-	Raw string
+	Raw   string
 	Error error
 }
 
 type Page struct {
-	Path string	//url to handle
-	Title string	//page title
-	Name string	//page name
+	Path  string //url to handle
+	Title string //page title
+	Name  string //page name
 
 	Display bool
 
-	Type string	//TODO remove
+	Type string //TODO remove
 
 	Files []FileTemplate
-
 
 	ContentChannel chan *PageContent
 
 	Content PageContent
 }
 
-func NewPage(data *PageData) (page *Page) {
+func NewPage(data *PageJson) (page *Page) {
 	page = new(Page)
 
 	page.New(data)
@@ -37,7 +36,7 @@ func NewPage(data *PageData) (page *Page) {
 	return
 }
 
-func (p *Page) New(data *PageData) {
+func (p *Page) New(data *PageJson) {
 
 	p.Path = data.Path
 	p.Title = data.Title
@@ -70,7 +69,7 @@ func (p *Page) HasContent() bool {
 	return p.Content.Error == nil
 }
 
-func (p* Page) RegisterTemplateForExec(prefix string, data interface{}, templ PageTemplate) {
+func (p *Page) RegisterTemplateForExec(prefix string, data interface{}, templ PageTemplate) {
 	templ.RegisterForExec(prefix, data, p.Files, p.ContentChannel)
 }
 
@@ -99,7 +98,6 @@ func (p *Page) Serve(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
 
 	io.WriteString(w, p.GetContent())
 }

@@ -1,35 +1,33 @@
 package main
 
-import(
+import (
+	"bytes"
 	"html/template"
 	"time"
-	"bytes"
 )
 
+//NOTE: unused
 type Template interface {
 	Exec(filepath string, data interface{}) (content string, err error)
 	DoExec() bool
 }
 
 type FileTemplate struct {
-	Name string	//template name
-	File string	//file to use
-	ContentQuery string	//query used to fetch content
-
-	Content string	//content to display
+	Name              string //template name
+	File              string //file to use
+	ContentQueryParam string
+	Content           string //content to display
 }
 
 type PageTemplate struct {
-	Prefix string
-	Template *template.Template
-
-	LastExec time.Time
+	Prefix       string
+	Template     *template.Template
+	LastExec     time.Time
 	ExecInterval time.Duration
-
-	LastError error
+	LastError    error
 }
 
-func NewFileTemplate(data *TemplateData) (ft *FileTemplate) {
+func NewFileTemplate(data *TemplateJson) (ft *FileTemplate) {
 	ft = new(FileTemplate)
 
 	ft.New(data)
@@ -46,8 +44,7 @@ func NewPageTemplate() (pt *PageTemplate) {
 	return
 }
 
-
-func (pt *PageTemplate) Exec(filepath string, data interface {}, files []FileTemplate) (content string, err error) {
+func (pt *PageTemplate) Exec(filepath string, data interface{}, files []FileTemplate) (content string, err error) {
 	var buf bytes.Buffer
 
 	pt.Prefix = filepath
@@ -100,20 +97,19 @@ func (pt *PageTemplate) RegisterForExec(prefix string, data interface{}, files [
 
 			content, err = pt.Exec(prefix, data, files)
 
-			c <- &PageContent {content, err}
+			c <- &PageContent{content, err}
 		}
 	}()
 }
 
-func (ft *FileTemplate) New(data *TemplateData) {
+func (ft *FileTemplate) New(data *TemplateJson) {
 
 	ft.Name = data.Name
 	ft.File = data.File
-	ft.ContentQuery = data.ContentQuery
 	ft.Content = data.Content
 }
 
-func (ft *FileTemplate) Exec(buf *bytes.Buffer, data interface {}, tmpl *template.Template) error {
+func (ft *FileTemplate) Exec(buf *bytes.Buffer, data interface{}, tmpl *template.Template) error {
 	var err error
 
 	err = tmpl.ExecuteTemplate(buf, ft.Name, data)

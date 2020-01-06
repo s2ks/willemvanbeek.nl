@@ -3,14 +3,14 @@ package main
 import (
 	"io"
 	"io/ioutil"
-	"os/exec"
-	"os"
 	"log"
+	"os"
+	"os/exec"
 	//sqlite3 "github.com/mattn/go-sqlite3"
 )
 
 type QueryData struct {
-	cmd *exec.Cmd
+	cmd    *exec.Cmd
 	stdout []byte
 	stderr []byte
 }
@@ -22,7 +22,7 @@ func ExecQuery(query string) (data *QueryData, err error) {
 	err = nil
 
 	data.cmd = exec.Command(Settings.QueryProg, query)
-	data.cmd.Env = append(os.Environ(), "DATABASE=" + Settings.DbPath)
+	data.cmd.Env = append(os.Environ(), "DATABASE="+Settings.DbPath)
 
 	stdout, err = data.cmd.StdoutPipe()
 

@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"net/http"
 )
 
@@ -10,13 +10,12 @@ type PageGallery struct {
 }
 
 type GalleryData struct {
-	Path string
+	Path  string
 	Title string
-	Name string
+	Name  string
 
 	ImgPath []string
 }
-
 
 func (p *PageGallery) Setup(prefix string) {
 	var data GalleryData
@@ -35,5 +34,3 @@ func (p *PageGallery) Setup(prefix string) {
 func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.Serve(w, r)
 }
-
-

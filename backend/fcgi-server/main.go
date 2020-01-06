@@ -1,51 +1,32 @@
 package main
 
 import (
-	"net"
 	"log"
-	"net/http/fcgi"
+	"net"
 	"net/http"
-	"time"
+	"net/http/fcgi"
 	"os"
+	"time"
 )
 
+const ident = "willemvanbeek.nl"
 
 //TODO get strings from json file
 func main() {
 	var err error
-	var fcgi_config *FcgiConfig
+	var fcgiConfig *FcgiConfig
 	var handler *http.ServeMux
-	var config_prog, config_path string
-	var network, address string
-	var exec_interval string
 
-
-	//TODO get from json
-	config_prog = "./wvb.config"
-	config_path = "config/wvb.conf"
-
-	network = "tcp"
-	address = "localhost:9000"
-
-	exec_interval = "10m"
-
-	//Interval at which templates should be re-executed (refreshed)
-	Settings.ExecInterval, err = time.ParseDuration(exec_interval)
-	Settings.QueryProg = "./query-db"
-
-	if err != nil {
-		log.Fatal(err)
-	}
 	Settings.ConfigPath, err = os.UserConfigDir()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	Settings.ConfigPath += "/willemvanbeek.nl/"
+	Settings.ConfigPath += "/" + ident + "/"
 
 	/* Check if willemvanbeek.nl folder exists, if not create it*/
-	if _, err = os.Lstat(Settings.ConfigPath); os.IsNotExist(err) {
+	if _, err = os.Stat(Settings.ConfigPath); os.IsNotExist(err) {
 		err = os.Mkdir(Settings.ConfigPath, 0777)
 		if err != nil {
 			log.Fatal(err)
@@ -54,7 +35,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	listener, err := net.Listen(network, address)
+	fcgiConfig, err = GetFcgiConfig()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//Interval at which templates should be re-executed (refreshed)
+	Settings.ExecInterval, err = time.ParseDuration(fcgiConfig.System.ExecInterval)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	address := fcgiConfig.Net.Address + ":" + fcgiConfig.Net.Port
+
+	listener, err := net.Listen(fcgiConfig.Net.Protocol, address)
 
 	defer listener.Close()
 
@@ -62,13 +58,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fcgi_config = GetFcgiConfigFromProg(config_prog, config_path)
-
-	GetFcgiConfig()
-
-	return //DEBUG
-
-	handler = NewHandler(fcgi_config)
+	handler = NewHandler(fcgiConfig)
 
 	log.Fatal(fcgi.Serve(listener, handler))
 }

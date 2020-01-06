@@ -1,20 +1,17 @@
 package main
 
 import (
-	"log"
-	"io/ioutil"
-	"io"
-	"os/exec"
 	"encoding/json"
-	"path/filepath"
+	"io"
+	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
+	"path/filepath"
 )
 
 type FcgiConfig struct {
-	Prefix string	//prepended to File in FileTemplate
-	Database string //unused
-
-	Page []PageData
+	RootJson
 }
 
 func GetFcgiConfigFromProg(prog string, path string) *FcgiConfig {
@@ -71,43 +68,50 @@ func GetFcgiConfigFromProg(prog string, path string) *FcgiConfig {
 	return fcgi_config
 }
 
-//TODO implement
-func GetFcgiConfig() *FcgiConfig {
+func GetFcgiConfig() (*FcgiConfig, error) {
 	var config_file string
-	var fcgi_config *FcgiConfig
+	var fcgiConfig *FcgiConfig
 	//var data map[string]interface{}
 
-	var b []byte
+	var buf []byte
 	var err error
 
-	fcgi_config = new(FcgiConfig)
+	fcgiConfig = new(FcgiConfig)
 
-
+	/* config file will be [executable name].json */
 	config_file = Settings.ConfigPath + filepath.Base(os.Args[0]) + ".json"
 
-	f, err := os.OpenFile(config_file, os.O_RDWR | os.O_CREATE, 0666)
+	fi, err := os.Stat(config_file)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	_, err = f.Read(b)
+	/* allocate buffer equal to config file size */
+	buf = make([]byte, fi.Size())
+
+	/* open file, or create if it doesn't exist */
+	f, err := os.OpenFile(config_file, os.O_RDWR|os.O_CREATE, 0666)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	log.Print(b)
+	_, err = f.Read(buf)
 
-	//err = json.Unmarshal()
+	if err != nil {
+		return nil, err
+	}
 
-	//fcgi_config.Prefix =
+	err = json.Unmarshal(buf, fcgiConfig)
 
-	/*
-	see https://gobyexample.com/json
+	if err != nil {
+		return nil, err
+	}
 
-	search file for parameters, and fill FcgiConfig struct
-	*/
+	if err != nil {
+		return nil, err
+	}
 
-	return fcgi_config
+	return fcgiConfig, nil
 }

@@ -1,49 +1,51 @@
 package main
 
-import(
-	"net/http"
+import (
 	"log"
+	"net/http"
 	"strings"
 )
 
 type Handler interface {
 	http.Handler
-	Setup(prefix string)
+	Setup(srvPath string)
 }
 
-func NewHandler(fcgi_config *FcgiConfig) *http.ServeMux {
+func NewHandler(fcgiConfig *FcgiConfig) *http.ServeMux {
 	var mux *http.ServeMux
-	var prefix string
+	var srvPath string
 
 	mux = http.NewServeMux()
 
-	prefix = fcgi_config.Prefix
+	srvPath = fcgiConfig.System.SrvPath
 
-	Loop:
-	for _, page := range fcgi_config.Page {
+Loop:
+	for _, page := range fcgiConfig.Page {
 		var handler Handler
 		page.Type = strings.ToUpper(page.Type)
 
-		switch(page.Type) {
-			case PageTypeGeneric:
-				handler = &PageGeneric {
-					*(NewPage(&page)),
-					PageTemplate{},
-				}
-				break
-			case PageTypeGallery:
-				handler = &PageGallery {
-					*(NewPage(&page)),
-					PageTemplate{},
-				}
-				break
-			default:
-				log.Print("Failed to find a match for page type " + page.Type)
-				continue Loop
+		switch page.Type {
+		case PageTypeGeneric:
+			handler = &PageGeneric{
+				*(NewPage(&page)),
+				PageTemplate{},
+			}
+			break
+		case PageTypeGallery:
+			handler = &PageGallery{
+				*(NewPage(&page)),
+				PageTemplate{},
+			}
+			break
+		default:
+			log.Print("Failed to find a match for page type " + page.Type)
+			continue Loop
 		}
 
-		handler.Setup(prefix)
+		handler.Setup(srvPath)
 		mux.Handle(page.Path, handler)
+
+		log.Print("Registered handler for " + page.Path)
 	}
 
 	return mux

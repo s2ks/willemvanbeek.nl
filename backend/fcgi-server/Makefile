@@ -2,6 +2,7 @@ GC = go build
 
 SRC=main.go \
     config.go \
+    json.go \
     data.go \
     handler.go \
     settings.go \

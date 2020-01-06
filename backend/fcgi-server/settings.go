@@ -1,12 +1,12 @@
 package main
 
-import(
+import (
 	"time"
 )
 
 var Settings struct {
 	ExecInterval time.Duration
-	QueryProg string
-	DbPath string
-	ConfigPath string
+	QueryProg    string
+	DbPath       string
+	ConfigPath   string
 }
