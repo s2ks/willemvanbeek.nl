@@ -8,7 +8,8 @@ import (
 
 type Handler interface {
 	http.Handler
-	Setup(srvPath string)
+	Setup(srvPath string) error
+	New(page *PageJson) Handler
 }
 
 func NewHandler(fcgiConfig *FcgiConfig) *http.ServeMux {
@@ -26,26 +27,28 @@ Loop:
 
 		switch page.Type {
 		case PageTypeGeneric:
-			handler = &PageGeneric{
-				*(NewPage(&page)),
-				PageTemplate{},
-			}
+			var h *PageGeneric
+			handler = h.New(&page)
+
 			break
 		case PageTypeGallery:
-			handler = &PageGallery{
-				*(NewPage(&page)),
-				PageTemplate{},
-			}
+			var h *PageGallery
+			handler = h.New(&page)
 			break
 		default:
 			log.Print("Failed to find a match for page type " + page.Type)
 			continue Loop
 		}
 
-		handler.Setup(srvPath)
-		mux.Handle(page.Path, handler)
+		err := handler.Setup(srvPath)
 
-		log.Print("Registered handler for " + page.Path)
+		if err != nil {
+			log.Print("Error registering handler for " + page.Path)
+			log.Print(err)
+		} else {
+			mux.Handle(page.Path, handler)
+			log.Print("Registered handler for " + page.Path)
+		}
 	}
 
 	return mux

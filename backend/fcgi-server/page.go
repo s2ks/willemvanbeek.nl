@@ -53,6 +53,12 @@ func (p *Page) New(data *PageJson) {
 	}
 }
 
+func (p *Page) SendContent(content string, err error) {
+	go func() {
+		p.ContentChannel <- &PageContent{content, err}
+	}()
+}
+
 func (p *Page) SetContent(content *PageContent) bool {
 
 	p.Content.Raw = content.Raw

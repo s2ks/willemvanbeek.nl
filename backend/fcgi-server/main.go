@@ -11,7 +11,6 @@ import (
 
 const ident = "willemvanbeek.nl"
 
-//TODO get strings from json file
 func main() {
 	var err error
 	var fcgiConfig *FcgiConfig

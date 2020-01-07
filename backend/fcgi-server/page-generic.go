@@ -15,7 +15,18 @@ type GenericData struct {
 	Name  string
 }
 
-func (p *PageGeneric) Setup(prefix string) {
+func (p *PageGeneric) New(page *PageJson) Handler {
+	if p != nil {
+		return p
+	}
+
+	return &PageGeneric{
+		*(NewPage(page)),
+		PageTemplate{},
+	}
+}
+
+func (p *PageGeneric) Setup(prefix string) error {
 	var data GenericData
 
 	data.Path = p.Path
@@ -25,6 +36,8 @@ func (p *PageGeneric) Setup(prefix string) {
 	p.Template = *(NewPageTemplate())
 
 	p.RegisterTemplateForExec(prefix, data, p.Template)
+
+	return nil
 }
 
 func (p *PageGeneric) ServeHTTP(w http.ResponseWriter, r *http.Request) {
