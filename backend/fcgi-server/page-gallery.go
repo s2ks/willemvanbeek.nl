@@ -67,7 +67,7 @@ func (p *PageGallery) Setup(prefix string) error {
 	p.stmt, err = p.db.Prepare("SELECT " + selectField + " FROM " + tableName + " WHERE " + tableField + "=?")
 
 	if err != nil {
-		log.Print(err)
+		return err
 	}
 
 	p.Template = *(NewPageTemplate())
