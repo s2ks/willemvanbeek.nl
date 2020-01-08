@@ -4,7 +4,7 @@
 
 .wvb-background {
 	position: absolute;
-	background-image: url("/static/img/20161223_150024_background.jpg");
+	background-image: url("/static/img/background.jpg");
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
