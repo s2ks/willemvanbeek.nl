@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -10,8 +11,37 @@ type FcgiConfig struct {
 	RootJson
 }
 
+var configFile string
+
+func ConfigInit(configPath string) error {
+	var err error
+
+	if _, err = os.Stat(configPath); os.IsNotExist(err) {
+		if err = os.MkdirAll(configPath, 0777); err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err
+	}
+
+	if exec, err := os.Executable(); err != nil {
+		return err
+	} else {
+		configFile = configPath + filepath.Base(exec) + ".json"
+	}
+
+	if _, err := os.Stat(configFile); os.IsNotExist(err) {
+		if _, err = os.Create(configFile); err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetFcgiConfig() (*FcgiConfig, error) {
-	var config_file string
 	var fcgiConfig *FcgiConfig
 	//var data map[string]interface{}
 
@@ -20,10 +50,11 @@ func GetFcgiConfig() (*FcgiConfig, error) {
 
 	fcgiConfig = new(FcgiConfig)
 
-	/* config file will be [executable name].json */
-	config_file = Settings.ConfigPath + filepath.Base(os.Args[0]) + ".json"
+	if configFile == "" {
+		return nil, fmt.Errorf("Config has not been initialised")
+	}
 
-	fi, err := os.Stat(config_file)
+	fi, err := os.Stat(configFile)
 
 	if err != nil {
 		return nil, err
@@ -32,24 +63,21 @@ func GetFcgiConfig() (*FcgiConfig, error) {
 	/* allocate buffer equal to config file size */
 	buf = make([]byte, fi.Size())
 
-	/* open file, or create if it doesn't exist */
-	f, err := os.OpenFile(config_file, os.O_RDWR|os.O_CREATE, 0666)
+	f, err := os.OpenFile(configFile, os.O_RDWR, 0666)
 
 	if err != nil {
 		return nil, err
 	}
 
+	/* read contents of file into buf */
 	_, err = f.Read(buf)
 
 	if err != nil {
 		return nil, err
 	}
 
+	/* unmarshal buf into fcgiConfig */
 	err = json.Unmarshal(buf, fcgiConfig)
-
-	if err != nil {
-		return nil, err
-	}
 
 	if err != nil {
 		return nil, err

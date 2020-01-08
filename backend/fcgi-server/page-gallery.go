@@ -62,9 +62,7 @@ func (p *PageGallery) Setup(prefix string) error {
 	//TODO get images
 	/* open Settings.ConfigPath + "gallery.db" */
 
-	dbPath := Settings.ConfigPath + dbName
-
-	p.db, err = sql.Open("sqlite3", dbPath)
+	p.db, err = ActiveDatabase()
 
 	if err != nil {
 		return err
@@ -73,7 +71,7 @@ func (p *PageGallery) Setup(prefix string) error {
 	p.stmt, err = p.db.Prepare("SELECT " + selectField + " FROM " + tableName + " WHERE " + tableField + "=?")
 
 	if err != nil {
-		//return err
+		log.Print(err)
 	}
 
 	p.Template = *(NewPageTemplate())

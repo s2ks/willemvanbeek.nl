@@ -8,6 +8,7 @@ SRC=main.go \
     settings.go \
     logger.go \
     page.go \
+    db.go \
     template.go\
     page-generic.go \
     page-gallery.go

@@ -9,7 +9,12 @@ import (
 	"time"
 )
 
-const ident = "willemvanbeek.nl"
+const(
+	//ident = "willemvanbeek.nl"
+	dbpath_env = "FCGI_DATABASE"
+	ident_env = "FCGI_IDENT"
+)
+
 
 func main() {
 	var err error
@@ -22,15 +27,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	Settings.ConfigPath += "/" + ident + "/"
+	if ident := os.Getenv(ident_env); ident == "" {
+		log.Fatal("Please set " + ident_env + " environment variable")
+	} else {
+		Settings.ConfigPath += "/" + ident + "/"
+	}
 
-	/* Check if willemvanbeek.nl folder exists, if not create it*/
-	if _, err = os.Stat(Settings.ConfigPath); os.IsNotExist(err) {
-		err = os.Mkdir(Settings.ConfigPath, 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else if err != nil {
+
+	if dbpath := os.Getenv(dbpath_env); dbpath == "" {
+		Settings.DbPath = Settings.ConfigPath
+	} else {
+		Settings.DbPath = dbpath
+	}
+
+	/* Create config folder/file */
+	if err = ConfigInit(Settings.ConfigPath); err != nil {
 		log.Fatal(err)
 	}
 
@@ -40,8 +51,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//Interval at which templates should be re-executed (refreshed)
+	//Interval at which templates should be re-executed
 	Settings.ExecInterval, err = time.ParseDuration(fcgiConfig.System.ExecInterval)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db, err := DatabaseInit(Settings.DbPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
+
+	wvbdb, err := ActiveDatabaseFile()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Setenv("WVB_DATABASE", wvbdb)
 
 	if err != nil {
 		log.Fatal(err)
