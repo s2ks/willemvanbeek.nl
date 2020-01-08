@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
 )
@@ -59,9 +58,6 @@ func (p *PageGallery) Setup(prefix string) error {
 
 	p.data = &data
 
-	//TODO get images
-	/* open Settings.ConfigPath + "gallery.db" */
-
 	p.db, err = ActiveDatabase()
 
 	if err != nil {
@@ -85,6 +81,7 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	p.data.SrcPaths = make([]string, 0)
 
+	/* loop through params */
 	for i := 0; i < len(params); i++ {
 		rows, err := p.stmt.Query(params[i])
 

@@ -1,6 +1,6 @@
 package main
 
-/* Defines structures to (un)marshal from json file */
+/* Defines structures to unmarshal from json file */
 
 type NetJson struct {
 	Address  string `json:"address"`

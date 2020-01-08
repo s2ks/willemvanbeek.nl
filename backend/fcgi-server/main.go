@@ -33,7 +33,6 @@ func main() {
 		Settings.ConfigPath += "/" + ident + "/"
 	}
 
-
 	if dbpath := os.Getenv(dbpath_env); dbpath == "" {
 		Settings.DbPath = Settings.ConfigPath
 	} else {
@@ -51,7 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//Interval at which templates should be re-executed
+	/* Interval at which templates should be re-executed */
 	Settings.ExecInterval, err = time.ParseDuration(fcgiConfig.System.ExecInterval)
 
 	if err != nil {
@@ -65,18 +64,6 @@ func main() {
 	}
 
 	defer db.Close()
-
-	wvbdb, err := ActiveDatabaseFile()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.Setenv("WVB_DATABASE", wvbdb)
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	address := fcgiConfig.Net.Address + ":" + fcgiConfig.Net.Port
 

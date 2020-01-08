@@ -16,6 +16,7 @@ var configFile string
 func ConfigInit(configPath string) error {
 	var err error
 
+	/* create configPath if needed */
 	if _, err = os.Stat(configPath); os.IsNotExist(err) {
 		if err = os.MkdirAll(configPath, 0777); err != nil {
 			return err
@@ -24,12 +25,14 @@ func ConfigInit(configPath string) error {
 		return err
 	}
 
+	/* configFile will be [executable name].json */
 	if exec, err := os.Executable(); err != nil {
 		return err
 	} else {
 		configFile = configPath + filepath.Base(exec) + ".json"
 	}
 
+	/* create configFile if needed */
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
 		if _, err = os.Create(configFile); err != nil {
 			return err

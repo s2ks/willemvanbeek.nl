@@ -7,7 +7,7 @@ import (
 )
 
 type Handler interface {
-	http.Handler
+	http.Handler //defines ServeHTTP
 	Setup(srvPath string) error
 	New(page *PageJson) Handler
 }
@@ -18,6 +18,7 @@ func NewHandler(fcgiConfig *FcgiConfig) *http.ServeMux {
 
 	mux = http.NewServeMux()
 
+	/* location of the html template files to execute */
 	srvPath = fcgiConfig.System.SrvPath
 
 Loop:
