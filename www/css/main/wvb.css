@@ -21,3 +21,91 @@
 .wvb-smooth-scroll {
 	scroll-behavior: smooth;
 }
+
+.wvb-container {
+	max-height: 100vh;
+}
+
+.wvb-background {
+	position: absolute;
+	background-image: url("/static/img/background.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	z-index: -1;
+
+	/*filter: blur(4px);*/
+	/*filter: grayscale(100%) brightness(35%);*/
+}
+
+.wvb-jumbotron {
+	opacity: .85;
+	width: 100%;
+	/*filter: drop-shadow(8px 8px 10px black);
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	left: 15px;
+	right: 15px;
+	*/
+}
+
+
+.wvb-intro {
+	height: 4rem;
+	margin-top: -4rem;
+}
+
+.wvb-opacity-0 {
+	opacity: 0;
+}
+
+.wvb-opacity-10 {
+	opacity: 0.1;
+}
+
+.wvb-opacity-20 {
+	opacity: 0.2;
+}
+
+.wvb-opacity-30 {
+	opacity: 0.3;
+}
+
+.wvb-opacity-40 {
+	opacity: 0.4;
+}
+
+.wvb-opacity-50 {
+	opacity: 0.5;
+}
+
+.wvb-opacity-60 {
+	opacity: 0.6;
+}
+
+.wvb-opacity-70 {
+	opacity: 0.7;
+}
+
+.wvb-opacity-80 {
+	opacity: 0.8;
+}
+
+.wvb-opacity-90 {
+	opacity: 0.9;
+}
+
+.wvb-opacity-100 {
+	opacity: 1;
+}
+
