@@ -39,7 +39,6 @@ func NewPageTemplate() (pt *PageTemplate) {
 	pt = new(PageTemplate)
 
 	pt.ExecInterval = Settings.ExecInterval
-	pt.Template = template.New("")
 
 	return
 }
@@ -49,6 +48,8 @@ func (pt *PageTemplate) Exec(filepath string, data interface{}, files []FileTemp
 
 	pt.Prefix = filepath
 	pt.LastExec = time.Now()
+
+	pt.Template = template.New("content")
 
 	for _, file := range files {
 		err = file.Parse(pt.Prefix, pt.Template)
