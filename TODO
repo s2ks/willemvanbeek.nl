@@ -1,43 +1,4 @@
-- clean up wvb_parse_config in config.c
-- stderr coloured output config-util
-
-- wvb.insert.img insert image to the database, taking name, description, material, path, and category as arguments, in
-that order.
-
-- create web interface for adding, removing and editing items in the beelden table
-
-- backend for database editing: small c programs that take json formatted text as input, and perform actions on
-the database, programs should be started by a fastcgi backend
-
-- wvb.backend: reload and execute pages every n minutes
-
-- beelden: carousel with scrollspy, display thumbnails on side
-
-- fix remaining memory leaks in config.c; wvb_parse_config/clean up wvb_parse_config
-
-
-- load config from json file directly from backend
-- redo colour palette
-
-- gallery:
-	[img] text
-	text [img]
-	ect.
-
-	or
-
-	[img]
-	[img]
-
-	either case
-	(constant size)
-
-less is more
-
-Foto's in beelden onder elkaar geen tekst
-Foto's in introductie zetten
-Contact pagina, met portret foto
-
-environment variable database path (WVB_DBPATH)
-
-/static/img/hand.png img resize
+- remove backend/wvb.config
+- remove backend/get-img
+- auto-gen thumbnails for uploaded images (maybe crop to e.g. 500x500 if height and width > 500)
+- admin.willemvanbeek.nl
