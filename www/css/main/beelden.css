@@ -23,6 +23,12 @@
 	background-color: rgba(0, 0, 0, .75);
 }
 
+.grid-sizer,
+.grid-item {
+	width: 33.333%;
+}
+
+/* colcade /*
 .grid-col {
 	float: left;
 	width: 100%;
@@ -66,3 +72,4 @@
 		display: block;
 	}
 }
+*/
