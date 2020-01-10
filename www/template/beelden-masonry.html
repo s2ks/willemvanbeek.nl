@@ -7,15 +7,12 @@
 			<!-- col-md-6 col-lg-4 col-12 -->
 			<div class="grid-sizer"></div>
 			{{range $index, $src := index $.SrcPaths}}
-			<div class="grid-item card border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12">
-				<a class="m-0 p-0 mh-100 mw-100 justify-content-center position-relative"
-				   data-toggle="modal"
-				   data-target="#wvb-img-modal-{{$index}}"
-				   href="{{$src}}">
-					<div class="h-100">
-						<img class="mh-100 mw-100 h-100 w-100 wvb-img d-block mx-auto"
-						     src="{{$src}}" alt="img{{$index}}">
-					</div>
+			<div class="grid-item border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12">
+				<a data-toggle="modal"
+					data-target="#wvb-img-modal-{{$index}}"
+					href="{{$src}}">
+					<img class="img-fluid m-auto"
+					     src="{{$src}}" alt="img{{$index}}">
 				</a>
 			</div>
 
@@ -28,9 +25,11 @@
 							</button>
 						</div>
 
-						<div class="modal-body mh-100 overflow-hidden p-0 d-flex">
-							<img class="mh-100 img-fluid m-auto"
-							     src="{{$src}}" alt="img{{$index}}">
+						<div class="modal-body h-100 overflow-hidden p-0 d-block">
+							<div class="h-100 m-auto d-block">
+								<img class="mh-100 img-fluid m-auto d-block"
+								     src="{{$src}}" alt="img{{$index}}">
+							</div>
 						</div>
 					</div>
 				</div>

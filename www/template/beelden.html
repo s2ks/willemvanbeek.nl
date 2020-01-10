@@ -8,13 +8,13 @@
 			{{range $index, $src := index $.SrcPaths}}
 			<!-- col-md-6 col-lg-4 col-12 -->
 			<div class="col-7 p-1 d-flex align-items-center">
-				<div class="card m-auto">
+				<div class="m-auto">
 					<a class="mh-100 mw-100 text-center"
 					   data-toggle="modal"
 					   data-target="#wvb-img-modal-{{$index}}"
 					   href="{{$src}}">
 						<div class="h-auto mx-auto">
-							<img class="img-fluid"
+							<img class="img-fluid" style="max-height: 1000px;"
 							     src="{{$src}}" alt="img{{$index}}">
 						</div>
 					</a>

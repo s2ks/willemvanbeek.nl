@@ -115,6 +115,7 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Print("No source paths")
 		http.NotFound(w, r)
+		return
 	}
 
 	select {
@@ -122,6 +123,7 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		p.SetContent(c)
 	case <-time.After(5 * time.Second):
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 	p.Serve(w, r)
 }
