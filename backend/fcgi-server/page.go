@@ -86,12 +86,6 @@ func (p *Page) Serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	select {
-	case c := <-p.ContentChannel:
-		p.SetContent(c)
-	default:
-	}
-
 	if p.Display == false {
 		log.Print("Access denied to " + r.URL.Path)
 		http.NotFound(w, r)
@@ -100,7 +94,7 @@ func (p *Page) Serve(w http.ResponseWriter, r *http.Request) {
 
 	if p.HasContent() == false {
 		log.Print("Error displaying " + r.URL.Path)
-		log.Print(p.Content.Error) //FIXME PageT undefined
+		log.Print(p.Content.Error)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}

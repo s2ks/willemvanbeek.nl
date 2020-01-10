@@ -41,5 +41,11 @@ func (p *PageGeneric) Setup(prefix string) error {
 }
 
 func (p *PageGeneric) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	select {
+	case c := <-p.ContentChannel:
+		p.SetContent(c)
+	default:
+	}
+
 	p.Serve(w, r)
 }

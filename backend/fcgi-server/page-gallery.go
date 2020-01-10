@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"time"
 )
 
 const (
@@ -109,12 +110,18 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		} else {
-			p.SendContent(content, err)
+			p.SendContent(content, err) //FIXME race condition
 		}
 	} else {
 		log.Print("No source paths")
 		http.NotFound(w, r)
 	}
 
+	select {
+	case c := <-p.ContentChannel:
+		p.SetContent(c)
+	case <-time.After(5 * time.Second):
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 	p.Serve(w, r)
 }
