@@ -25,7 +25,19 @@
 
 .grid-sizer,
 .grid-item {
-	width: 33.333%;
+	width: 100%;
+}
+
+@media (min-width: 768px) {
+	.grid-sizer {
+		width: 50%;
+	}
+}
+
+@media (min-width: 1080px) {
+	.grid-sizer {
+		width: 33.333%;
+	}
 }
 
 /* colcade /*
