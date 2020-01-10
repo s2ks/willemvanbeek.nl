@@ -3,26 +3,49 @@
 use strict;
 use warnings;
 
-use JSON;
-use DBD::SQLite;
+use DBI;
+use File::Copy;
 
-# img fields:
-# Name
-# Material
-# Img Path
-# Thumbnail Path
-# Group
-# Description
+my $dbfile = $ENV{'FCGI_DATABASE'} or die "env FCGI_DATABASE not set";
+my $dbh = DBI->connect("DBI:SQLite:uri=file:$dbfile?mode=rw") or die $DBI::errstr;
 
-my $json = "";
+#my $sth = $dbh->prepare("CREATE TABLE IF NOT EXISTS gallery(src TEXT, thumbnail TEXT, materiaal TEXT);")
+#	or die $dbh->errstr;
 
-while(eof(STDIN) == 0) {
-	$json = $json . <STDIN>;
+#$sth->execute() or die $sth->errstr;
+
+if($ARGV[0] eq "--help" or $ARGV[0] eq "-h") {
+	printhelp();
 }
 
-my $json_scalar = decode_json($json);
+if(shift(@ARGV) ne "-m") {
+	printhelp();
+}
 
-#print $json_scalar->{'prefix'};
+my $rel = "static/img/gallery/";
+my $dest = $ENV{'FCGI_WEBROOT'} . $rel or die "env FCGI_WEBROOT not set";
+my $material = shift(@ARGV);
+my $thumbnail = "";
+my $sth = $dbh->prepare("INSERT INTO gallery(src, thumbnail, materiaal) VALUES(?, ?, ?);")
+	or die $dbh->errstr;
 
-print $ENV{'DATABASE'};
+for my $file (@ARGV) {
+	my $src = "/" . $rel;
+	copy($file, $dest . $file) or die "Failed to copy $file to destination $dest";
+
+	$src .= $file;
+
+	$sth->bind_param(1, $src);
+	$sth->bind_param(2, $thumbnail);
+	$sth->bind_param(3, $material);
+
+	$sth->execute() or die $sth->errstr;
+
+	print "Moved $file to $dest$file\n";
+}
+
+sub printhelp {
+	print "Usage: $0 -m material FILES...\n";
+	exit(1);
+}
 
