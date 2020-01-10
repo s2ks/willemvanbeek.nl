@@ -19,10 +19,12 @@ CFLAGS += -DDEBUG
 WVB_BACKEND 	= fcgi-server
 WVB_CONFIG 	= wvb.config
 GET_IMG		= get-img
+ADD_IMG 	= add-img
 
 BIN = $(WVB_BACKEND) 	\
       $(WVB_CONFIG) 	\
-      $(GET_IMG)
+      $(GET_IMG) 	\
+      $(ADD_IMG)
 
 export LDFLAGS
 export CFLAGS
@@ -31,6 +33,7 @@ export BIN
 export WVB_BACKEND
 export WVB_CONFIG
 export GET_IMG
+export ADD_IMG
 
 
 .PHONY: clean dist install all
