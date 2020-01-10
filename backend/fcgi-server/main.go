@@ -13,6 +13,7 @@ const(
 	//ident = "willemvanbeek.nl"
 	dbpath_env = "FCGI_DATABASE"
 	ident_env = "FCGI_IDENT"
+	//config_env = "FCGI_CONFIG"
 )
 
 
@@ -34,7 +35,7 @@ func main() {
 	}
 
 	if dbpath := os.Getenv(dbpath_env); dbpath == "" {
-		Settings.DbPath = Settings.ConfigPath
+		log.Fatal("Please set " + dbpath_env + "environment variable")
 	} else {
 		Settings.DbPath = dbpath
 	}

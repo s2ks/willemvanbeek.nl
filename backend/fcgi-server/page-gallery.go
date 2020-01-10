@@ -7,9 +7,8 @@ import (
 )
 
 const (
-	dbName      = "gallery.db"
 	selectField = "src"
-	tableName   = "beelden"
+	tableName   = "gallery"
 	tableField  = "materiaal"
 )
 

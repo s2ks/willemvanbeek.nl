@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"os"
-	"path/filepath"
 )
 
 type Database struct {
@@ -17,26 +15,11 @@ type Database struct {
 var activeDB Database
 
 func DatabaseInit(dbPath string) (*sql.DB, error) {
-	var err error
-
 	if activeDB.Init {
 		return activeDB.Connection, nil
 	}
 
-	/* create dbPath if needed */
-	if _, err = os.Stat(dbPath); os.IsNotExist(err) {
-		if err = os.MkdirAll(dbPath, 0777); err != nil {
-			return nil, err
-		}
-	} else if err != nil {
-		return nil, err
-	}
-
-	if exec, err := os.Executable(); err != nil {
-		return nil, err
-	} else {
-		activeDB.File = dbPath + filepath.Base(exec) + ".db"
-	}
+	activeDB.File = dbPath
 
 	/* sql.Open creates the file if it doesn't exist */
 	if db, err := sql.Open("sqlite3", activeDB.File); err != nil {
