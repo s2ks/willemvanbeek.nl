@@ -4,11 +4,10 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"time"
 )
 
 const (
-	selectField = "src"
+	selectField = "src, thumbnail"
 	tableName   = "gallery"
 	tableField  = "materiaal"
 )
@@ -28,6 +27,7 @@ type GalleryData struct {
 	Name  string
 
 	SrcPaths []string
+	Thumbs []string
 
 	prefix string
 }
@@ -80,6 +80,7 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	params := q[tableField]
 
 	p.data.SrcPaths = make([]string, 0)
+	p.data.Thumbs = make([]string, 0)
 
 	/* loop through params */
 	for i := 0; i < len(params); i++ {
@@ -94,14 +95,19 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		for rows.Next() {
 			var src string
-			if err := rows.Scan(&src); err != nil {
+			var thumb string
+
+			if err := rows.Scan(&src, &thumb); err != nil {
 				log.Print(err)
 				continue //DEBUG
 			} else {
 				p.data.SrcPaths = append(p.data.SrcPaths, src)
+				p.data.Thumbs = append(p.data.Thumbs, thumb)
 			}
 		}
-
+		if len(p.data.SrcPaths) == 0 {
+			log.Print("No source paths found for param " + params[i])
+		}
 	}
 
 	if len(p.data.SrcPaths) > 0 {
@@ -110,20 +116,13 @@ func (p *PageGallery) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		} else {
-			p.SendContent(content, err) //FIXME race condition
+			p.SetContent(&PageContent{content, err})
 		}
 	} else {
-		log.Print("No source paths")
+		log.Print("No source paths found")
 		http.NotFound(w, r)
 		return
 	}
 
-	select {
-	case c := <-p.ContentChannel:
-		p.SetContent(c)
-	case <-time.After(5 * time.Second):
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
 	p.Serve(w, r)
 }

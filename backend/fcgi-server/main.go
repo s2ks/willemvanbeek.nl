@@ -9,13 +9,12 @@ import (
 	"time"
 )
 
-const(
+const (
 	//ident = "willemvanbeek.nl"
 	dbpath_env = "FCGI_DATABASE"
-	ident_env = "FCGI_IDENT"
+	ident_env  = "FCGI_IDENT"
 	//config_env = "FCGI_CONFIG"
 )
-
 
 func main() {
 	var err error

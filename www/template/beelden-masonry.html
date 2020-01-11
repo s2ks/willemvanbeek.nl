@@ -7,12 +7,12 @@
 			<!-- col-md-6 col-lg-4 col-12 -->
 			<div class="grid-sizer"></div>
 			{{range $index, $src := index $.SrcPaths}}
-			<div class="grid-item border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12">
+			<div class="grid-item border-0 rounded-0 m-0 p-1 col-md-6 col-lg-4 col-12 text-center">
 				<a data-toggle="modal"
 					data-target="#wvb-img-modal-{{$index}}"
 					href="{{$src}}">
 					<img class="img-fluid m-auto"
-					     src="{{$src}}" alt="img{{$index}}">
+					     src="{{index $.Thumbs $index}}" alt="img{{$index}}">
 				</a>
 			</div>
 

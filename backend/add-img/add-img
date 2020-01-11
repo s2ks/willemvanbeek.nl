@@ -5,6 +5,7 @@ use warnings;
 
 use DBI;
 use File::Copy;
+use Image::Magick;
 
 my $dbfile = $ENV{'FCGI_DATABASE'} or die "env FCGI_DATABASE not set";
 my $dbh = DBI->connect("DBI:SQLite:uri=file:$dbfile?mode=rw") or die $DBI::errstr;
@@ -22,18 +23,36 @@ if(shift(@ARGV) ne "-m") {
 	printhelp();
 }
 
-my $rel = "static/img/gallery/";
-my $dest = $ENV{'FCGI_WEBROOT'} . $rel or die "env FCGI_WEBROOT not set";
+my ($image, $err);
+my $rel = "/static/img/gallery/";
+my $webroot = $ENV{'FCGI_WEBROOT'} or die "env FCGI_WEBROOT not set";
+my $dest = $webroot . $rel;
 my $material = shift(@ARGV);
-my $thumbnail = "";
 my $sth = $dbh->prepare("INSERT INTO gallery(src, thumbnail, materiaal) VALUES(?, ?, ?);")
 	or die $dbh->errstr;
 
 for my $file (@ARGV) {
-	my $src = "/" . $rel;
+	my $src = $rel;
+	my $thumbnail = $src . "thumb/";
+
 	copy($file, $dest . $file) or die "Failed to copy $file to destination $dest";
 
 	$src .= $file;
+	$thumbnail .= $file;
+
+	$image = Image::Magick->new;
+
+	$err = $image->Read($file);
+	warn "$err" if "$err";
+
+	$err = $image->Resize('65536@');
+	warn "$err" if "$err";
+
+	#$err = $image->Crop('256x256+128+128');
+	#warn "$err" if "$err";
+
+	$err = $image->Write($webroot . $thumbnail);
+	warn "$err" if "$err";
 
 	$sth->bind_param(1, $src);
 	$sth->bind_param(2, $thumbnail);

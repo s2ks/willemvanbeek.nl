@@ -14,8 +14,8 @@
 					   data-target="#wvb-img-modal-{{$index}}"
 					   href="{{$src}}">
 						<div class="h-auto mx-auto">
-							<img class="img-fluid" style="max-height: 1000px;"
-							     src="{{$src}}" alt="img{{$index}}">
+							<img class="img-fluid"
+							     src="{{index $.Thumbs $index}}" alt="img{{$index}}">
 						</div>
 					</a>
 				</div>
