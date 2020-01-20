@@ -13,15 +13,20 @@ const (
 	//ident = "willemvanbeek.nl"
 	dbpath_env = "FCGI_DATABASE"
 	ident_env  = "FCGI_IDENT"
-	//config_env = "FCGI_CONFIG"
+	config_env = "FCGI_CONFIG"
 )
 
 func main() {
 	var err error
+	var ok bool
 	var fcgiConfig *FcgiConfig
 	var handler *http.ServeMux
 
-	Settings.ConfigPath, err = os.UserConfigDir()
+	Settings.ConfigPath, ok = os.LookupEnv(config_env)
+
+	if ok == false {
+		log.Fatal("please set " + config_env)
+	}
 
 	if err != nil {
 		log.Fatal(err)
