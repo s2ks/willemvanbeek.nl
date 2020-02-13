@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net>
+	<address>localhost</address>
+	<port>9001</port>
+	<protocol>tcp</protocol>
+</net>
+<system>
+	<webroot>/var/www/admin/</webroot>
+	<template>
+		<path>/var/www/template/</path> <!-- location of template files -->
+		<execinterval>10m</execinterval>
+	</template>
+</system>
+<page name="Login">
+	<path>/login</path>
+	<title>Login</title>
+	<type>generic</type> <!-- page type can be one of; generic, gallery, admin -->
+
+	<template outfile="login"> <!-- relative to system/webroot -->
+		<file id="header">header.html</file> <!-- relative to system/template/path -->
+		<file id="navbar">navbar.html</file>
+		<file id="content">admin/login.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+
+</page>
+
+<page name="Index">
+	<path>/</path>
+	<title>Admin</title>
+	<type>generic</type>
+
+	<template outfile="index">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content">admin/index.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
+
+<page name="Toevoegen">
+	<path>/beelden/toevoegen</path>
+	<title>Admin</title>
+	<type>generic</type>
+
+	<template outfile="">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content">admin/add.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
+
+<page name="Verwijderen">
+	<path>/beelden/verwijderen</path>
+	<title>Admin</title>
+	<type>generic</type>
+
+	<template outfile="">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content">admin/remove.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>

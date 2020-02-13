@@ -1,0 +1,113 @@
+{
+	"net": {
+		"address": "localhost",
+		"port": "9000",
+		"protocol": "tcp"
+	},
+
+	"system": {
+		"srvPath": "/srv/http/template/",
+		"templateExecutionInterval": "10m"
+	},
+
+	"page": [{
+		"path": "/",
+		"title": "Willem van Beek",
+		"name": "Home",
+		"display": true,
+		"type": "generic",
+
+		"template": [{
+			"name": "header",
+			"file": "header.html"
+		},
+		{
+			"name": "navbar",
+			"file": "navbar.html"
+		},
+		{
+			"name": "content",
+			"file": "index.html"
+		},
+		{
+			"name": "footer",
+			"file": "footer.html"
+		}]
+	},
+	{
+		"path": "/beelden",
+		"title": "Beelden | Willem van Beek",
+		"name": "Beelden",
+		"display": true,
+		"type": "gallery",
+
+		"params": ["materiaal"],
+
+		"template": [{
+			"name": "header",
+			"file": "header.html"
+		},
+		{
+			"name": "navbar",
+			"file": "navbar.html"
+		},
+		{
+			"name": "content",
+			"file": "beelden.html"
+		},
+		{
+			"name": "footer",
+			"file": "footer.html"
+		}]
+	},
+	{
+		"path": "/beelden2",
+		"title": "Beelden | Willem van Beek",
+		"name": "Beelden",
+		"display": true,
+		"type": "gallery",
+
+		"params": ["materiaal"],
+
+		"template": [{
+			"name": "header",
+			"file": "header.html"
+		},
+		{
+			"name": "navbar",
+			"file": "navbar.html"
+		},
+		{
+			"name": "content",
+			"file": "beelden-masonry.html"
+		},
+		{
+			"name": "footer",
+			"file": "footer.html"
+		}]
+	},
+	{
+		"path": "/contact",
+		"title": "Contact | Willem van Beek",
+		"name": "Contact",
+		"display": true,
+		"type": "generic",
+
+		"template": [{
+			"name": "header",
+			"file": "header.html"
+		},
+		{
+			"name": "navbar",
+			"file": "navbar.html"
+		},
+		{
+			"name": "content",
+			"file": "contact.html"
+		},
+		{
+			"name": "footer",
+			"file": "footer.html"
+		}]
+	}]
+}

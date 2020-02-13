@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net>
+	<address>localhost</address>
+	<port>9000</port>
+	<protocol>tcp</protocol>
+</net>
+<system>
+	<webroot>/var/www/html/</webroot>
+	<template>
+		<path>/var/www/template/</path> <!-- location of template files -->
+		<execinterval>10m</execinterval>
+	</template>
+</system>
+<page name="Home">
+	<path>/</path>
+	<title>Willem van Beek Beelden</title>
+	<type>generic</type> <!-- page type can be one of; generic, gallery, admin -->
+
+	<template outfile="index"> <!-- relative to system/webroot -->
+		<file id="header">header.html</file> <!-- relative to system/template/path -->
+		<file id="navbar">navbar.html</file>
+		<file id="content">index.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+
+</page>
+
+<page name="Contact">
+	<path>/contact</path>
+	<title>Contact | Willem van Beek Beelden</title>
+	<type>generic</type>
+
+	<template outfile="contact">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content">contact.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
+
+<page name="Beelden Steen">
+	<path>/beelden/steen</path>
+	<title>Steen | Willem van Beek Beelden</title>
+	<type>gallery</type>
+
+	<template outfile="beelden/steen">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content" post="materiaal=steen">beelden.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
+
+<page name="Beelden Hout">
+	<path>/beelden/hout</path>
+	<title>Hout | Willem van Beek Beelden</title>
+	<type>gallery</type>
+
+	<template outfile="beelden/hout">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content" post="materiaal=hout">beelden.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
+
+<page name="Beelden Metaal">
+	<path>/beelden/metaal</path>
+	<title>Metaal | Willem van Beek Beelden</title>
+	<type>gallery</type>
+
+	<template outfile="beelden/metaal">
+		<file id="header">header.html</file>
+		<file id="navbar">navbar.html</file>
+		<file id="content" post="materiaal=metaal">beelden.html</file>
+		<file id="foorter">footer.html</file>
+	</template>
+</page>
