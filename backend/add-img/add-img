@@ -6,6 +6,7 @@ use warnings;
 use DBI;
 use File::Copy;
 use Image::Magick;
+use Cwd 'abs_path';
 
 my $dbfile = $ENV{'FCGI_DATABASE'} or die "env FCGI_DATABASE not set";
 my $dbh = DBI->connect("DBI:SQLite:uri=file:$dbfile?mode=rw") or die $DBI::errstr;
@@ -34,8 +35,8 @@ my $sth = $dbh->prepare("INSERT INTO gallery(src, thumbnail, materiaal) VALUES(?
 for my $file (@ARGV) {
 	my $src = $rel;
 	my $thumbnail = $src . "thumb/";
-
-	copy($file, $dest . $file) or die "Failed to copy $file to destination $dest";
+	#TODO create dest if not exists
+	copy(abs_path($file), $dest . $file) or die "Failed to copy " .abs_path($file). " to destination $dest$file $!";
 
 	$src .= $file;
 	$thumbnail .= $file;
