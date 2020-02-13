@@ -49,6 +49,5 @@ clean:
 	-$(MAKE) -C backend clean
 	-rm $(BIN)
 
-install:
+deploy:
 	-cp -r $(HTTP) $(HTTP_DEST)
-
