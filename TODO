@@ -1,4 +1,2 @@
-- remove backend/wvb.config
-- remove backend/get-img
 - auto-gen thumbnails for uploaded images (maybe crop to e.g. 500x500 if height and width > 500)
 - admin.willemvanbeek.nl
