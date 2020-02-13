@@ -11,8 +11,9 @@ type FcgiConfig struct {
 	RootJson
 }
 
-var configFile string
+var configFile_ string
 
+/* obsolete */
 func ConfigInit(configPath string) error {
 	var err error
 
@@ -29,12 +30,12 @@ func ConfigInit(configPath string) error {
 	if exec, err := os.Executable(); err != nil {
 		return err
 	} else {
-		configFile = configPath + filepath.Base(exec) + ".json"
+		configFile_ = configPath + filepath.Base(exec) + ".json"
 	}
 
 	/* create configFile if needed */
-	if _, err := os.Stat(configFile); os.IsNotExist(err) {
-		if _, err = os.Create(configFile); err != nil {
+	if _, err := os.Stat(configFile_); os.IsNotExist(err) {
+		if _, err = os.Create(configFile_); err != nil {
 			return err
 		}
 	} else if err != nil {
@@ -50,6 +51,9 @@ func GetFcgiConfig() (*FcgiConfig, error) {
 
 	var buf []byte
 	var err error
+	var configFile string
+
+	configFile = Settings.ConfigPath
 
 	fcgiConfig = new(FcgiConfig)
 

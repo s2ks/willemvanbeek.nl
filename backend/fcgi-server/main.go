@@ -31,12 +31,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	/*
 	if ident := os.Getenv(ident_env); ident == "" {
 		log.Fatal("Please set " + ident_env + " environment variable")
 	} else {
 		Settings.ConfigPath += "/" + ident + "/"
 	}
+	*/
 
 	if dbpath := os.Getenv(dbpath_env); dbpath == "" {
 		log.Fatal("Please set " + dbpath_env + "environment variable")
@@ -45,9 +46,11 @@ func main() {
 	}
 
 	/* Create config folder/file */
+	/*
 	if err = ConfigInit(Settings.ConfigPath); err != nil {
 		log.Fatal(err)
 	}
+	*/
 
 	fcgiConfig, err = GetFcgiConfig()
 
