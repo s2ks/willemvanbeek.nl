@@ -11,40 +11,6 @@ type FcgiConfig struct {
 	RootJson
 }
 
-var configFile_ string
-
-/* obsolete */
-func ConfigInit(configPath string) error {
-	var err error
-
-	/* create configPath if needed */
-	if _, err = os.Stat(configPath); os.IsNotExist(err) {
-		if err = os.MkdirAll(configPath, 0777); err != nil {
-			return err
-		}
-	} else if err != nil {
-		return err
-	}
-
-	/* configFile will be [executable name].json */
-	if exec, err := os.Executable(); err != nil {
-		return err
-	} else {
-		configFile_ = configPath + filepath.Base(exec) + ".json"
-	}
-
-	/* create configFile if needed */
-	if _, err := os.Stat(configFile_); os.IsNotExist(err) {
-		if _, err = os.Create(configFile_); err != nil {
-			return err
-		}
-	} else if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func GetFcgiConfig() (*FcgiConfig, error) {
 	var fcgiConfig *FcgiConfig
 	//var data map[string]interface{}
