@@ -11,10 +11,9 @@
 		<execinterval>10m</execinterval>
 	</template>
 </system>
-<page name="Home">
-	<path>/</path>
+<page path="/">
+	<name>Home</name>
 	<title>Willem van Beek Beelden</title>
-	<type>generic</type> <!-- page type can be one of; generic, gallery, admin -->
 
 	<template outfile="index"> <!-- relative to system/webroot -->
 		<file id="header">header.html</file> <!-- relative to system/template/path -->
@@ -25,10 +24,9 @@
 
 </page>
 
-<page name="Contact">
-	<path>/contact</path>
+<page path="/contact">
+	<name>Contact</name>
 	<title>Contact | Willem van Beek Beelden</title>
-	<type>generic</type>
 
 	<template outfile="contact">
 		<file id="header">header.html</file>
@@ -38,10 +36,9 @@
 	</template>
 </page>
 
-<page name="Beelden Steen">
-	<path>/beelden/steen</path>
+<page path="/beelden/steen">
+	<name>Beelden van steen</name>
 	<title>Steen | Willem van Beek Beelden</title>
-	<type>gallery</type>
 
 	<template outfile="beelden/steen">
 		<file id="header">header.html</file>
@@ -51,10 +48,9 @@
 	</template>
 </page>
 
-<page name="Beelden Hout">
-	<path>/beelden/hout</path>
+<page path="/beelden/hout">
+	<name>Beelden van  hout</name>
 	<title>Hout | Willem van Beek Beelden</title>
-	<type>gallery</type>
 
 	<template outfile="beelden/hout">
 		<file id="header">header.html</file>
@@ -64,10 +60,9 @@
 	</template>
 </page>
 
-<page name="Beelden Metaal">
-	<path>/beelden/metaal</path>
+<page path="/beelden/metaal">
+	<name>Beelden van metaal</name>
 	<title>Metaal | Willem van Beek Beelden</title>
-	<type>gallery</type>
 
 	<template outfile="beelden/metaal">
 		<file id="header">header.html</file>

@@ -1,4 +1,10 @@
-package main
+package config
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
 
 /* Defines structures to unmarshal from json file */
 
@@ -30,8 +36,54 @@ type PageJson struct {
 	Template []TemplateJson `json:"template"`
 }
 
-type RootJson struct {
+type JsonConf struct {
 	Net    NetJson    `json:"net"`
 	System SystemJson `json:"system"`
 	Page   []PageJson `json:"page"`
+}
+
+func GetJsonConf(path string) (*JsonConf, error) {
+	var config *JsonConf
+
+	var buf []byte
+	var err error
+	var configFile string
+
+	configFile = path
+
+	config = new(JsonConf)
+
+	if configFile == "" {
+		return nil, fmt.Errorf("No config file provided")
+	}
+
+	fi, err := os.Stat(configFile)
+
+	if err != nil {
+		return nil, err
+	}
+
+	/* allocate buffer equal to config file size */
+	buf = make([]byte, fi.Size())
+
+	f, err := os.Open(configFile)
+
+	if err != nil {
+		return nil, err
+	}
+
+	/* read contents of file into buf */
+	_, err = f.Read(buf)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(buf, config)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
 }

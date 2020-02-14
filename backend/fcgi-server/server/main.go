@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"log"
@@ -20,7 +20,7 @@ const (
 	config_env = "FCGI_CONFIG"
 )
 
-func main() {
+func Init() {
 	var err error
 	var ok bool
 	var conf *config.XmlConf
@@ -56,6 +56,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	Settings.Config = conf
+
 	/* Interval at which templates should be re-executed */
 	Settings.ExecInterval, err = time.ParseDuration(conf.System.ExecInterval)
 
@@ -84,4 +86,8 @@ func main() {
 	handler = NewHandler(conf)
 
 	log.Fatal(fcgi.Serve(listener, handler))
+}
+
+func Start() {
+	
 }
