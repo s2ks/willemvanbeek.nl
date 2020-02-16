@@ -8,50 +8,28 @@ import (
 
 /* Defines structures to unmarshal from xml config file */
 
-type TemplateSystemXml struct {
-	Path         string `xml:"path"`
-	ExecInterval string `xml:"execinterval"`
-}
-
-type PageTemplateFileXml struct {
-	Id   string `xml:"id,attr"`
-	Post string `xml:"post,attr"`
-	Name string `xml:",innerxml"`
-}
-
-type PageTemplateXml struct {
-	OutFile string                `xml:"outfile,attr"`
-	Files   []PageTemplateFileXml `xml:"file"`
-}
-
 type NetXml struct {
-	Address string `xml:"address"`
-	Port    string `xml:"port"`
-	Proto   string `xml:"protocol"`
+	Address  string `xml:"address"`
+	Port     string `xml:"port"`
+	Protocol string `xml:"protocol"`
 }
 
 type SystemXml struct {
-	WebRoot  string            `xml:"webroot"`
-	Template TemplateSystemXml `xml:"template"`
+	Webroot  string `xml:"webroot"`
+	Template struct {
+		Path         string `xml:"path"`
+		ExecInterval string `xml:"execinterval"`
+	} `xml:"template"`
 }
 
-type PageXml struct {
-	Name  string `xml:"name,attr"`
-	Path  string `xml:"path"`
-	Title string `xml:"title"`
-	Type  string `xml:"type"`
-
-	Template PageTemplateXml `xml:"template"`
+type ServerConf struct {
+	XMLName xml.Name  `xml:"server"`
+	Net     NetXml    `xml:"net"`
+	System  SystemXml `xml:"system"`
 }
 
-type XmlConf struct {
-	Net    NetXml    `xml:"net"`
-	System SystemXml `xml:"system"`
-	Page   []PageXml `xml:"page"`
-}
-
-func GetXmlConf(path string) (*XmlConf, error) {
-	var config *XmlConf
+func GetServerConf(path string) (*ServerConf, error) {
+	var config *ServerConf
 
 	var buf []byte
 	var err error
@@ -59,7 +37,7 @@ func GetXmlConf(path string) (*XmlConf, error) {
 
 	configFile = path
 
-	config = new(XmlConf)
+	config = new(ServerConf)
 
 	if configFile == "" {
 		return nil, fmt.Errorf("No config file provided")

@@ -1,93 +1,130 @@
 package server
 
 import (
+	"encoding/xml"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
 	"time"
-	"flag"
 
-	"willemvanbeek.nl/backend/config"
-	"willemvanbeek.nl/backend/database"
+	"willemvanbeek.nl/backend/server/config"
 )
 
-const (
-	//ident = "willemvanbeek.nl"
-	dbpath_env = "FCGI_DATABASE"
-	ident_env  = "FCGI_IDENT"
-	config_env = "FCGI_CONFIG"
-)
+type Handler interface {
+	Setup(string) error
+	Execute(*Handle, *FcgiServer) ([]byte, error)
+}
 
-func Init() {
-	var err error
-	var ok bool
-	var conf *config.XmlConf
-	var handler *http.ServeMux
+type FcgiServer struct {
+	ServeMux *http.ServeMux
 
-	var confpath = flag.String("config", "", "Path to the configuration file")
-	var dbpath = flag.String("db", "", "Path to the database")
+	Address  string
+	Port     string
+	Protocol string
 
-	if confpath == "" {
-		confpath, ok = os.LookupEnv(config_env)
+	Webroot      string
+	TemplatePath string
+	ExecInterval time.Duration
 
-		if ok == false {
-			log.Fatal("Configuration file not found")
-		}
+	Handles []*Handle
+}
 
-		Settings.ConfigPath = confpath
+func (s *FcgiServer) Register(path string, data Handler) {
+	mux := s.ServeMux
 
-	}
+	handle := NewHandle(path)
+	s.Handles = append(s.Handles, handle)
 
-	if dbpath == "" {
-		dbpath, ok = os.LookupEnv(dbpath_env)
-
-		if ok == false {
-			log.Fatal("Databse file not found")
-		}
-
-		Settings.DbPath = dbpath
-	}
-
-	conf, err = config.GetXmlConf(confpath)
+	err := data.Setup(path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	Settings.Config = conf
+	s.RegisterForExec(handle, data)
 
-	/* Interval at which templates should be re-executed */
-	Settings.ExecInterval, err = time.ParseDuration(conf.System.ExecInterval)
+	mux.Handle(path, handle)
+	log.Print("Registered handler for " + path)
+}
+
+func ProcUserConf(path string, data interface{}) error {
+	var buf []byte
+
+	fi, err := os.Stat(path)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	db, err := database.Open(dbpath)
+	buf = make([]byte, fi.Size())
+
+	f, err := os.Open(path)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	defer db.Close()
+	_, err = f.Read(buf)
 
-	address := conf.Net.Address + ":" + conf.Net.Port
+	if err != nil {
+		return err
+	}
 
-	listener, err := net.Listen(conf.Net.Protocol, address)
+	/* unmarshal buf into data */
+	err = xml.Unmarshal(buf, data)
+
+	return err
+}
+
+func New(configPath string, data interface{}) (*FcgiServer, error) {
+	var s *FcgiServer
+
+	s = new(FcgiServer)
+
+	s.ServeMux = http.NewServeMux()
+
+	err := ProcUserConf(configPath, data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	conf, err := config.GetServerConf(configPath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	s.Address = conf.Net.Address
+	s.Port = conf.Net.Port
+	s.Protocol = conf.Net.Protocol
+
+	s.Webroot = conf.System.Webroot
+	s.TemplatePath = conf.System.Template.Path
+	s.ExecInterval, err = time.ParseDuration(conf.System.Template.ExecInterval)
+
+	if err != nil {
+		return nil, err
+	}
+
+	s.Handles = make([]*Handle, 0)
+
+	return s, nil
+}
+
+func (s *FcgiServer) Serve() error {
+	listener, err := net.Listen(s.Protocol, s.Address)
 
 	defer listener.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	handler = NewHandler(conf)
+	handler := s.ServeMux
 
-	log.Fatal(fcgi.Serve(listener, handler))
-}
+	return fcgi.Serve(listener, handler)
 
-func Start() {
-	
 }
