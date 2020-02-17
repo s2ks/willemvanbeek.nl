@@ -8,6 +8,7 @@ import (
 	"net/http/fcgi"
 	"os"
 	"time"
+	"fmt"
 
 	"willemvanbeek.nl/backend/server/config"
 )
@@ -115,7 +116,7 @@ func New(configPath string, data interface{}) (*FcgiServer, error) {
 }
 
 func (s *FcgiServer) Serve() error {
-	listener, err := net.Listen(s.Protocol, s.Address)
+	listener, err := net.Listen(s.Protocol, fmt.Sprintf("%s:%s", s.Address, s.Port))
 
 	defer listener.Close()
 

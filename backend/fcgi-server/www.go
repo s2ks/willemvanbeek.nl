@@ -28,12 +28,10 @@ type GalleryPage struct {
 	stmt *sql.Stmt
 }
 
-/*
-	Page definitions
-*/
-
-var db *sql.DB
-var configData *Config
+var (
+	db *sql.DB
+	configData *Config
+)
 
 func (p *GenericPage) Setup(path string) error {
 	page, err := GetPageFor(path)
@@ -82,7 +80,7 @@ func (g *GalleryPage) Setup(path string) error {
 	g.Name = page.Name
 	g.page = page
 
-	g.stmt, err = db.Prepare("SELECT src, thumbnail FROM beelden WHERE materiaal = ?")
+	g.stmt, err = db.Prepare("SELECT src, thumb FROM gallery WHERE type = ?")
 
 	return err
 }
@@ -155,7 +153,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := sql.Open("sqlite3", *dbpath);
+	db, err = sql.Open("sqlite3", *dbpath);
 
 	defer db.Close()
 
