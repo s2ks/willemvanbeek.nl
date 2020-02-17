@@ -1,7 +1,6 @@
 package server
 
 import (
-	"html/template"
 	"log"
 	"time"
 )
@@ -12,9 +11,8 @@ func (s *FcgiServer) RegisterForExec(h *Handle, data Handler) error {
 
 		for {
 			lastExec = time.Now()
-			h.Template = template.New(h.Path)
 
-			b, err := data.Execute(h, s)
+			b, err := data.Execute(s)
 
 			if err != nil {
 				log.Print(err)

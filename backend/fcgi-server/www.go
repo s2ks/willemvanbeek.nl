@@ -7,6 +7,8 @@ import (
 	"log"
 	"path"
 	"os"
+	"fmt"
+	"html/template"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -47,23 +49,29 @@ func (p *GenericPage) Setup(path string) error {
 	return nil
 }
 
-func (p *GenericPage) Execute(h *server.Handle, s *server.FcgiServer) ([]byte, error) {
+func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	var buf *bytes.Buffer
+	var files []string
 
 	buf = new(bytes.Buffer)
 
-	for _, file := range p.page.Template.Files {
-		_, err := h.Template.ParseFiles(s.TemplatePath + file.Name)
+	files = make([]string, len(p.page.Template.Files))
 
-		if err != nil {
-			return nil, err
-		}
+	for i, file := range p.page.Template.Files {
+		files[i] = fmt.Sprintf("%s/%s", s.TemplatePath, file.Name)
+		log.Print(fmt.Sprintf("\t%s - %s", p.page.Path, files[i]))
 	}
-	err := h.Template.Execute(buf, p)
+	tmpl, err := template.ParseFiles(files...)
+
+	if err != nil {
+		return nil, err
+	}
+	err = tmpl.Execute(buf, p)
 
 	if err != nil {
 		return nil, err
 	} else {
+		log.Print(fmt.Sprintf("\texecuted %s - %s", p.page.Path, string(buf.Bytes())))
 		return buf.Bytes(), nil
 	}
 }
@@ -86,8 +94,9 @@ func (g *GalleryPage) Setup(path string) error {
 }
 
 /* Execute page template */
-func (g *GalleryPage) Execute(h *server.Handle, s *server.FcgiServer) ([]byte, error) {
+func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	var buf *bytes.Buffer
+	var files []string
 
 	buf = new(bytes.Buffer)
 
@@ -114,19 +123,26 @@ func (g *GalleryPage) Execute(h *server.Handle, s *server.FcgiServer) ([]byte, e
 		g.Thumbs = append(g.Thumbs, thumb)
 	}
 
-	for _, file := range g.page.Template.Files {
-		_, err := h.Template.ParseFiles(s.TemplatePath + file.Name)
 
-		if err != nil {
-			return nil, err
-		}
+	files = make([]string, len(g.page.Template.Files))
+
+	for i, file := range g.page.Template.Files {
+		files[i] = fmt.Sprintf("%s/%s", s.TemplatePath, file.Name)
+		log.Print(fmt.Sprintf("\t%s - %s", g.page.Path, files[i]))
 	}
 
-	err = h.Template.Execute(buf, g)
+	tmpl, err := template.ParseFiles(files...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = tmpl.Execute(buf, g)
 
 	if err != nil {
 		return nil, err
 	} else {
+		log.Print(fmt.Sprintf("\texecuted %s - %s", g.page.Path, string(buf.Bytes())))
 		return buf.Bytes(), nil
 	}
 }

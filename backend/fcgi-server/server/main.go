@@ -2,20 +2,20 @@ package server
 
 import (
 	"encoding/xml"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
 	"time"
-	"fmt"
 
 	"willemvanbeek.nl/backend/server/config"
 )
 
 type Handler interface {
 	Setup(string) error
-	Execute(*Handle, *FcgiServer) ([]byte, error)
+	Execute(*FcgiServer) ([]byte, error)
 }
 
 type FcgiServer struct {
