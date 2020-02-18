@@ -21,7 +21,7 @@
 			<file id="header">header.html</file> <!-- relative to system/template/path -->
 			<file id="navbar">navbar.html</file>
 			<file id="content">index.html</file>
-			<file id="foorter">footer.html</file>
+			<file id="footer">footer.html</file>
 		</template>
 
 	</page>
@@ -34,7 +34,7 @@
 			<file id="header">header.html</file>
 			<file id="navbar">navbar.html</file>
 			<file id="content">contact.html</file>
-			<file id="foorter">footer.html</file>
+			<file id="footer">footer.html</file>
 		</template>
 	</page>
 
@@ -46,7 +46,7 @@
 			<file id="header">header.html</file>
 			<file id="navbar">navbar.html</file>
 			<file id="content">beelden.html</file>
-			<file id="foorter">footer.html</file>
+			<file id="footer">footer.html</file>
 		</template>
 	</page>
 
@@ -58,7 +58,7 @@
 			<file id="header">header.html</file>
 			<file id="navbar">navbar.html</file>
 			<file id="content">beelden.html</file>
-			<file id="foorter">footer.html</file>
+			<file id="footer">footer.html</file>
 		</template>
 	</page>
 
@@ -70,7 +70,7 @@
 			<file id="header">header.html</file>
 			<file id="navbar">navbar.html</file>
 			<file id="content">beelden.html</file>
-			<file id="foorter">footer.html</file>
+			<file id="footer">footer.html</file>
 		</template>
 	</page>
 </server>
