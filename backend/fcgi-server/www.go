@@ -28,6 +28,8 @@ type GalleryPage struct {
 	Thumbs   []string
 	SrcPaths []string
 
+	Material string
+
 	stmt *sql.Stmt
 }
 
@@ -116,7 +118,11 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	g.Thumbs = make([]string, 0)
 	g.SrcPaths = make([]string, 0)
 
-	rows, err := g.stmt.Query(path.Base(g.page.Path))
+	base := path.Base(g.page.Path)
+
+	g.Material = base
+
+	rows, err := g.stmt.Query(path.Base(base)
 
 	defer rows.Close()
 
@@ -144,7 +150,7 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	}
 
 	tmpl, err := template.ParseFiles(files...)
-	logger.Verbose(fmt.Sprintf("%s",tmpl.DefinedTemplates()))
+	logger.Verbose(fmt.Sprintf("%s", tmpl.DefinedTemplates()))
 
 	if err != nil {
 		return nil, err

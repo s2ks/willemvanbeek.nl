@@ -1,6 +1,5 @@
 {{define "content"}}
 <link rel="stylesheet" type="text/css" href="/css/main/beelden.css">
-<script src="/js/main/beelden.js"></script>
 
 <div class="container-fluid overflow-auto position-relative p-0">
 	<div class="container h-100">
@@ -10,17 +9,18 @@
 			<div class="col-7 p-1 d-flex align-items-center">
 				<div class="m-auto">
 					<a class="mh-100 mw-100 text-center"
-					   data-toggle="modal"
-					   data-target="#wvb-img-modal-{{$index}}"
+					   onclick="displayImgModal('{{$src}}')"
 					   href="{{$src}}">
 						<div class="h-auto mx-auto">
 							<img class="img-fluid"
-							     src="{{index $.Thumbs $index}}" alt="img{{$index}}">
+							     src="{{index $.Thumbs $index}}"
+							     alt="Beeld van {{.Material}}">
 						</div>
 					</a>
 				</div>
 			</div>
-			<div class="modal fade wvb-modal" id="wvb-img-modal-{{$index}}" role="dialog">
+			{{end}}
+			<div class="modal fade wvb-modal" id="img-modal" role="dialog">
 				<div class="modal-dialog wvb-modal-dialog mw-100 m-1 m-md-3 wvb-transparent" role="document">
 					<div class="modal-content h-100 wvb-transparent border-0">
 						<div class="modal-header border-0 p-1 mb-2 mr-2 wvb-transparent">
@@ -31,13 +31,14 @@
 
 						<div class="modal-body h-100 overflow-hidden p-0 d-flex">
 							<img class="mh-100 img-fluid m-auto"
-							     src="{{$src}}" alt="img{{$index}}">
+							     id="img-modal-img"
+							     src="" alt="Beeld van {{.Material}}">
 						</div>
 					</div>
 				</div>
 			</div>
-			{{end}}
 		</div>
 	</div>
 </div>
+<script src="/js/main/beelden.js"></script>
 {{end}}
