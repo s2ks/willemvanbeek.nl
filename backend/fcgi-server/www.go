@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
 	"flag"
 	"log"
@@ -13,6 +12,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"willemvanbeek.nl/backend/server"
+	"willemvanbeek.nl/backend/logger"
+	"willemvanbeek.nl/backend/util"
 )
 
 type GenericPage struct {
@@ -50,30 +51,42 @@ func (p *GenericPage) Setup(path string) error {
 }
 
 func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
-	var buf *bytes.Buffer
+	var buf *util.Buffer
 	var files []string
 
-	buf = new(bytes.Buffer)
+	buf = new(util.Buffer)
 
-	files = make([]string, len(p.page.Template.Files))
+	files = make([]string, 0)
 
-	for i, file := range p.page.Template.Files {
-		files[i] = fmt.Sprintf("%s/%s", s.TemplatePath, file.Name)
-		log.Print(fmt.Sprintf("\t%s - %s", p.page.Path, files[i]))
+	for _, file := range p.page.Template.Files {
+		files = append(files, fmt.Sprintf("%s/%s", s.TemplatePath, file.Name))
 	}
+
 	tmpl, err := template.ParseFiles(files...)
+	logger.Verbose(fmt.Sprintf("%s",tmpl.DefinedTemplates()))
 
 	if err != nil {
 		return nil, err
 	}
-	err = tmpl.Execute(buf, p)
+
+	for _, file := range p.page.Template.Files {
+		err := tmpl.ExecuteTemplate(buf, file.Id, p)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	outfile := fmt.Sprintf("%s/%s", s.Webroot, p.page.Template.Outfile)
+
+	_, err = util.WriteToFile(outfile, buf.Bytes())
 
 	if err != nil {
-		return nil, err
-	} else {
-		log.Print(fmt.Sprintf("\texecuted %s - %s", p.page.Path, string(buf.Bytes())))
-		return buf.Bytes(), nil
+		logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
 	}
+
+
+	return buf.Bytes(), nil
 }
 
 /* perform page setup */
@@ -95,10 +108,10 @@ func (g *GalleryPage) Setup(path string) error {
 
 /* Execute page template */
 func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
-	var buf *bytes.Buffer
+	var buf *util.Buffer
 	var files []string
 
-	buf = new(bytes.Buffer)
+	buf = new(util.Buffer)
 
 	g.Thumbs = make([]string, 0)
 	g.SrcPaths = make([]string, 0)
@@ -124,32 +137,42 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	}
 
 
-	files = make([]string, len(g.page.Template.Files))
+	files = make([]string, 0)
 
-	for i, file := range g.page.Template.Files {
-		files[i] = fmt.Sprintf("%s/%s", s.TemplatePath, file.Name)
-		log.Print(fmt.Sprintf("\t%s - %s", g.page.Path, files[i]))
+	for _, file := range g.page.Template.Files {
+		files = append(files, fmt.Sprintf("%s/%s", s.TemplatePath, file.Name))
 	}
 
 	tmpl, err := template.ParseFiles(files...)
+	logger.Verbose(fmt.Sprintf("%s",tmpl.DefinedTemplates()))
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = tmpl.Execute(buf, g)
+	for _, file := range g.page.Template.Files {
+		err := tmpl.ExecuteTemplate(buf, file.Id, g)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	outfile := fmt.Sprintf("%s/%s", s.Webroot, g.page.Template.Outfile)
+
+	_, err = util.WriteToFile(outfile, buf.Bytes())
 
 	if err != nil {
-		return nil, err
-	} else {
-		log.Print(fmt.Sprintf("\texecuted %s - %s", g.page.Path, string(buf.Bytes())))
-		return buf.Bytes(), nil
+		logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
 	}
+
+	return buf.Bytes(), nil
 }
 
 func main() {
 	var confpath = flag.String("config", "", "Path to the configuration file")
 	var dbpath = flag.String("db", "", "Path to the database")
+	var debug = flag.Bool("debug", false, "Enable debug logging")
 	var conf *Config
 
 	flag.Parse()
@@ -162,6 +185,10 @@ func main() {
 		log.Fatal(err)
 	}
 	configData = conf
+
+	if *debug {
+		logger.LogLevel(logger.LogLevelDebug)
+	}
 
 	_, err = os.Stat(*dbpath)
 
@@ -184,5 +211,5 @@ func main() {
 	s.Register("/beelden/hout", &GalleryPage{})
 	s.Register("/beelden/metaal", &GalleryPage{})
 
-	log.Fatal(s.Serve())
+	logger.Fatal(s.Serve())
 }
