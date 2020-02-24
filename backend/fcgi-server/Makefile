@@ -1,17 +1,15 @@
 GC = go build
 
-SRC=main.go \
-    config.go \
-    json.go \
-    data.go \
-    handler.go \
-    settings.go \
-    logger.go \
-    page.go \
-    db.go \
-    template.go\
-    page-generic.go \
-    page-gallery.go
+#fcgi server for www subdomain
+WWW_SRC=www.go\
+	config.go
+WWW_BIN=www.fcgi
 
-$(WVB_BACKEND): $(SRC)
-	$(GC) -o ../../$@ $(SRC)
+#fcgi server for admin subdomain
+ADMIN_SRC=admin.go\
+	  config.go
+ADMIN_BIN=admin.fcgi
+
+all: $(WWW_SRC) $(ADMIN_SRC)
+	$(GC) -o ../../$(WWW_BIN) $(WWW_SRC)
+	$(GC) -o ../../$(ADMIN_BIN) $(ADMIN_SRC)

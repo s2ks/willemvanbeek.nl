@@ -30,6 +30,7 @@ type FcgiServer struct {
 	ExecInterval time.Duration
 
 	Handles []*Handle
+	HandleTree *HandleNode
 }
 
 func (s *FcgiServer) Register(path string, data Handler) {
@@ -37,6 +38,7 @@ func (s *FcgiServer) Register(path string, data Handler) {
 
 	handle := NewHandle(path)
 	s.Handles = append(s.Handles, handle)
+	s.HandleTree.Insert(handle)
 
 	err := data.Setup(path)
 
@@ -111,11 +113,14 @@ func New(configPath string, data interface{}) (*FcgiServer, error) {
 	}
 
 	s.Handles = make([]*Handle, 0)
+	s.HandleTree = NewHandleNode(nil)
 
 	return s, nil
 }
 
 func (s *FcgiServer) Serve() error {
+	s.HandleTree.Balance()
+
 	listener, err := net.Listen(s.Protocol, fmt.Sprintf("%s:%s", s.Address, s.Port))
 
 	defer listener.Close()

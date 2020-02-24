@@ -2,9 +2,6 @@ ROOT=www
 
 CC=gcc
 
-HTTP=$(ROOT)/*
-HTTP_DEST=/srv/http/
-
 JS=node_modules/bootstrap/dist/js/* \
    node_modules/jquery/dist/* \
    node_modules/colcade/colcade.js
@@ -17,13 +14,9 @@ CFLAGS += -DDEBUG
 #CFLAGS += -DVERBOSE
 
 WVB_BACKEND 	= fcgi-server
-WVB_CONFIG 	= wvb.config
-GET_IMG		= get-img
 ADD_IMG 	= add-img
 
 BIN = $(WVB_BACKEND) 	\
-      $(WVB_CONFIG) 	\
-      $(GET_IMG) 	\
       $(ADD_IMG)
 
 export LDFLAGS
@@ -31,8 +24,6 @@ export CFLAGS
 export CC = gcc
 export BIN
 export WVB_BACKEND
-export WVB_CONFIG
-export GET_IMG
 export ADD_IMG
 
 
@@ -49,5 +40,3 @@ clean:
 	-$(MAKE) -C backend clean
 	-rm $(BIN)
 
-deploy:
-	-cp -r $(HTTP) $(HTTP_DEST)

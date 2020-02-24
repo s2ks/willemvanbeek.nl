@@ -79,14 +79,15 @@ func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
 		}
 	}
 
-	outfile := fmt.Sprintf("%s/%s", s.Webroot, p.page.Template.Outfile)
+	/* Cache the result */
+	if p.page.Template.Outfile != "" {
+		outfile := fmt.Sprintf("%s/%s", s.Webroot, p.page.Template.Outfile)
+		_, err = util.WriteToFile(outfile, buf.Bytes())
 
-	_, err = util.WriteToFile(outfile, buf.Bytes())
-
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
+		if err != nil {
+			logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
+		}
 	}
-
 
 	return buf.Bytes(), nil
 }
@@ -150,7 +151,7 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	}
 
 	tmpl, err := template.ParseFiles(files...)
-	logger.Verbose(fmt.Sprintf("%s", tmpl.DefinedTemplates()))
+	logger.Verbose(fmt.Sprintf("Defined templates: %s", tmpl.DefinedTemplates()))
 
 	if err != nil {
 		return nil, err
@@ -164,12 +165,14 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 		}
 	}
 
-	outfile := fmt.Sprintf("%s/%s", s.Webroot, g.page.Template.Outfile)
+	/* Cache the result */
+	if g.page.Template.Outfile != "" {
+		outfile := fmt.Sprintf("%s/%s", s.Webroot, g.page.Template.Outfile)
+		_, err = util.WriteToFile(outfile, buf.Bytes())
 
-	_, err = util.WriteToFile(outfile, buf.Bytes())
-
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
+		if err != nil {
+			logger.Error(fmt.Sprintf("Failed to write to file %s -- %s", outfile, err))
+		}
 	}
 
 	return buf.Bytes(), nil
