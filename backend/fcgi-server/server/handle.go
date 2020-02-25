@@ -153,6 +153,11 @@ func (t *HandleNode) Count() (n int) {
 		return
 	}
 
+	/* root node */
+	if t.parent == nil {
+		n += 1
+	}
+
 	if t.left != nil {
 		n += 1 + t.left.Count()
 	}
@@ -164,42 +169,50 @@ func (t *HandleNode) Count() (n int) {
 	return
 }
 
-func (t *HandleNode) Balance() {
+func (t *HandleNode) Root() *HandleNode {
+	root := t
 
-	lc := t.left.Count()
-	rc := t.right.Count()
+	for root.parent != nil {
+		root = root.parent
+	}
+
+	return root
+}
+
+func (t *HandleNode) Balance() *HandleNode {
+	var lc int
+	var rc int
+
+	var node *HandleNode
+
+	node = t
+
+	rc = node.right.Count()
+	lc = node.left.Count()
 
 	delta := lc - rc
 
-	/* rotate left */
-	if delta < 0 {
-		delta = -delta
-
-		node := t
-		for i := 0; i < delta; i++ {
-			node.RotateLeft()
+	/* right biased */
+	if delta < -1 {
+		node.right.Balance()
+		if node.RotateLeft() {
 			node = node.parent
 		}
-
-		return
 	}
 
-	/* rotate right */
-	if delta > 0 {
-		node := t
+	/* left biased */
+	if delta > 1 {
+		node.left.Balance()
 
-		for i := 0; i < delta; i++ {
-			node.RotateRight()
+		if node.RotateRight() {
 			node = node.parent
 		}
-
-		return
 	}
+
+	return node
 }
 
 /*
-		  P
-		 / \
 		A*
 	       / \
 	      B   C
@@ -207,8 +220,6 @@ func (t *HandleNode) Balance() {
 	    1  2 3  4
 
 	  Rotate left
-	  	  P
-	  	 / \
 	        C
 	       / \
 	      A*  4
@@ -219,8 +230,6 @@ func (t *HandleNode) Balance() {
 
 
 	  Rotate right
-	  	  P
-	  	 / \
 	  	B
 	       / \
 	      1   A*
@@ -230,17 +239,17 @@ func (t *HandleNode) Balance() {
 		  3   4
 */
 
-func (t *HandleNode) RotateLeft() {
+func (t *HandleNode) RotateLeft() bool {
 	A := t
 
 	if A == nil {
-		return
+		return false
 	}
 
 	C := t.right
 
 	if C == nil {
-		return
+		return false
 	}
 
 	P := A.parent
@@ -259,19 +268,21 @@ func (t *HandleNode) RotateLeft() {
 	C.parent = A.parent
 	A.parent = C
 	C.left = A
+
+	return true
 }
 
-func (t *HandleNode) RotateRight() {
+func (t *HandleNode) RotateRight() bool {
 	A := t
 
 	if A == nil {
-		return
+		return false
 	}
 
 	B := t.left
 
 	if B == nil {
-		return
+		return false
 	}
 
 	P := A.parent
@@ -291,4 +302,6 @@ func (t *HandleNode) RotateRight() {
 	B.parent = A.parent
 	A.parent = B
 	B.right = A
+
+	return true
 }

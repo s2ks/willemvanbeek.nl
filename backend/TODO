@@ -18,3 +18,5 @@ obsolete:
 wvb.backend:
 	http/*-handler.go to http/page-*.go
 
+fcgi-server/server:
+	write tests, mainly for BST
