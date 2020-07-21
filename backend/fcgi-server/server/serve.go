@@ -21,7 +21,7 @@ func LogRequest(r *http.Request) {
 		return
 	}
 
-	log.Print(fmt.Sprintf("\tBody: %s", string(body)))
+	log.Print(fmt.Sprintf("\tBody (first 512 bytes): %s", string(body)))
 
 }
 
@@ -37,6 +37,10 @@ func (h *Handle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.handler.ServeHTTP(w, r, h)
+}
+
+func ServeHTTP(w http.ResponseWriter, r *http.Request, h *Handle) {
 	if err := h.GetErr(); err != nil {
 		InternalServerError(w)
 		log.Print(fmt.Sprintf("Error while attempting to serve \"%s\" - %s", r.URL.Path, err))

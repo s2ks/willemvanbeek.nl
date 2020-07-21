@@ -21,12 +21,15 @@ type Handle struct {
 	content bool
 	cache   []byte
 	err     error
+	handler Handler
 }
 
 type HandleNode struct {
 	left *HandleNode
 	right *HandleNode
-	parent *HandleNode
+
+	height int
+	factor int
 
 	set *Handle
 }
@@ -46,7 +49,7 @@ func (h *Handle) contentServer() {
 	}
 }
 
-func NewHandle(path string) *Handle {
+func NewHandle(path string, u Handler) *Handle {
 	h := new(Handle)
 
 	h.Path = path
@@ -56,6 +59,8 @@ func NewHandle(path string) *Handle {
 	/* Unbuffered */
 	h.channel[source] = make(chan []byte, 0)
 	h.channel[relay] = make(chan []byte, 0)
+
+	h.handler = u
 
 	go h.contentServer()
 
@@ -91,11 +96,15 @@ func (h *Handle) SetErr(err error) {
 	<-errlock
 }
 
-func NewHandleNode(parent *HandleNode) *HandleNode {
-	t := new(HandleNode)
-	t.parent = parent
+func NewHandleNode(h *Handle) *HandleNode {
+	n := new(HandleNode)
 
-	return t
+	if h != nil {
+		n.set = h
+		n.height = 1
+	}
+
+	return n
 }
 
 func (t *HandleNode) Find(path string) *Handle {
@@ -117,191 +126,140 @@ func (t *HandleNode) Find(path string) *Handle {
 	return nil
 }
 
-func (t *HandleNode) Insert(h *Handle) {
-	if t.set == nil {
-		t.set = h
-		return
+func (n *HandleNode) Insert(h *Handle) *HandleNode {
+	c := 0
+
+	if n == nil {
+		return NewHandleNode(h)
 	}
 
-	n := strings.Compare(h.Path, t.set.Path)
+	if n.set != nil {
+		c = strings.Compare(h.Path, n.set.Path)
+	}
 
-	switch(n) {
+	switch(c) {
 	case -1:
-		if t.left == nil {
-			t.left = NewHandleNode(t)
-		}
-
-		t.left.Insert(h)
-		break
-	case 0:
-		t.set = h
+		n.left = n.left.Insert(h)
 		break
 	case 1:
-		if t.right == nil {
-			t.right = NewHandleNode(t)
-		}
-		t.right.Insert(h)
+		n.right = n.right.Insert(h)
+		break
+	case 0:
+		n.set = h
 		break
 	}
 
-	return
+	n.UpdateHeight()
+	return n.Balance()
 }
 
-func (t *HandleNode) Count() (n int) {
-	n = 0
-	if t == nil {
-		return
+func (n *HandleNode) UpdateHeight() {
+	l := n.left.Height()
+	r := n.right.Height()
+
+	if l > r {
+		n.height =  1 + l
+	} else {
+		n.height = 1 + r
 	}
 
-	/* root node */
-	if t.parent == nil {
-		n += 1
-	}
-
-	if t.left != nil {
-		n += 1 + t.left.Count()
-	}
-
-	if t.right != nil {
-		n += 1 + t.right.Count()
-	}
-
-	return
+	/* update balance factor */
+	n.factor = r - l
 }
 
-func (t *HandleNode) Root() *HandleNode {
-	root := t
-
-	for root.parent != nil {
-		root = root.parent
+func (n *HandleNode) Count() int {
+	count := 1
+	if n == nil {
+		return 0
 	}
 
-	return root
+	if n.left != nil {
+		count += n.left.Count()
+	}
+
+	if n.right != nil {
+		count += n.right.Count()
+	}
+
+	return count
 }
 
-func (t *HandleNode) Balance() *HandleNode {
-	var lc int
-	var rc int
+func (n *HandleNode) Height() int {
+	if n == nil {
+		return 0
+	} else {
+		return n.height
+	}
+}
 
-	var node *HandleNode
+func (n *HandleNode) Balance() *HandleNode {
+	node := n
 
-	node = t
+	if n == nil {
+		return nil
+	}
 
-	rc = node.right.Count()
-	lc = node.left.Count()
-
-	delta := lc - rc
-
-	/* right biased */
-	if delta < -1 {
-		node.right.Balance()
-		if node.RotateLeft() {
-			node = node.parent
-		}
+	/* right biased*/
+	if n.factor > 1 && n.right.factor < 0 {
+		/* RightLeft rotation */
+		n.right = n.right.RotateRight()
+		node = n.RotateLeft()
+	} else if n.factor > 1 {
+		/* Left rotation */
+		node = n.RotateLeft()
 	}
 
 	/* left biased */
-	if delta > 1 {
-		node.left.Balance()
-
-		if node.RotateRight() {
-			node = node.parent
-		}
+	if n.factor < -1 && n.left.factor > 0 {
+		/* LeftRight rotation */
+		n.left = n.left.RotateLeft()
+		node = n.RotateRight()
+	} else if n.factor < -1 {
+		/* Right rotation */
+		node = n.RotateRight()
 	}
 
 	return node
 }
 
-/*
-		A*
-	       / \
-	      B   C
-	     / \ / \
-	    1  2 3  4
+func (n *HandleNode) RotateLeft() *HandleNode {
 
-	  Rotate left
-	        C
-	       / \
-	      A*  4
-	     / \
-	    B   3
-	   / \
-	  1   2
-
-
-	  Rotate right
-	  	B
-	       / \
-	      1   A*
-	         / \
-		2   C
-		   / \
-		  3   4
-*/
-
-func (t *HandleNode) RotateLeft() bool {
-	A := t
-
-	if A == nil {
-		return false
+	if n == nil {
+		return nil
 	}
 
-	C := t.right
+	X := n
+	Y := n.right
 
-	if C == nil {
-		return false
-	}
+	/* inner child */
+	T2 := Y.left
 
-	P := A.parent
+	Y.left = X
+	X.right = T2
 
-	/* A is not the root node */
-	if P != nil {
-		if P.left == A {
-			P.left = C
-		}
-		if P.right == A {
-			P.right = C
-		}
-	}
+	X.UpdateHeight()
+	Y.UpdateHeight()
 
-	A.right = C.left
-	C.parent = A.parent
-	A.parent = C
-	C.left = A
-
-	return true
+	return Y
 }
 
-func (t *HandleNode) RotateRight() bool {
-	A := t
+func (n *HandleNode) RotateRight() *HandleNode {
 
-	if A == nil {
-		return false
+	if n == nil {
+		return nil
 	}
 
-	B := t.left
+	X := n
+	Y := n.left
 
-	if B == nil {
-		return false
-	}
+	/* inner child */
+	T2 := Y.right
 
-	P := A.parent
+	Y.right = X
+	X.left = T2
 
-	/* A is not the root node */
-	if P != nil {
-		if P.left == A {
-			P.left = B
-		}
+	X.UpdateHeight()
+	Y.UpdateHeight()
 
-		if P.right == A {
-			P.right = B
-		}
-	}
-
-	A.left = B.right
-	B.parent = A.parent
-	A.parent = B
-	B.right = A
-
-	return true
+	return Y
 }

@@ -16,6 +16,7 @@ import (
 type Handler interface {
 	Setup(string) error
 	Execute(*FcgiServer) ([]byte, error)
+	ServeHTTP(http.ResponseWriter, *http.Request, *Handle) bool
 }
 
 type FcgiServer struct {
@@ -29,24 +30,22 @@ type FcgiServer struct {
 	TemplatePath string
 	ExecInterval time.Duration
 
-	Handles []*Handle
 	HandleTree *HandleNode
 }
 
-func (s *FcgiServer) Register(path string, data Handler) {
+func (s *FcgiServer) Register(path string, h Handler) {
 	mux := s.ServeMux
 
-	handle := NewHandle(path)
-	s.Handles = append(s.Handles, handle)
+	handle := NewHandle(path, h)
 	s.HandleTree.Insert(handle)
 
-	err := data.Setup(path)
+	err := h.Setup(path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s.RegisterForExec(handle, data)
+	s.RegisterForExec(handle, h)
 
 	mux.Handle(path, handle)
 	log.Print("Registered handler for " + path)
@@ -112,7 +111,6 @@ func New(configPath string, data interface{}) (*FcgiServer, error) {
 		return nil, err
 	}
 
-	s.Handles = make([]*Handle, 0)
 	s.HandleTree = NewHandleNode(nil)
 
 	return s, nil
