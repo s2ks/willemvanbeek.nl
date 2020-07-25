@@ -14,9 +14,12 @@ CFLAGS += -DDEBUG
 #CFLAGS += -DVERBOSE
 
 WVB_BACKEND 	= fcgi-server
+WWW_BACKEND 	= www.fcgi
+ADMIN_BACKEND 	= admin.fcgi
 ADD_IMG 	= add-img
 
-BIN = $(WVB_BACKEND) 	\
+BIN = $(WWW_BACKEND) 	\
+      $(ADMIN_BACKEND) 	\
       $(ADD_IMG)
 
 export LDFLAGS
@@ -24,6 +27,8 @@ export CFLAGS
 export CC = gcc
 export BIN
 export WVB_BACKEND
+export WWW_BACKEND
+export ADMIN_BACKEND
 export ADD_IMG
 
 
