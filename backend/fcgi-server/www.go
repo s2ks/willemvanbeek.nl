@@ -1,5 +1,5 @@
 package main
-
+/* www subdomain for willemvankeek.nl */
 import (
 	"database/sql"
 	"flag"
@@ -7,13 +7,16 @@ import (
 	"path"
 	"os"
 	"fmt"
+	"time"
 	"html/template"
+	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 
 	"willemvanbeek.nl/backend/server"
 	"willemvanbeek.nl/backend/logger"
 	"willemvanbeek.nl/backend/util"
+	"willemvanbeek.nl/backend/server/config"
 )
 
 type GenericPage struct {
@@ -34,9 +37,37 @@ type GalleryPage struct {
 }
 
 var (
-	db *sql.DB
-	configData *Config
+	g_db *sql.DB
+	g_config *Config
 )
+
+/* Helper */
+func ServeContent(w http.ResponseWriter, r *http.Request, h *server.Handler) {
+	if err := h.GetErr(); err != nil {
+		server.InternalServerError(w)
+		logger.Error(fmt.Sprintf("Error while serving \"%s\" - %s", r.URL.Path, err))
+		server.LogRequest(r)
+		return
+	}
+
+	c, err := h.Content()
+
+	if err != nil {
+		server.InternalServerError(w)
+		logger.Error(fmt.Sprintf("Error while fetching content for \"%s\" - %s", r.URL.Path, err))
+		server.LogRequest(r)
+		return
+	}
+
+	_, err = w.Write(c)
+
+	if err != nil {
+		server.InternalServerError(w)
+		logger.Error(fmt.Sprintf("Error while writing response for \"%s\" - %s", r.URL.Path, err))
+		server.LogRequest(r)
+		return
+	}
+}
 
 func (p *GenericPage) Setup(path string) error {
 	page, err := GetPageFor(path)
@@ -52,6 +83,8 @@ func (p *GenericPage) Setup(path string) error {
 	return nil
 }
 
+/* Execute page template */
+/* TODO remove FcgiServer param */
 func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	var buf *util.Buffer
 	var files []string
@@ -65,7 +98,7 @@ func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	}
 
 	tmpl, err := template.ParseFiles(files...)
-	logger.Verbose(fmt.Sprintf("%s",tmpl.DefinedTemplates()))
+	logger.Verbose(fmt.Sprintf("%s", tmpl.DefinedTemplates()))
 
 	if err != nil {
 		return nil, err
@@ -92,6 +125,77 @@ func (p *GenericPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (p *GenericPage) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var buf []byte
+	var size uint64
+	var written uint64
+	var out *util.Buffer
+
+	out = new(util.Buffer)
+
+	if DoServe() == false {
+		//TODO 404
+	}
+
+	for _, file := range p.page.Template.Files {
+		fi, err := os.Stat(file.Path)
+
+		if err != nil {
+			server.InternalServerError(w)
+			//TODO log
+
+			return
+		}
+
+		size += fi.Size()
+
+	}
+
+	buf = make(byte[], size)
+
+	for _, file := range p.page.Template.Files {
+		f, err := os.Open(file.Path)
+
+		if err != nil {
+			server.InternalServerError(w)
+			//TODO log
+
+			return
+		}
+
+		w, err := f.Read(buf[written:])
+		written += w
+
+		if err != nil {
+			server.InternalServerError(w)
+			//TODO log
+
+			return
+		}
+	}
+
+	tmpl, err := template.New(p.page.Name).Parse(string(buf[0:written]))
+
+	if err != nil {
+		server.InternalServerError(w)
+
+		//TODO log
+
+		return
+	}
+
+	err = tmpl.Execute(out, p)
+
+	if err != nil {
+		server.InternalServerError(w)
+
+		//TODO log
+		return
+	}
+
+	w.Write(out.Bytes())
+}
+
 /* perform page setup */
 func (g *GalleryPage) Setup(path string) error {
 	page, err := GetPageFor(path)
@@ -110,6 +214,7 @@ func (g *GalleryPage) Setup(path string) error {
 }
 
 /* Execute page template */
+/* TODO remove FcgiServer param */
 func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	var buf *util.Buffer
 	var files []string
@@ -123,7 +228,7 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 
 	g.Material = base
 
-	rows, err := g.stmt.Query(path.Base(base)
+	rows, err := g.stmt.Query(path.Base(base))
 
 	defer rows.Close()
 
@@ -178,22 +283,37 @@ func (g *GalleryPage) Execute(s *server.FcgiServer) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (g *GalleryPage) ServeHTTP(w http.ResponseWriter, r *http.Request, h *server.Handler) {
+	var buf []byte
+
+
+	ServeContent(w, r, h)
+}
+
 func main() {
 	var confpath = flag.String("config", "", "Path to the configuration file")
 	var dbpath = flag.String("db", "", "Path to the database")
 	var debug = flag.Bool("debug", false, "Enable debug logging")
-	var conf *Config
+	var conf *util.Config
 
 	flag.Parse()
 
 	conf = new(Config)
 
-	s, err := server.New(*confpath, conf)
+	serverConf, err := server.GetConfig(confpath)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	configData = conf
+
+	//s, err := server.New(*confpath, conf)
+	s, err := server.New(serverConf.Net.Address, serverConf.Net.Port, serverConf.Net.Protocol)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	g_conf = conf
 
 	if *debug {
 		logger.LogLevel(logger.LogLevelDebug)
@@ -205,9 +325,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err = sql.Open("sqlite3", *dbpath);
+	g_db, err = sql.Open("sqlite3", *dbpath);
 
-	defer db.Close()
+	defer g_db.Close()
 
 	if err != nil {
 		log.Fatal(err)
@@ -215,10 +335,8 @@ func main() {
 
 	s.Register("/", &GenericPage{})
 	s.Register("/contact", &GenericPage{})
-
 	s.Register("/beelden/steen", &GalleryPage{})
 	s.Register("/beelden/hout", &GalleryPage{})
 	s.Register("/beelden/metaal", &GalleryPage{})
 
 	logger.Fatal(s.Serve())
-}

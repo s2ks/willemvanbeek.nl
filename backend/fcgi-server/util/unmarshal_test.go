@@ -1,14 +1,11 @@
-package config
+package util
 
 import (
-	"encoding/xml"
+	"testing"
 	"fmt"
+	"encoding/xml"
 	"os"
-
-	"willemvanbeek.nl/backend/util"
 )
-
-/* Defines structures to unmarshal from xml config file */
 
 type VarXml struct {
 	Items []struct {
@@ -41,32 +38,33 @@ type ServerConf struct {
 func (conf *ServerConf) VarMap() map[string]string {
 	vars := make(map[string]string)
 
-	for item, _ := range conf.Var.Items {
+	for _, item := range conf.Var.Items {
 		vars[item.Name] = item.Value
 	}
 
 	return vars
 }
 
-func GetConf(path string) (*ServerConf, error) {
+func TestSub5(t *testing.T) {
 	var config *ServerConf
 
 	var buf []byte
 	var err error
 	var configFile string
 
-	configFile = path
+
+	configFile = "./testconf.xml"
 
 	config = new(ServerConf)
 
 	if configFile == "" {
-		return nil, fmt.Errorf("No config file provided")
+		t.Errorf("No config file provided")
 	}
 
 	fi, err := os.Stat(configFile)
 
 	if err != nil {
-		return nil, err
+		t.Errorf("%v", err)
 	}
 
 	buf = make([]byte, fi.Size())
@@ -74,34 +72,36 @@ func GetConf(path string) (*ServerConf, error) {
 	f, err := os.Open(configFile)
 
 	if err != nil {
-		return nil, err
+		t.Errorf("%v", err)
 	}
 
 	_, err = f.Read(buf)
 
 	if err != nil {
-		return nil, err
+		t.Errorf("%v", err)
 	}
 
 	/* Unmarshal for configuration variables first */
 	err = xml.Unmarshal(buf, config)
 
 	if err != nil {
-		return nil, err
+		t.Errorf("%v", err)
 	}
 
 	/* Variable substitution */
-	buf, err = util.ByteSubstituteMap(buf, config.VarMap(), "%")
+	buf, err = ByteSubstituteMap(buf, config.VarMap(), "%")
+
+	fmt.Println(string(buf))
 
 	if err != nil {
-		return nil, err
+		t.Errorf("%v", err)
 	}
 
 	err = xml.Unmarshal(buf, config)
 
-	if err != nil {
-		return nil, err
-	}
+	fmt.Println(config)
 
-	return config, nil
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 }

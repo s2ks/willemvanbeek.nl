@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-func newHandle(p string) *Handle {
-	return NewHandle(p, nil)
+func newHandle(p string) *Handler {
+	return NewHandler(p, nil)
 }
 
 func TestBst1(t *testing.T) {
-	tree := NewHandleNode(nil)
+	tree := NewHandlerNode(nil)
 
 	tree = tree.Insert(newHandle("/"))
 	tree = tree.Insert(newHandle("/"))
@@ -29,7 +29,7 @@ func TestBst1(t *testing.T) {
 }
 
 func TestBst2(t *testing.T) {
-	tree := NewHandleNode(nil)
+	tree := NewHandlerNode(nil)
 
 	tree = tree.Insert(newHandle("/"))
 	tree = tree.Insert(newHandle("/index"))
@@ -50,7 +50,7 @@ func TestBst2(t *testing.T) {
 }
 
 func TestBst3(t *testing.T) {
-	tree := NewHandleNode(nil)
+	tree := NewHandlerNode(nil)
 
 	tree = tree.Insert(newHandle("/"))
 	tree = tree.Insert(newHandle("/"))
@@ -77,7 +77,7 @@ func TestBst3(t *testing.T) {
 }
 
 func TestBst5(t *testing.T) {
-	tree := NewHandleNode(nil)
+	tree := NewHandlerNode(nil)
 
 	tree = tree.Insert(newHandle("/"))
 	tree = tree.Insert(newHandle("/1"))
@@ -109,7 +109,7 @@ func TestBst5(t *testing.T) {
 }
 
 func TestBst7(t *testing.T) {
-	tree := NewHandleNode(nil)
+	tree := NewHandlerNode(nil)
 
 	tree = tree.Insert(newHandle("/"))
 	tree = tree.Insert(newHandle("/test123"))
@@ -125,7 +125,7 @@ func TestBst7(t *testing.T) {
 }
 
 /* PrintNode helper */
-func tree(prefix string, t *HandleNode) {
+func tree(prefix string, t *HandlerNode) {
 	if t.left != nil && t.right != nil {
 		fmt.Printf("%s%s%s (left) (%d)\n", prefix, "├── ", t.left.set.Path, t.left.factor)
 		tree(fmt.Sprintf("%s%s", prefix, "│   "), t.left)
@@ -146,7 +146,7 @@ func tree(prefix string, t *HandleNode) {
 	}
 }
 
-func PrintNode(t *HandleNode) {
+func PrintNode(t *HandlerNode) {
 	if t.set != nil {
 		fmt.Printf("%s (%d)\n", t.set.Path, t.factor)
 		tree("", t)

@@ -20,3 +20,4 @@ wvb.backend:
 
 fcgi-server/server:
 	write tests, mainly for BST
+	BST: self balancing insert (red-black?)

@@ -1,21 +1,25 @@
-package main
+package util
 
 import (
 	"encoding/xml"
 	"fmt"
+	"os"
+	"log"
+	"strings"
 )
 
 type ConfigTemplate struct {
 	Outfile string `xml:"outfile,attr"`
 	Files   []struct {
 		Id   string `xml:"id,attr"`
+		//Name string `xml:",innerxml"`
 		Path string `xml:",innerxml"`
 	} `xml:"file"`
 }
 
 type ConfigPage struct {
 	Name  string `xml:"name"`
-	Uri  string `xml:"uri,attr"`
+	Path  string `xml:"path,attr"`
 	Title string `xml:"title"`
 
 	Template ConfigTemplate `xml:"template"`
@@ -34,6 +38,33 @@ func (conf *Config) GetPageFor(path string) (*ConfigPage, error) {
 	}
 
 	return nil, fmt.Errorf("No page found for path " + path)
+}
+
+
+func (conf *Config) Get(path string) {
+	var buf []byte
+
+	fi, err := os.Stat(path)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	buf = make([]byte, fi.Size())
+
+	f, err := os.Open(path)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = f.Read(buf)
+
+	err = xml.Unmarshal(buf, conf)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (conf *Config) Parse(subs map[string]string) {

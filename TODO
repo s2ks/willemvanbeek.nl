@@ -1,2 +1,3 @@
 - auto-gen thumbnails for uploaded images (maybe crop to e.g. 500x500 if height and width > 500)
+- load fullsize images with JS on click for performance
 - admin.willemvanbeek.nl

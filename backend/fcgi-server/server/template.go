@@ -5,14 +5,14 @@ import (
 	"time"
 )
 
-func (s *FcgiServer) RegisterForExec(h *Handle, data Handler) error {
+func RegisterForExec(h *Handler, interval time.Duration) error {
 	go func() {
 		var lastExec time.Time
 
 		for {
 			lastExec = time.Now()
 
-			b, err := data.Execute(s)
+			b, err := h.ihandler.Execute()
 
 			if err != nil {
 				log.Print(err)
@@ -22,7 +22,7 @@ func (s *FcgiServer) RegisterForExec(h *Handle, data Handler) error {
 				h.SetErr(nil)
 			}
 
-			slp := s.ExecInterval - lastExec.Sub(time.Now())
+			slp := interval - lastExec.Sub(time.Now())
 			time.Sleep(slp)
 		}
 	}()

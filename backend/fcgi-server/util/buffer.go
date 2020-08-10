@@ -1,33 +1,33 @@
 package util
 
 type Buffer struct {
-	buf []byte
-	siz int64
+	raw []byte
+	size uint64
 }
 
-func (b *Buffer) Write(p []byte) (n int, err error) {
-	if b.buf == nil {
-		b.buf = make([]byte, 0)
-		b.siz = 0
+func (b *Buffer) Write(p []byte) (int, error) {
+	if b.raw == nil {
+		b.raw = make([]byte, 0)
+		b.size = 0
 	}
 
-	n = 0
-	err = nil
+	buf := make([]byte b.size + len(p))
 
-	size := len(p)
-	for i := 0; i < size; i++ {
-		b.buf = append(b.buf, p[i])
-		b.siz++
-		n++
-	}
 
-	return
+	w := 0
+	w += copy(buf[w:], b.raw)
+	w += copy(buf[w:], p)
+
+	b.raw = buf
+	b.size = n
+
+	return w, nil
 }
 
 func (b *Buffer) Bytes() []byte {
-	return b.buf
+	return b.raw
 }
 
-func (b *Buffer) Size() int64 {
-	return b.siz
+func (b *Buffer) Size() uint64 {
+	return b.size
 }

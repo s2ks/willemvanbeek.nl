@@ -1,103 +1,23 @@
 package server
 
 import (
-	"fmt"
-	"time"
 	"strings"
 )
 
-const (
-	sourceChan = 0
-	relayChan  = 1
+/* AVL tree for path handlers */
 
-	source = 0
-	relay = 1
-)
-
-type Handle struct {
-	Path     string
-
-	channel []chan []byte
-	content bool
-	cache   []byte
-	err     error
-	handler Handler
-}
-
-type HandleNode struct {
-	left *HandleNode
-	right *HandleNode
+type HandlerNode struct {
+	left *HandlerNode
+	right *HandlerNode
 
 	height int
 	factor int
 
-	set *Handle
+	set *Handler
 }
 
-func (h *Handle) contentServer() {
-	for {
-		select {
-		case c := <-h.channel[source]:
-			if len(c) > 0 {
-				h.cache = c
-				h.content = true
-			}
-		default:
-		}
-
-		h.channel[relay] <- h.cache
-	}
-}
-
-func NewHandle(path string, u Handler) *Handle {
-	h := new(Handle)
-
-	h.Path = path
-	h.channel = make([]chan []byte, 2)
-	h.content = false
-
-	/* Unbuffered */
-	h.channel[source] = make(chan []byte, 0)
-	h.channel[relay] = make(chan []byte, 0)
-
-	h.handler = u
-
-	go h.contentServer()
-
-	return h
-}
-
-func (h *Handle) Content() ([]byte, error) {
-	select {
-	case c := <-h.channel[relay]:
-		if h.content == false {
-			return nil, fmt.Errorf("No content available for %s", h.Path)
-		} else {
-			return c, nil
-		}
-	case <-time.After(1 * time.Second):
-		return nil, fmt.Errorf("Content server timeout")
-	}
-}
-
-var errlock = make(chan bool, 1)
-
-func (h *Handle) GetErr() error {
-	errlock <- true
-	err := h.err
-	<-errlock
-
-	return err
-}
-
-func (h *Handle) SetErr(err error) {
-	errlock <- true
-	h.err = err
-	<-errlock
-}
-
-func NewHandleNode(h *Handle) *HandleNode {
-	n := new(HandleNode)
+func NewHandlerNode(h *Handler) *HandlerNode {
+	n := new(HandlerNode)
 
 	if h != nil {
 		n.set = h
@@ -107,7 +27,7 @@ func NewHandleNode(h *Handle) *HandleNode {
 	return n
 }
 
-func (t *HandleNode) Find(path string) *Handle {
+func (t *HandlerNode) Find(path string) *Handler {
 	if t == nil {
 		return nil
 	}
@@ -126,11 +46,11 @@ func (t *HandleNode) Find(path string) *Handle {
 	return nil
 }
 
-func (n *HandleNode) Insert(h *Handle) *HandleNode {
+func (n *HandlerNode) Insert(h *Handler) *HandlerNode {
 	c := 0
 
 	if n == nil {
-		return NewHandleNode(h)
+		return NewHandlerNode(h)
 	}
 
 	if n.set != nil {
@@ -153,7 +73,7 @@ func (n *HandleNode) Insert(h *Handle) *HandleNode {
 	return n.Balance()
 }
 
-func (n *HandleNode) UpdateHeight() {
+func (n *HandlerNode) UpdateHeight() {
 	l := n.left.Height()
 	r := n.right.Height()
 
@@ -167,7 +87,7 @@ func (n *HandleNode) UpdateHeight() {
 	n.factor = r - l
 }
 
-func (n *HandleNode) Count() int {
+func (n *HandlerNode) Count() int {
 	count := 1
 	if n == nil {
 		return 0
@@ -184,7 +104,7 @@ func (n *HandleNode) Count() int {
 	return count
 }
 
-func (n *HandleNode) Height() int {
+func (n *HandlerNode) Height() int {
 	if n == nil {
 		return 0
 	} else {
@@ -192,7 +112,7 @@ func (n *HandleNode) Height() int {
 	}
 }
 
-func (n *HandleNode) Balance() *HandleNode {
+func (n *HandlerNode) Balance() *HandlerNode {
 	node := n
 
 	if n == nil {
@@ -222,7 +142,7 @@ func (n *HandleNode) Balance() *HandleNode {
 	return node
 }
 
-func (n *HandleNode) RotateLeft() *HandleNode {
+func (n *HandlerNode) RotateLeft() *HandlerNode {
 
 	if n == nil {
 		return nil
@@ -234,6 +154,7 @@ func (n *HandleNode) RotateLeft() *HandleNode {
 	/* inner child */
 	T2 := Y.left
 
+	/* rotate left */
 	Y.left = X
 	X.right = T2
 
@@ -243,7 +164,7 @@ func (n *HandleNode) RotateLeft() *HandleNode {
 	return Y
 }
 
-func (n *HandleNode) RotateRight() *HandleNode {
+func (n *HandlerNode) RotateRight() *HandlerNode {
 
 	if n == nil {
 		return nil
@@ -255,6 +176,7 @@ func (n *HandleNode) RotateRight() *HandleNode {
 	/* inner child */
 	T2 := Y.right
 
+	/* rotate right */
 	Y.right = X
 	X.left = T2
 
