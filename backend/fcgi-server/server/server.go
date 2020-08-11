@@ -1,17 +1,18 @@
 package server
 
 import (
-	"encoding/xml"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
-	"os"
 	"time"
 	"fmt"
-
-	//"willemvanbeek.nl/backend/server/config"
 )
+
+type Handler interface {
+	Setup(string) error
+	ServeHTTP(http.ResponseWriter, *http.Request)
+}
 
 type FcgiServer struct {
 	ServeMux *http.ServeMux
@@ -21,28 +22,19 @@ type FcgiServer struct {
 	Protocol string
 
 	ExecInterval time.Duration
-
-	HandlerTree *HandlerNode
 }
 
-func (s *FcgiServer) Register(path string, i IHandler) *Handler {
+func (s *FcgiServer) Register(path string, h Handler) {
 	mux := s.ServeMux
-
-	handler := NewHandler(path, i)
-	s.HandlerTree.Insert(handler)
-
-	err := i.Setup(path)
+	err := h.Setup(path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mux.Handle(path, handler)
+	mux.Handle(path, h)
 	log.Print("Registered handler for " + path)
-
-	return handler
 }
-
 
 func New(address string, port string, protocol string) (*FcgiServer, error) {
 	var s *FcgiServer
@@ -51,12 +43,9 @@ func New(address string, port string, protocol string) (*FcgiServer, error) {
 
 	s.ServeMux = http.NewServeMux()
 
-
 	s.Address = address
 	s.Port = port
 	s.Protocol = protocol
-
-	s.HandlerTree = NewHandlerNode(nil)
 
 	return s, nil
 }

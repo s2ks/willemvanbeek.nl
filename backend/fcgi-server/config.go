@@ -3,53 +3,77 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+
+	"willemvanbeek.nl/backend/util"
+	"willemvanbeek.nl/backend/server/config"
 )
 
-type ConfigTemplate struct {
+type XmlTemplate struct {
 	Outfile string `xml:"outfile,attr"`
 	Files   []struct {
-		Id   string `xml:"id,attr"`
 		Path string `xml:",innerxml"`
 	} `xml:"file"`
 }
 
-type ConfigPage struct {
+type XmlDB struct {
+	Path string `xml:"path,attr"`
+	Query string `xml:"query,attr"`
+}
+
+type XmlPage struct {
 	Name  string `xml:"name"`
-	Uri  string `xml:"uri,attr"`
+	Path  string `xml:"path,attr"`
 	Title string `xml:"title"`
 
-	Template ConfigTemplate `xml:"template"`
+	DB XmlDB `xml:"db"`
+	Template XmlTemplate `xml:"template"`
 }
 
-type Config struct {
+type XmlConfig struct {
 	XMLName xml.Name     `xml:"server"`
-	Page    []ConfigPage `xml:"page"`
+	Page    []XmlPage `xml:"page"`
 }
 
-func (conf *Config) GetPageFor(path string) (*ConfigPage, error) {
+func (conf *XmlConfig) GetPageFor(path string) (*XmlPage, error) {
 	for _, page := range conf.Page {
 		if page.Path == path {
 			return &page, nil
 		}
 	}
 
-	return nil, fmt.Errorf("No page found for path " + path)
+	return nil, fmt.Errorf("No pazge found for path " + path)
 }
 
-func (conf *Config) Parse(subs map[string]string) {
-	/* Variable substitution */
-	for key, val := range subs {
-		for _, page := range conf.Page {
-			page.Name = strings.ReplaceAll(page.Name, key, val)
-			page.Path = strings.ReplaceAll(page.Path, key, val)
-			page.Title = strings.ReplaceAll(page.Title, key, val)
+func GetMyConf(path string) (*XmlConfig, error) {
+	var conf *XmlConfig
 
-			page.Template.Outfile = strings.ReplaceAll(page.Template.Outfile, key, val)
+	buf, err := util.ReadFromFile(path)
 
-			for _, file := range page.Template.Files {
-				file.Id = strings.ReplaceAll(file.Id, key, val)
-				file.Path = strings.ReplaceAll(file.Path, key, val)
-			}
-		}
+	if err != nil {
+		return nil, err
 	}
+
+	vars, err := config.GetVars(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	varmap := vars.ToMap()
+
+	buf, err = util.ByteSubstituteMap(buf, varmap, "%")
+
+	if err != nil {
+		return nil, err
+	}
+
+	conf = new(XmlConfig)
+
+	err = xml.Unmarshal(buf, conf)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return conf, nil
 }

@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"willemvanbeek.nl/backend/logger"
 )
 
-/* TODO variable body length */
 func LogRequest(r *http.Request) {
 	log.Print(fmt.Sprintf("\tHTTP Method: %s", r.Method))
 	log.Print(fmt.Sprintf("\tProtocol version: %s", r.Proto))
 	log.Print(fmt.Sprintf("\tHeader: %+v", r.Header))
 	log.Print(fmt.Sprintf("\tClient: %s", r.RemoteAddr))
 	log.Print(fmt.Sprintf("\tContent length: %d", r.ContentLength))
+}
 
-	body := make([]byte, 64)
+func LogBody(r *http.Request, l uint64) {
+	body := make([]byte, l)
 
 	n, err := r.Body.Read(body)
 
@@ -22,22 +25,15 @@ func LogRequest(r *http.Request) {
 		return
 	}
 
-	log.Print(fmt.Sprintf("\tBody (first 64 bytes): %s", string(body)))
-
+	log.Printf("Body (%v byte(s)): %s", l, string(body))
 }
 
-func InternalServerError(w http.ResponseWriter) {
+func InternalServerError(w http.ResponseWriter, r *http.Request, err error) {
 	http.Error(w, "Internal server error", http.StatusInternalServerError)
+	logger.Error("Error while serving %s - %v", r.URL.Path, r)
 }
 
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if h.Path != r.URL.Path {
-		http.NotFound(w, r)
-		log.Print(fmt.Sprintf("%s Not found (404)", r.URL.Path))
-		LogRequest(r)
-		return
-	} else {
-		h.ihandler.ServeHTTP(w, r, h)
-	}
-
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
+	logger.Error("%s not found (404)", r.URL.Path)
 }

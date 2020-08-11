@@ -24,49 +24,48 @@ func LogLevel(l int) {
 	loglevel = l
 }
 
-func Fatal(v ...interface{}) {
+func Fatal(str string, v ...interface{}) {
 	if loglevel < LogLevelFatal {
 		return
 	}
 
-	logger.Fatal(v...)
+	logger.Fatalf(str, v...)
 }
 
-func Error(v ...interface{}) {
+func Error(str string, v ...interface{}) {
 	if loglevel < LogLevelError {
 		return
 	}
 
-	logger.Print(v...)
+	logger.Printf(str, v...)
 }
-func Warning(v ...interface{}) {
+func Warning(str string,v ...interface{}) {
 	if loglevel < LogLevelWarning {
 		return
 	}
 
-	logger.Print(v...)
+	logger.Printf(str, v...)
 }
-
-func Info(v ...interface{}) {
+func Info(str string, v ...interface{}) {
 	if loglevel < LogLevelInfo {
 		return
 	}
 
-	logger.Print(v...)
+	logger.Printf(str, v...)
 }
 
-func Debug(v ...interface{}) {
+func Debug(str string, v ...interface{}) {
 	if loglevel < LogLevelDebug {
 		return
 	}
 
-	logger.Print(v...)
+	logger.Printf(str, v...)
 }
 
-func Verbose(v ...interface{}) {
+func Verbose(str string, v ...interface{}) {
 	if loglevel < LogLevelVerbose {
 		return
 	}
 
-	logger.Print(v...)
+	logger.Printf(str, v...)
 }

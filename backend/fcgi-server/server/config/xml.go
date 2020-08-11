@@ -38,17 +38,52 @@ type ServerConf struct {
 	System  SystemXml `xml:"system"`
 }
 
+type VarsXml struct {
+	XMLName xml.Name `xml:"server"`
+	Var VarXml `xml:"vars"`
+}
+
+func GetVars(confpath string) (*VarsXml, error) {
+	var vars *VarsXml
+
+	buf, err := util.ReadFromFile(confpath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	vars = new(VarsXml)
+
+	err = xml.Unmarshal(buf, vars)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return vars, nil
+}
+
+func (vars *VarsXml) ToMap() map[string]string {
+	varmap := make(map[string]string)
+
+	for _, item := range vars.Var.Items {
+		varmap[item.Name] = item.Value
+	}
+
+	return varmap
+}
+
 func (conf *ServerConf) VarMap() map[string]string {
 	vars := make(map[string]string)
 
-	for item, _ := range conf.Var.Items {
+	for _, item := range conf.Var.Items {
 		vars[item.Name] = item.Value
 	}
 
 	return vars
 }
 
-func GetConf(path string) (*ServerConf, error) {
+func GetServerConf(path string) (*ServerConf, error) {
 	var config *ServerConf
 
 	var buf []byte

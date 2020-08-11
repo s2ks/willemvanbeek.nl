@@ -2,7 +2,7 @@ package util
 
 type Buffer struct {
 	raw []byte
-	size uint64
+	size int
 }
 
 func (b *Buffer) Write(p []byte) (int, error) {
@@ -11,7 +11,7 @@ func (b *Buffer) Write(p []byte) (int, error) {
 		b.size = 0
 	}
 
-	buf := make([]byte b.size + len(p))
+	buf := make([]byte, b.size + len(p))
 
 
 	w := 0
@@ -19,7 +19,7 @@ func (b *Buffer) Write(p []byte) (int, error) {
 	w += copy(buf[w:], p)
 
 	b.raw = buf
-	b.size = n
+	b.size = w
 
 	return w, nil
 }
@@ -28,6 +28,6 @@ func (b *Buffer) Bytes() []byte {
 	return b.raw
 }
 
-func (b *Buffer) Size() uint64 {
+func (b *Buffer) Size() int {
 	return b.size
 }

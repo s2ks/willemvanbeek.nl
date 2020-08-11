@@ -3,6 +3,11 @@
 	<vars>
 		<item name="WEBROOT">/var/www/willemvanbeek.nl/www</item>
 		<item name="TEMPLATES">/var/www/willemvanbeek.nl/www/templates</item>
+
+		<!--database-->
+		<item name="VARS">src, thumb</item>
+		<item name="TABLE">gallery</item>
+		<item name="TYPE">materiaal</item>
 	</vars>
 	<net>
 		<address>localhost</address>
@@ -19,64 +24,70 @@
 		</templates>
 	</system>
 
-	<page uri="/">
+	<page path="/">
 		<name>Home</name>
 		<title>Willem van Beek Beelden</title>
 
 		<template outfile="%WEBROOT%/html/index">
-			<file id="header">%TEMPLATES%/header.html</file>
-			<file id="navbar">%TEMPLATES%/navbar.html</file>
-			<file id="content">%TEMPLATES%/index.html</file>
-			<file id="footer">%TEMPLATES%/footer.html</file>
+			<file>%TEMPLATES%/header.html</file>
+			<file>%TEMPLATES%/navbar.html</file>
+			<file>%TEMPLATES%/index.html</file>
+			<file>%TEMPLATES%/footer.html</file>
 		</template>
 
 	</page>
 
-	<page uri="/contact">
+	<page path="/contact">
 		<name>Contact</name>
 		<title>Contact | Willem van Beek Beelden</title>
 
 		<template outfile="%WEBROOT%/html/contact">
-			<file id="header">%TEMPLATES%/header.html</file>
-			<file id="navbar">%TEMPLATES%/navbar.html</file>
-			<file id="content">%TEMPLATES%/contact.html</file>
-			<file id="footer">%TEMPLATES%/footer.html</file>
+			<file>%TEMPLATES%/header.html</file>
+			<file>%TEMPLATES%/navbar.html</file>
+			<file>%TEMPLATES%/contact.html</file>
+			<file>%TEMPLATES%/footer.html</file>
 		</template>
 	</page>
 
-	<page uri="/beelden/steen">
+	<page path="/beelden/steen">
 		<name>Beelden van steen</name>
 		<title>Steen | Willem van Beek Beelden</title>
 
+		<db path="%DBFILE%" query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = steen" />
+
 		<template outfile="%WEBROOT%/html/beelden/steen">
-			<file id="header">%TEMPLATES%/header.html</file>
-			<file id="navbar">%TEMPLATES%/navbar.html</file>
-			<file id="content">%TEMPLATES%/beelden.html</file>
-			<file id="footer">%TEMPLATES%/footer.html</file>
+			<file>%TEMPLATES%/header.html</file>
+			<file>%TEMPLATES%/navbar.html</file>
+			<file>%TEMPLATES%/beelden.html</file>
+			<file>%TEMPLATES%/footer.html</file>
 		</template>
 	</page>
 
-	<page uri="/beelden/hout">
+	<page path="/beelden/hout">
 		<name>Beelden van  hout</name>
 		<title>Hout | Willem van Beek Beelden</title>
 
+		<db path="%DBFILE%" query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = hout" />
+
 		<template outfile="%WEBROOT%/html/beelden/hout">
-			<file id="header">%TEMPLATES%/header.html</file>
-			<file id="navbar">%TEMPLATES%/navbar.html</file>
-			<file id="content">%TEMPLATES%/beelden.html</file>
-			<file id="footer">%TEMPLATES%/footer.html</file>
+			<file>%TEMPLATES%/header.html</file>
+			<file>%TEMPLATES%/navbar.html</file>
+			<file>%TEMPLATES%/beelden.html</file>
+			<file>%TEMPLATES%/footer.html</file>
 		</template>
 	</page>
 
-	<page uri="/beelden/metaal">
+	<page path="/beelden/metaal">
 		<name>Beelden van metaal</name>
 		<title>Metaal | Willem van Beek Beelden</title>
 
+		<db path="%DBFILE%" query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = metaal" />
+
 		<template outfile="%WEBROOT%/html/beelden/metaal">
-			<file id="header">%TEMPLATES%/header.html</file>
-			<file id="navbar">%TEMPLATES%/navbar.html</file>
-			<file id="content">%TEMPLATES%/beelden.html</file>
-			<file id="footer">%TEMPLATES%/footer.html</file>
+			<file>%TEMPLATES%/header.html</file>
+			<file>%TEMPLATES%/navbar.html</file>
+			<file>%TEMPLATES%/beelden.html</file>
+			<file>%TEMPLATES%/footer.html</file>
 		</template>
 	</page>
 </server>
