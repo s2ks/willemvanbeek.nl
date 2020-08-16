@@ -1,15 +1,10 @@
 GC = go build
 
-#fcgi server for www subdomain
-WWW_SRC=www.go\
-	config.go
-WWW_BIN=www.fcgi
+#fcgi servers for subdomains
+WWW_SUB=www
+ADMIN_SUB=admin
 
-#fcgi server for admin subdomain
-ADMIN_SRC=admin.go\
-	  config.go
-ADMIN_BIN=admin.fcgi
+.PHONY: all
 
-all: $(WWW_SRC) $(ADMIN_SRC)
-	$(GC) -o ../../$(WWW_BIN) $(WWW_SRC)
-	$(GC) -o ../../$(ADMIN_BIN) $(ADMIN_SRC)
+all:
+	-$(MAKE) -C www

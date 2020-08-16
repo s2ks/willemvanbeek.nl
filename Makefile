@@ -17,6 +17,7 @@ WVB_BACKEND 	= fcgi-server
 WWW_BACKEND 	= www.fcgi
 ADMIN_BACKEND 	= admin.fcgi
 ADD_IMG 	= add-img
+DESTDIR 	= $(shell pwd)
 
 BIN = $(WWW_BACKEND) 	\
       $(ADMIN_BACKEND) 	\
@@ -30,6 +31,7 @@ export WVB_BACKEND
 export WWW_BACKEND
 export ADMIN_BACKEND
 export ADD_IMG
+export DESTDIR
 
 
 .PHONY: clean dist install all
