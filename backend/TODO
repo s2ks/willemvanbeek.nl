@@ -3,21 +3,3 @@ wvb-edit-img - take numerical id as parameter, and a json formatted string via s
 wvb-add-img - receives json formatted string via stdin, img is added to db
 
 wvb-del-img receives numerical id as parameter, deletes img
-
-rename wvb.backend to fcgi.server
-
-rename wvb.config
-
-obsolete:
-	logger.go
-	test.go
-	http/page-handler.go
-	wvb.config
-
-
-wvb.backend:
-	http/*-handler.go to http/page-*.go
-
-fcgi-server/server:
-	write tests, mainly for BST
-	BST: self balancing insert (red-black?)
