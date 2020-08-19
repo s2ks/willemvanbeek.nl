@@ -9,6 +9,7 @@ import (
 
 	"github.com/s2ks/fcgiserver"
 	"github.com/s2ks/fcgiserver/util"
+	"github.com/s2ks/fcgiserver/logger"
 )
 
 type GenericPageHandler struct {
@@ -26,7 +27,7 @@ type GalleryPageHandler struct {
 	Thumbs   []string
 	SrcPaths []string
 
-	Material string
+	Material string //TODO rename to Tag
 
 	config *XmlConfig
 	page   *XmlPage
@@ -57,6 +58,8 @@ func (h *GenericPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fcgiserver.LogRequest(r)
 		return
 	}
+
+	logger.Debugf("Serving: %s", r.URL.Path)
 
 	out = new(util.Buffer)
 
@@ -145,6 +148,8 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger.Debugf("Serving: %s", r.URL.Path)
+
 	out = new(util.Buffer)
 
 	files := make([]string, len(h.page.Template.Files))
@@ -161,6 +166,8 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger.Debugf("Parsing template: %s", string(buf))
+
 	tmpl, err := template.New(h.page.Name).Parse(string(buf))
 
 	if err != nil {
@@ -169,15 +176,22 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := h.stmt.Query()
+	/* Convert string array to an interface array for Query() */
+	args := make([]interface{}, len(h.page.DB.Args))
 
-	defer rows.Close()
+	for i, v := range h.page.DB.Args {
+		args[i] = v
+	}
+
+	rows, err := h.stmt.Query(args...)
 
 	if err != nil {
 		fcgiserver.InternalServerError(w, r, err)
 		fcgiserver.LogRequest(r)
 		return
 	}
+
+	defer rows.Close()
 
 	err = h.Scan(rows)
 
@@ -194,6 +208,8 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fcgiserver.LogRequest(r)
 		return
 	}
+
+	logger.Debugf("Writing content: %s", string(out.Bytes()))
 
 	w.Write(out.Bytes())
 }

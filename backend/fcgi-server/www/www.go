@@ -28,6 +28,7 @@ func main() {
 	serverconf, err := config.GetServerConfFromXmlFile(*confpath)
 
 	if err != nil {
+		logger.Debug("In GetServerConfFromXmlFile:")
 		logger.Fatal(err)
 	}
 
@@ -40,12 +41,14 @@ func main() {
 	raw, err := config.GetUserXmlFromFile(*confpath)
 
 	if err != nil {
+		logger.Debug("In GetUserXmlFromFile")
 		logger.Fatal(err)
 	}
 
 	myconf, err := GetMyConfFromXml(raw)
 
 	if err != nil {
+		logger.Debug("In GetMyConfFromXml")
 		logger.Fatal(err)
 	}
 

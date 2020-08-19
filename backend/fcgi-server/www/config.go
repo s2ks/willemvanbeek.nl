@@ -16,6 +16,7 @@ type XmlTemplate struct {
 
 type XmlDB struct {
 	Query string `xml:"query,attr"`
+	Args []string `xml:"arg"`
 }
 
 type XmlPage struct {
