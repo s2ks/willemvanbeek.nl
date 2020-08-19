@@ -2,12 +2,9 @@
 <server>
 	<vars>
 		<item name="WEBROOT">/var/www/willemvanbeek.nl/www</item>
-		<item name="TEMPLATES">/var/www/willemvanbeek.nl/www/templates</item>
+		<item name="TEMPLATES">/var/www/willemvanbeek.nl/www/template</item>
 
-		<!--database-->
-		<item name="VARS">src, thumb</item>
-		<item name="TABLE">gallery</item>
-		<item name="TYPE">materiaal</item>
+		<item name="QUERY">SELECT src, thumb FROM gallery WHERE type = ?</item>
 	</vars>
 	<net>
 		<address>localhost</address>
@@ -20,11 +17,11 @@
 			<name>Home</name>
 			<title>Willem van Beek Beelden</title>
 
-			<template outfile="%WEBROOT%/html/index">
-				<file>%TEMPLATES%/header.html</file>
-				<file>%TEMPLATES%/navbar.html</file>
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
 				<file>%TEMPLATES%/index.html</file>
-				<file>%TEMPLATES%/footer.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
 			</template>
 
 		</page>
@@ -33,11 +30,11 @@
 			<name>Contact</name>
 			<title>Contact | Willem van Beek Beelden</title>
 
-			<template outfile="%WEBROOT%/html/contact">
-				<file>%TEMPLATES%/header.html</file>
-				<file>%TEMPLATES%/navbar.html</file>
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
 				<file>%TEMPLATES%/contact.html</file>
-				<file>%TEMPLATES%/footer.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
 			</template>
 		</page>
 
@@ -45,13 +42,15 @@
 			<name>Beelden van steen</name>
 			<title>Steen | Willem van Beek Beelden</title>
 
-			<db query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = steen" />
+			<db query="%QUERY%">
+				<arg>steen</arg>
+			</db>
 
-			<template outfile="%WEBROOT%/html/beelden/steen">
-				<file>%TEMPLATES%/header.html</file>
-				<file>%TEMPLATES%/navbar.html</file>
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
 				<file>%TEMPLATES%/beelden.html</file>
-				<file>%TEMPLATES%/footer.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
 			</template>
 		</page>
 
@@ -59,13 +58,15 @@
 			<name>Beelden van  hout</name>
 			<title>Hout | Willem van Beek Beelden</title>
 
-			<db query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = hout" />
+			<db query="%QUERY%">
+				<arg>hout</arg>
+			</db>
 
-			<template outfile="%WEBROOT%/html/beelden/hout">
-				<file>%TEMPLATES%/header.html</file>
-				<file>%TEMPLATES%/navbar.html</file>
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
 				<file>%TEMPLATES%/beelden.html</file>
-				<file>%TEMPLATES%/footer.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
 			</template>
 		</page>
 
@@ -73,13 +74,15 @@
 			<name>Beelden van metaal</name>
 			<title>Metaal | Willem van Beek Beelden</title>
 
-			<db query="SELECT %VARS% FROM %TABLE% WHERE %TYPE% = metaal" />
+			<db query="%QUERY%">
+				<arg>metaal</arg>
+			</db>
 
-			<template outfile="%WEBROOT%/html/beelden/metaal">
-				<file>%TEMPLATES%/header.html</file>
-				<file>%TEMPLATES%/navbar.html</file>
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
 				<file>%TEMPLATES%/beelden.html</file>
-				<file>%TEMPLATES%/footer.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
 			</template>
 		</page>
 	</user>
