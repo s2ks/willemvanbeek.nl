@@ -1,9 +1,0 @@
-[Unit]
-Description=FCGI server for www.willemvanbeek.nl
-After=nginx.service
-
-[Service]
-Type=simple
-Restart=always
-StandarsError=journal
-ExecStart=/usr/lib/willemvanbeek.nl/www.fcgi -confpath="/etc/willemvanbeek.nl/www-conf.xml" -dbpath="/var/lib/willemvanbeek.nl/content.db"
