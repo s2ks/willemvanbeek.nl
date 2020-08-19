@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"encoding/hex"
 
-	"willemvanbeek.nl/backend/logger"
-	"willemvanbeek.nl/backend/server"
+	"github.com/s2ks/fcgiserver/logger"
+	"github.com/s2ks/fcgiserver"
 )
 
 type AdminPage struct {
