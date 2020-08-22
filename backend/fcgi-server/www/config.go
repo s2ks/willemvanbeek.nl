@@ -3,8 +3,11 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"path"
 	"net/http"
 	"strings"
+
+	"github.com/s2ks/fcgiserver/logger"
 )
 
 type XmlTemplate struct {
@@ -34,14 +37,14 @@ type XmlConfig struct {
 }
 
 func (page *XmlPage) DoServe(r *http.Request) bool {
-	p1 := strings.ToUpper(r.URL.Path)
-	p2 := strings.ToUpper(page.Path)
+	p1 := strings.ToLower(r.URL.Path)
+	p2 := strings.ToLower(page.Path)
 
-	p1 = strings.TrimSpace(p1)
-	p2 = strings.TrimSpace(p2)
+	p1 = path.Clean(p1)
+	p2 = path.Clean(p2)
 
-	p1 = strings.TrimRight(p1, "/\\")
-	p2 = strings.TrimRight(p2, "/\\")
+	logger.Debugf("%s sanitized to %s", r.URL.Path, p1)
+	logger.Debugf("%s sanitized to %s", page.Path, p2)
 
 	if p1 == p2 {
 		return true
