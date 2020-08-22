@@ -63,10 +63,10 @@ func main() {
 	}
 
 	s.Register("/", &GenericPageHandler{config: myconf})
-	s.Register("/contact", &GenericPageHandler{config: myconf})
-	s.Register("/beelden/steen", &GalleryPageHandler{config: myconf, db: db, Material: "steen"})
-	s.Register("/beelden/hout", &GalleryPageHandler{config: myconf, db: db, Material: "hout"})
-	s.Register("/beelden/metaal", &GalleryPageHandler{config: myconf, db: db, Material: "metaal"})
+	s.Register("/contact/", &GenericPageHandler{config: myconf})
+	s.Register("/beelden/steen/", &GalleryPageHandler{config: myconf, db: db, Material: "steen"})
+	s.Register("/beelden/hout/", &GalleryPageHandler{config: myconf, db: db, Material: "hout"})
+	s.Register("/beelden/metaal/", &GalleryPageHandler{config: myconf, db: db, Material: "metaal"})
 
 	logger.Fatal(s.Serve())
 }

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server>
 	<vars>
-		<item name="WEBROOT">/var/www/willemvanbeek.nl/www</item>
 		<item name="TEMPLATES">/var/www/willemvanbeek.nl/www/template</item>
-
 		<item name="QUERY">SELECT src, thumb FROM gallery WHERE type = ?</item>
 	</vars>
 	<net>
@@ -26,7 +24,7 @@
 
 		</page>
 
-		<page path="/contact">
+		<page path="/contact/">
 			<name>Contact</name>
 			<title>Contact | Willem van Beek Beelden</title>
 
@@ -38,7 +36,7 @@
 			</template>
 		</page>
 
-		<page path="/beelden/steen">
+		<page path="/beelden/steen/">
 			<name>Beelden van steen</name>
 			<title>Steen | Willem van Beek Beelden</title>
 
@@ -54,7 +52,7 @@
 			</template>
 		</page>
 
-		<page path="/beelden/hout">
+		<page path="/beelden/hout/">
 			<name>Beelden van  hout</name>
 			<title>Hout | Willem van Beek Beelden</title>
 
@@ -70,7 +68,7 @@
 			</template>
 		</page>
 
-		<page path="/beelden/metaal">
+		<page path="/beelden/metaal/">
 			<name>Beelden van metaal</name>
 			<title>Metaal | Willem van Beek Beelden</title>
 
