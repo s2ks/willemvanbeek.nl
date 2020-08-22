@@ -108,8 +108,6 @@ func (h *GalleryPageHandler) Setup(path string) error {
 	h.Name = page.Name
 	h.page = page
 
-
-
 	h.stmt, err = h.db.Prepare(h.page.DB.Query)
 
 	return err
@@ -166,7 +164,7 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Debugf("Parsing template: %s", string(buf))
+	//logger.Debugf("Parsing template: %s", string(buf))
 
 	tmpl, err := template.New(h.page.Name).Parse(string(buf))
 
@@ -209,7 +207,7 @@ func (h *GalleryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Debugf("Writing content: %s", string(out.Bytes()))
+	//logger.Debugf("Writing content: %s", string(out.Bytes()))
 
 	w.Write(out.Bytes())
 }
