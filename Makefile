@@ -2,9 +2,6 @@ ROOT=www
 
 CC=gcc
 
-HTTP=$(ROOT)/*
-HTTP_DEST=/srv/http/
-
 JS=node_modules/bootstrap/dist/js/* \
    node_modules/jquery/dist/* \
    node_modules/colcade/colcade.js
@@ -17,13 +14,13 @@ CFLAGS += -DDEBUG
 #CFLAGS += -DVERBOSE
 
 WVB_BACKEND 	= fcgi-server
-WVB_CONFIG 	= wvb.config
-GET_IMG		= get-img
+WWW_BACKEND 	= www.fcgi
+ADMIN_BACKEND 	= admin.fcgi
 ADD_IMG 	= add-img
+DESTDIR 	= $(shell pwd)
 
-BIN = $(WVB_BACKEND) 	\
-      $(WVB_CONFIG) 	\
-      $(GET_IMG) 	\
+BIN = $(WWW_BACKEND) 	\
+      $(ADMIN_BACKEND) 	\
       $(ADD_IMG)
 
 export LDFLAGS
@@ -31,9 +28,10 @@ export CFLAGS
 export CC = gcc
 export BIN
 export WVB_BACKEND
-export WVB_CONFIG
-export GET_IMG
+export WWW_BACKEND
+export ADMIN_BACKEND
 export ADD_IMG
+export DESTDIR
 
 
 .PHONY: clean dist install all
@@ -49,5 +47,3 @@ clean:
 	-$(MAKE) -C backend clean
 	-rm $(BIN)
 
-deploy:
-	-cp -r $(HTTP) $(HTTP_DEST)

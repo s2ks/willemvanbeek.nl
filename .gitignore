@@ -4,11 +4,10 @@
 *.db
 !.gitignore
 
-/wvb.backend
-/wvb.config
-/get-img
+/test
+
 /add-img
 /fcgi-server
+/www.fcgi
+/admin.fcgi
 a.out
-www
-backend

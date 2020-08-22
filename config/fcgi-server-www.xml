@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+	<vars>
+		<item name="TEMPLATES">/var/www/willemvanbeek.nl/www/template</item>
+		<item name="QUERY">SELECT src, thumb FROM gallery WHERE type = ?</item>
+	</vars>
+	<net>
+		<address>localhost</address>
+		<port>9000</port>
+		<protocol>tcp</protocol>
+	</net>
+
+	<user>
+		<page path="/">
+			<name>Home</name>
+			<title>Willem van Beek Beelden</title>
+
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
+				<file>%TEMPLATES%/index.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
+			</template>
+
+		</page>
+
+		<page path="/contact/">
+			<name>Contact</name>
+			<title>Contact | Willem van Beek Beelden</title>
+
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
+				<file>%TEMPLATES%/contact.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
+			</template>
+		</page>
+
+		<page path="/beelden/steen/">
+			<name>Beelden van steen</name>
+			<title>Steen | Willem van Beek Beelden</title>
+
+			<db query="%QUERY%">
+				<arg>steen</arg>
+			</db>
+
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
+				<file>%TEMPLATES%/beelden.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
+			</template>
+		</page>
+
+		<page path="/beelden/hout/">
+			<name>Beelden van  hout</name>
+			<title>Hout | Willem van Beek Beelden</title>
+
+			<db query="%QUERY%">
+				<arg>hout</arg>
+			</db>
+
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
+				<file>%TEMPLATES%/beelden.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
+			</template>
+		</page>
+
+		<page path="/beelden/metaal/">
+			<name>Beelden van metaal</name>
+			<title>Metaal | Willem van Beek Beelden</title>
+
+			<db query="%QUERY%">
+				<arg>metaal</arg>
+			</db>
+
+			<template>
+				<file>%TEMPLATES%/common/header.html</file>
+				<file>%TEMPLATES%/common/navbar.html</file>
+				<file>%TEMPLATES%/beelden.html</file>
+				<file>%TEMPLATES%/common/footer.html</file>
+			</template>
+		</page>
+	</user>
+</server>

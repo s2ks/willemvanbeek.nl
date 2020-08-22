@@ -1,17 +1,10 @@
 GC = go build
 
-SRC=main.go \
-    config.go \
-    json.go \
-    data.go \
-    handler.go \
-    settings.go \
-    logger.go \
-    page.go \
-    db.go \
-    template.go\
-    page-generic.go \
-    page-gallery.go
+#fcgi servers for subdomains
+WWW_SUB=www
+ADMIN_SUB=admin
 
-$(WVB_BACKEND): $(SRC)
-	$(GC) -o ../../$@ $(SRC)
+.PHONY: all
+
+all:
+	-$(MAKE) -C www
